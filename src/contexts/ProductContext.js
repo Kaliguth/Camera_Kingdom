@@ -43,7 +43,6 @@ export const ProductProvider = ({ children }) => {
 
   const globalVal = {
     allProducts,
-    // getAllProducts,
     getProduct,
   };
 
