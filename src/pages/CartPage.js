@@ -1,10 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-// import { CartContext } from "../contexts/CartContext";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const CartPage = () => {
-  //   const { cart, removeFromCart } = useContext(CartContext);
+  const { currentUser } = useAuthContext();
   const cart = [];
+
+  if (!currentUser) {
+    return (
+      <Container>
+        <Row className="mt-4">
+          <Col>
+            <p>Please log in to view your cart.</p>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -14,26 +26,7 @@ const CartPage = () => {
           {cart.length === 0 ? (
             <p>Your cart is empty</p>
           ) : (
-            cart.map((product, index) => (
-              <Row key={index} className="mb-3">
-                <Col md={2}>
-                  <img src={product.image} alt={product.name} width="100%" />
-                </Col>
-                <Col md={8}>
-                  <h4>{product.name}</h4>
-                  <p>{product.description}</p>
-                  <p>${product.price}</p>
-                </Col>
-                <Col md={2}>
-                  <Button
-                    variant="danger"
-                    // onClick={() => removeFromCart(product.id)}
-                  >
-                    Remove
-                  </Button>
-                </Col>
-              </Row>
-            ))
+            <Row>{/* Need to complete */}</Row>
           )}
         </Col>
       </Row>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
-// import { auth } from '../firebase';
-// import { onAuthStateChanged, updateProfile, updateEmail } from 'firebase/auth';
 import { useAuthContext } from "../contexts/AuthContext";
 
 const ProfilePage = () => {

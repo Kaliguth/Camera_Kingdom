@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Carousel } from "react-bootstrap";
-// import { getRecommendedProducts } from '../services/RecommendationService';
 import { useProductContext } from "../contexts/ProductContext";
 
 const HomePage = () => {
   const { allProducts } = useProductContext();
-  //   const [recommendedProducts, setRecommendedProducts] = useState([]);
-
-  //   useEffect(() => {
-  //     const fetchRecommendedProducts = async () => {
-  //       try {
-  //         const products = await getRecommendedProducts();
-  //         console.log("Fetched recommended products:", products); // Log fetched products
-  //         setRecommendedProducts(products);
-  //       } catch (error) {
-  //         console.error("Error fetching recommended products:", error);
-  //       }
-  //     };
-  //     fetchRecommendedProducts();
-  //   }, []);
 
   return (
     <Container className="mt-4">
@@ -48,21 +33,6 @@ const HomePage = () => {
                   <p>{product.brand}</p>
                 </Carousel.Caption>
               </Carousel.Item>
-              // <Col key={product.id} md={4}>
-              //   <Card>
-              //     <Card.Title>{product.model}</Card.Title>
-              //     <Card.Body>
-              //       <Card.Img
-              //         variant="top"
-              //         src={product.image1}
-              //         height={200}
-              //         style={{ width: "90%" }}
-              //       />
-              //       <Card.Text>{product.brand}</Card.Text>
-              //       <Card.Text>${product.price}</Card.Text>
-              //     </Card.Body>
-              //   </Card>
-              // </Col>
             ))}
           </Carousel>
         </Col>
