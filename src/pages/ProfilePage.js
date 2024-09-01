@@ -22,7 +22,7 @@ const ProfilePage = () => {
     try {
       await update(currentUser, { displayName, photoURL, email });
       alert("Profile updated successfully");
-      alert(currentUser.displayName + " " + currentUser.email + " " + currentUser.photoURL);
+      // alert(currentUser.displayName + " " + currentUser.email + " " + currentUser.photoURL);
     } catch (error) {
       alert(error.message);
     }
@@ -65,7 +65,7 @@ const ProfilePage = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formPhotoURL">
+            <Form.Group className="mb-4" controlId="formPhotoURL">
               <Form.Label>Photo URL</Form.Label>
               <Form.Control
                 className="form-controls"
@@ -74,7 +74,7 @@ const ProfilePage = () => {
                 onChange={(e) => setPhotoURL(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" className="mb-4">
               Update Profile
             </Button>
           </Form>

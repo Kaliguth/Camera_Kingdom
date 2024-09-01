@@ -1,8 +1,11 @@
 import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
+import { useProductContext } from "../../contexts/ProductContext";
+import { useCartContext } from "../../contexts/CartContext";
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCartContext();
   const logo = logoMap[product.brand] || null;
 
   const squareLogoStyle =
@@ -13,6 +16,11 @@ const ProductCard = ({ product }) => {
     product.brand === "Insta360"
       ? { width: "70px", height: "70px" }
       : {};
+
+  const handleAddToCart = async () => {
+    await addToCart(product);
+    alert(`${product.model} added to your cart`);
+  };
 
   return (
     <Card className="product-card">
@@ -31,7 +39,11 @@ const ProductCard = ({ product }) => {
       <Button variant="success" className="product-buttons">
         Buy now
       </Button>
-      <Button variant="success" className="product-buttons">
+      <Button
+        variant="success"
+        className="product-buttons"
+        onClick={handleAddToCart}
+      >
         Add to cart
       </Button>
     </Card>

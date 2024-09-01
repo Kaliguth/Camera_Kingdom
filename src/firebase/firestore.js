@@ -5,7 +5,8 @@ import { getFirestore, collection } from "firebase/firestore";
 // Initialize Firestore
 const db = getFirestore(firebaseApp);
 
-// Create collection reference
-const colRef = collection(db, "products");
+// Create collection references
+const productsRef = collection(db, "products");
+const usersRef = collection(db, "users");
 
-export { db, colRef };
+export { db, productsRef, usersRef };

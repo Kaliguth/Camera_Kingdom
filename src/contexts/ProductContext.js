@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { db } from "../firebase/firestore";
-import { collection, getDoc, getDocs, doc } from "firebase/firestore";
+import { productsRef } from "../firebase/firestore";
+import { getDocs, doc } from "firebase/firestore";
 
 const ProductContext = createContext();
 
@@ -9,21 +9,20 @@ export const ProductProvider = ({ children }) => {
 
   useEffect(() => {
     const getAllProducts = async () => {
-      const productsRef = collection(db, "products");
       const snapshot = await getDocs(productsRef);
-      console.log(snapshot.docs);
+      // console.log(snapshot.docs);
       const sortedProducts = snapshot.docs
-      .map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }))
-      .sort((a, b) => {
-        const brandComparison = a.brand.localeCompare(b.brand);
-        if (brandComparison !== 0) {
-          return brandComparison;
-        }
-        return a.model.localeCompare(b.model);
-      });
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .sort((a, b) => {
+          const brandComparison = a.brand.localeCompare(b.brand);
+          if (brandComparison !== 0) {
+            return brandComparison;
+          }
+          return a.model.localeCompare(b.model);
+        });
 
       setAllProducts(sortedProducts);
     };
@@ -31,19 +30,8 @@ export const ProductProvider = ({ children }) => {
     getAllProducts();
   }, []);
 
-  const getProduct = async (id) => {
-    const productRef = doc(db, "products", id);
-    const productDoc = await getDoc(productRef);
-    if (productDoc.exists()) {
-      return { id: productDoc.id, ...productDoc.data() };
-    } else {
-      throw new Error("Product not found");
-    }
-  };
-
   const globalVal = {
     allProducts,
-    getProduct,
   };
 
   return (
