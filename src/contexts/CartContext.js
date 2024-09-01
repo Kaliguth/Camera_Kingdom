@@ -11,19 +11,6 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const fetchCartItems = async () => {
       if (currentUser && userData?.cart) {
-        // const cartProducts = await Promise.all(
-        //   userData.cart.map(async (product) => {
-        //     const productDoc = await getDoc(product);
-        //     if (productDoc.exists()) {
-        //       return { id: productDoc.id, ...productDoc.data() };
-        //     } else {
-        //       return null;
-        //     }
-        //   })
-        // );
-
-        // // Filter out any null values (if any product references do not exist)
-        // setCart(cartProducts.filter((product) => product !== null));
         setCart(userData.cart);
       }
     };
@@ -35,31 +22,6 @@ export const CartProvider = ({ children }) => {
     if (currentUser) {
       // Update the cart array with the newly added product
       try {
-        // // Update user's cart array
-        // // Get the product's doc and data
-        // const productDoc = await getDoc(productToAdd);
-        // if (productDoc.exists()) {
-        //   const productData = { id: productDoc.id, ...productDoc.data() };
-
-        //   setCart((prevCart) => {
-        //     // Check if the added product is found inside the cart
-        //     const existingProduct = prevCart.find(
-        //       (product) => product.id === productData.id
-        //     );
-
-        //     // If the same product already exists in the cart
-        //     if (existingProduct) {
-        //       return prevCart.map((product) =>
-        //         product.id === productData.id
-        //           ? { ...product, quantity: product.quantity + 1 }
-        //           : product
-        //       );
-        //     } else {
-        //       return [...prevCart, { ...productData, quantity: 1 }];
-        //     }
-        //   });
-        // }
-
         // Check if the added product is found inside the cart
         const existingProduct = cart.find(
           (product) => product.id === productToAdd.id
@@ -127,6 +89,10 @@ export const CartProvider = ({ children }) => {
       }
     }
   };
+
+  const completeOrder= () => {
+    
+  }
 
   const globalVal = {
     cart,

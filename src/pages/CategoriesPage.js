@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Form } from "react-bootstrap";
 import { useProductContext } from "../contexts/ProductContext";
 import ProductCard from "../components/product/ProductCard";
-import { FaArrowUp } from "react-icons/fa";
 
 const CategoriesPage = () => {
   const { allProducts } = useProductContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
 
   const filteredProducts = allProducts.filter(
     (product) =>
@@ -71,17 +49,6 @@ const CategoriesPage = () => {
           </Col>
         ))}
       </Row>
-
-      {/* Floating button */}
-      {showScrollTop && (
-        <Button
-          className="scroll-to-top"
-          onClick={handleScrollToTop}
-          aria-label="Scroll to top"
-        >
-          <FaArrowUp size={20} />
-        </Button>
-      )}
     </Container>
   );
 };

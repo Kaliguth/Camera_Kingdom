@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useCartContext } from "../contexts/CartContext";
 import { FaTrash } from "react-icons/fa";
@@ -34,40 +34,6 @@ const CartPage = () => {
 
   return (
     <Container>
-      {/* <Row>
-        <Col className="mt-4">
-          <h2 className="mb-4">Your Cart</h2>
-          {cart.length === 0 ? (
-            <p>Your cart is empty</p>
-          ) : (
-            <Row>
-              {cart.map((product) => (
-                <Col key={product.id} md={4} className="mb-4">
-                  <Row>
-                    <Col xs={4}>
-                      <Image src={product.image1} fluid rounded />
-                    </Col>
-                    <Col xs={8}>
-                      <h6>
-                        {product.brand} {product.model}
-                      </h6>
-                      <p>Price: {product.price} ILS</p>
-                      <p>Quantity: {product.quantity}</p>
-                      <Button
-                        variant="danger"
-                        onClick={() => removeFromCart(product)}
-                      >
-                        Remove
-                      </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Col>
-      </Row> */}
-
       <Row className="mt-4 mb-3">
         <h2>Shopping Cart</h2>
       </Row>
@@ -105,7 +71,10 @@ const CartPage = () => {
                   </Col>
                   <Col md={2}>
                     <p className="small text-muted pb-3">Quantity</p>
-                    <h6 className="mt-4 pt-1">{product.quantity}</h6>
+                    <Row>
+                      <Button variant="light" className="cart-quantity-buttons btn-lg">+</Button>
+                      <h6 className="mt-2 pt-1">{product.quantity}</h6>
+                    </Row>
                   </Col>
                   <Col md={2}>
                     <p className="small text-muted pb-3">Unit price</p>
@@ -118,7 +87,7 @@ const CartPage = () => {
                     </h6>
                   </Col>
                   <Col md={1} className=" mt-5 pt-2">
-                    <Button variant="link">
+                    <Button variant="link" aria-label="Remove button">
                       <FaTrash
                         color="red"
                         size={22}
