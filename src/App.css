@@ -73,6 +73,10 @@
   max-height: 220px;
 }
 
+.cart-quantity-buttons {
+  max-width: 30px;
+}
+
 .cart-buttons-container {
   margin-top: 25px;
   margin-bottom: 30px;
@@ -83,6 +87,7 @@
   margin-bottom: 0px;
 }
 
+/* Footer */
 .scroll-to-top {
   position: fixed;
   bottom: 20px;
