@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { sendEmailVerification } from "firebase/auth";
 
 const LoginRegisterPage = () => {
-  const { login, googleLogin, register } = useAuthContext();
+  const { login, googleLogin, register, logout } = useAuthContext();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,22 +16,35 @@ const LoginRegisterPage = () => {
     e.preventDefault();
     if (isLogin) {
       // Login
-      try {
-        await login(email, password);
-        alert("Logged in successfully");
-        navigate("/");
-      } catch (error) {
-        alert(error.message);
-      }
+      // await login(email, password);
+      login(email, password)
+        .then((user) => {
+          if (user.emailVerified) {
+            alert("Logged in successfully");
+            navigate("/");
+          } else {
+            alert("Email verification needed. Email sent");
+            sendEmailVerification(user);
+            logout();
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     } else {
       // Register
-      try {
-        await register(name, email, password);
-        alert("Registered successfully");
-        navigate("/");
-      } catch (error) {
-        alert("Failed to register", error.message);
-      }
+      // await register(name, email, password);
+      register(name, email, password)
+        .then((user) => {
+          alert("Email verification needed. Email sent");
+          sendEmailVerification(user);
+          logout();
+          alert("Registered successfully");
+          navigate("/login");
+        })
+        .catch((error) => {
+          alert("Failed to register", error.message);
+        });
     }
   };
 
@@ -44,6 +58,74 @@ const LoginRegisterPage = () => {
     }
   };
 
+  // return (
+  //   <Container className="mt-4">
+  //     <Row className="justify-content-center">
+  //       <Col md={6}>
+  //         <h2 className="mb-4 text-center">{isLogin ? "Login" : "Register"}</h2>
+  //         <Form onSubmit={handleSubmit}>
+  //           {!isLogin && (
+  //             <Form.Group className="mb-3" controlId="formBasicName">
+  //               <Form.Label>Name</Form.Label>
+  //               <Form.Control
+  //                 type="text"
+  //                 placeholder="Enter your name"
+  //                 value={name}
+  //                 onChange={(e) => setName(e.target.value)}
+  //               />
+  //             </Form.Group>
+  //           )}
+  //           <Form.Group className="mb-3" controlId="formBasicEmail">
+  //             <Form.Label>Email address</Form.Label>
+  //             <Form.Control
+  //               type="email"
+  //               placeholder="Enter email"
+  //               value={email}
+  //               onChange={(e) => setEmail(e.target.value)}
+  //             />
+  //           </Form.Group>
+  //           <Form.Group className="mb-4" controlId="formBasicPassword">
+  //             <Form.Label>Password</Form.Label>
+  //             <Form.Control
+  //               type="password"
+  //               placeholder="Password"
+  //               value={password}
+  //               onChange={(e) => setPassword(e.target.value)}
+  //             />
+  //           </Form.Group>
+  //           <div className="d-grid">
+  //             <Button variant="primary" type="submit">
+  //               {isLogin ? "Login" : "Register"}
+  //             </Button>
+  //           </div>
+  //         </Form>
+  //         <div className="d-grid mt-3">
+  //           <Button
+  //             className="google-signin-btn"
+  //             onClick={handleGoogleSignIn}
+  //             variant="outline-dark"
+  //           >
+  //             Sign in with Google
+  //           </Button>
+  //         </div>
+  //         <div className="text-center mt-4">
+  //           <Button
+  //             variant="link"
+  //             onClick={() => setIsLogin(!isLogin)}
+  //           >
+  //             {isLogin ? (
+  //               <b>Need an account?<br />Click here to register!</b>
+  //             ) : (
+  //               <b>Already have an account?<br />Click here to login!</b>
+  //             )}
+  //           </Button>
+  //         </div>
+  //       </Col>
+  //     </Row>
+  //   </Container>
+  // );
+
+  // Todo: Delete user
   return (
     <Container className="mt-4">
       <Row>
@@ -100,9 +182,17 @@ const LoginRegisterPage = () => {
           }}
         >
           {isLogin ? (
-            <b>Need an account?<br />Click here to register!</b>
+            <b>
+              Need an account?
+              <br />
+              Click here to register!
+            </b>
           ) : (
-            <b>Already have an account?<br />Click here to login!</b>
+            <b>
+              Already have an account?
+              <br />
+              Click here to login!
+            </b>
           )}
         </Button>
       </Row>

@@ -60,6 +60,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
+    /* Todo:
+    (צד לקוח)
+    Validate email
+    */
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -70,6 +74,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (name, email, password) => {
+    /* Todo:
+    (צד לקוח)
+    Add input field for password (אימות)
+    Password contains at least 1 number, 1 symbol, 1 capital letter
+    Length of at least 8 characters
+    Email validation
+    */
     const newUserData = await createUserWithEmailAndPassword(
       auth,
       email,
