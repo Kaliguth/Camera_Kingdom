@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
     return () => removeAuthListener();
   }, []);
 
+  // Method to create a new user document
   const createUserDocument = async (user) => {
     const docRef = doc(usersRef, user.uid);
     const userDoc = await getDoc(docRef);
@@ -59,46 +60,99 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Validation methods:
+  // Email validation
+  const validateEmail = (email) => {
+    // Must contain email characteristics (@ . domain)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Password validation
+  const validatePassword = (password) => {
+    // Must contain at least 8 characters, one number, one symbol, and one capital letter
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  // Display name validation
+  const validateDisplayName = (name) => {
+    // Can't be empty
+    return name.trim().length > 0;
+  };
+
+  // Login method
   const login = async (email, password) => {
-    /* Todo:
-    (צד לקוח)
-    Validate email
-    */
+    // Validations:
+    // Throws error if invalid email format
+    if (!validateEmail(email)) {
+      throw new Error("Invalid email format.");
+    }
+    // Throws error if invalid password format
+    if (!validatePassword(password)) {
+      throw new Error(
+        "Password must be at least 8 characters, include a number, a symbol, and a capital letter."
+      );
+    }
+
+    // Return user credentials for logging in
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
+  // Google login method
   const googleLogin = async () => {
     const googleUserData = await signInWithPopup(auth, googleProvider);
     await createUserDocument(googleUserData.user);
     return googleUserData;
   };
 
+  // Registration method
   const register = async (name, email, password) => {
     /* Todo:
     (צד לקוח)
-    Add input field for password (אימות)
-    Password contains at least 1 number, 1 symbol, 1 capital letter
-    Length of at least 8 characters
-    Email validation
+    Add input field for password (אימות)                 COMPLETE ME
     */
+    // Validations:
+    // Throws error if display name is empty
+    if (!validateDisplayName(name)) {
+      throw new Error("Display name cannot be empty.");
+    }
+    // Throws error if invalid email format
+    if (!validateEmail(email)) {
+      throw new Error("Invalid email format.");
+    }
+    // Throws error if invalid password format
+    if (!validatePassword(password)) {
+      throw new Error(
+        "Password must be at least 8 characters, include a number, a symbol, and a capital letter."
+      );
+    }
+
+    // Collect all user data
     const newUserData = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
 
+    // Add the display name into the user data
     await updateProfile(newUserData.user, {
       displayName: name,
     });
+    // Create a new user document with all user data
     await createUserDocument(newUserData.user);
 
+    // Return user data for registration
     return newUserData;
   };
 
+  // Logout method
   const logout = async () => {
     return await signOut(auth);
   };
 
+  // Update method for update profile page
   const update = async (user, { displayName, email, photoURL }) => {
     const dataToUpdate = {};
 

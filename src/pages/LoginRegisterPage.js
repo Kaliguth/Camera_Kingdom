@@ -10,40 +10,81 @@ const LoginRegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+
+  // Error texts
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [nameError, setNameError] = useState("");
+
   const navigate = useNavigate();
+
+  // Method to reset the errors
+  // Used every time a form is submitted and when changing between login and register
+  const resetErrors = () => {
+    setEmailError("");
+    setPasswordError("");
+    setNameError("");
+  };
+
+  // Method to clear input fields
+  // Used when changing between login and register
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+  };
+
+  // Method to set the needed error text
+  //                                       CURRENTLY SHOWING ONE ERROR AT A TIME
+  //                                              TRY TO SHOW ALL ERRORS
+  const updateErrorMessage = (error) => {
+    if (error.message.includes("name")) {
+      setNameError(error.message);
+    } else if (error.message.includes("email")) {
+      setEmailError(error.message);
+    } else if (error.message.includes("Password")) {
+      setPasswordError(error.message);
+    } else {
+      alert(error.message);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    resetErrors();
+
     if (isLogin) {
       // Login
       // await login(email, password);
       login(email, password)
         .then((user) => {
           if (user.emailVerified) {
-            alert("Logged in successfully");
+            alert("Logged in successfully!");
             navigate("/");
           } else {
             alert("Email verification needed. Email sent");
             sendEmailVerification(user);
             logout();
+            navigate("/login");
           }
         })
         .catch((error) => {
-          alert(error.message);
+          updateErrorMessage(error);
         });
     } else {
       // Register
       // await register(name, email, password);
       register(name, email, password)
         .then((user) => {
-          alert("Email verification needed. Email sent");
+          alert(
+            "Registered successfully!\nVerification email sent. Please verify your email"
+          );
           sendEmailVerification(user);
           logout();
-          alert("Registered successfully");
           navigate("/login");
         })
         .catch((error) => {
-          alert("Failed to register", error.message);
+          updateErrorMessage(error);
         });
     }
   };
@@ -141,7 +182,11 @@ const LoginRegisterPage = () => {
                   placeholder="Enter your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  isInvalid={!!nameError}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {nameError}
+                </Form.Control.Feedback>
               </Form.Group>
             )}
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -149,20 +194,28 @@ const LoginRegisterPage = () => {
               <Form.Control
                 className="form-controls"
                 type="email"
-                placeholder="Enter email"
+                placeholder="Enter an email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                isInvalid={!!emailError}
               />
+              <Form.Control.Feedback type="invalid">
+                {emailError}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-4" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 className="form-controls"
                 type="password"
-                placeholder="Password"
+                placeholder="Enter a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                isInvalid={!!passwordError}
               />
+              <Form.Control.Feedback type="invalid">
+                {passwordError}
+              </Form.Control.Feedback>
             </Form.Group>
             <Button variant="primary" type="submit">
               {isLogin ? "Login" : "Register"}
@@ -178,6 +231,8 @@ const LoginRegisterPage = () => {
         <Button
           variant="link"
           onClick={() => {
+            clearFields();
+            resetErrors();
             setIsLogin(!isLogin);
           }}
         >
