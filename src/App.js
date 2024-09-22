@@ -12,6 +12,7 @@ import LoginRegisterPage from "./pages/LoginRegisterPage";
 import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 import Footer from "./components/layouts/Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/wishlist" element={<WishlistPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/product/:id" element={<ProductDetailsPage />} />
               </Routes>
               <Footer />
             </Router>

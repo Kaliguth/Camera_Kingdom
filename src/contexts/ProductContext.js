@@ -30,8 +30,18 @@ export const ProductProvider = ({ children }) => {
     getAllProducts();
   }, []);
 
+  const getProduct = (id) => {
+    return allProducts.find((product) => product.id === id);
+  };
+
+  const getRelatedProducts = (category) => {
+    return allProducts.filter((product) => product.category === category);
+  };
+
   const globalVal = {
     allProducts,
+    getProduct,
+    getRelatedProducts,
   };
 
   return (
