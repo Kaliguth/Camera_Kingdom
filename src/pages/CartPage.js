@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import InputSpinner from "react-bootstrap-input-spinner";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useCartContext } from "../contexts/CartContext";
 import { FaTrash } from "react-icons/fa";
@@ -7,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const { currentUser } = useAuthContext();
-  const { cart, removeFromCart } = useCartContext();
+  const { cart, removeFromCart, handleQuantityChange, completeOrder } =
+    useCartContext();
   const navigate = useNavigate();
   console.log(cart);
 
@@ -26,6 +28,21 @@ const CartPage = () => {
         <Row className="mt-4">
           <Col>
             <p>Please log in to view your cart.</p>
+            <Button
+              variant="success"
+              size="lg"
+              className="m-4"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
+            <br />
+            <Button className="m-2" onClick={() => navigate(-1)}>
+              Go back
+            </Button>
+            <Button className="m-2" onClick={() => navigate("/")}>
+              Home
+            </Button>
           </Col>
         </Row>
       </Container>
@@ -40,6 +57,15 @@ const CartPage = () => {
       {cart.length === 0 ? (
         <Container>
           <h6>(Your cart is empty)</h6>
+          <Button
+            variant="success"
+            size="lg"
+            className="m-4"
+            onClick={() => navigate("/categories")}
+          >
+            Start shopping
+          </Button>
+          <br />
           <Button className="m-2" onClick={() => navigate(-1)}>
             Go back
           </Button>
@@ -59,34 +85,76 @@ const CartPage = () => {
                       variant="small"
                       src={product.image1}
                       alt={product.model}
-                      height={140}
+                      height={100}
                       className="p-2"
                     />
                   </Col>
                   <Col md={2}>
-                    <p className="small text-muted pb-3">Name</p>
-                    <h6 className="mt-4">
+                    <p className="small text-muted pb-2">Name</p>
+                    <h6 className="mt-3">
                       {product.brand} {product.model}
                     </h6>
                   </Col>
                   <Col md={2}>
-                    <p className="small text-muted pb-3">Quantity</p>
-                    <Row>
-                      <Button variant="light" className="cart-quantity-buttons btn-lg">+</Button>
-                      <h6 className="mt-2 pt-1">{product.quantity}</h6>
+                    <p className="small text-muted pb-2">Quantity</p>
+                    <Row className="d-flex justify-content-center">
+                      <Container className="quantity-input-container">
+                        <InputSpinner
+                          type="int"
+                          precision={0}
+                          max={100}
+                          min={1}
+                          step={1}
+                          value={product.quantity}
+                          onChange={(newQuantity) =>
+                            handleQuantityChange(product.id, newQuantity)
+                          }
+                        />
+                      </Container>
+                      {/* <Button
+                        variant="light"
+                        className="cart-quantity-buttons btn-lg"
+                        onClick={() =>
+                          handleQuantityChange(product.id, product.quantity - 1)
+                        }
+                      >
+                        -
+                      </Button>
+                      <input
+                        type="number"
+                        className="text-center w-25"
+                        value={product.quantity}
+                        min="1"
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            product.id,
+                            parseInt(e.target.value, 10 || 1)
+                          )
+                        }
+                      />
+                      <Button
+                        variant="light"
+                        className="cart-quantity-buttons btn-lg"
+                        onClick={() =>
+                          handleQuantityChange(product.id, product.quantity + 1)
+                        }
+                      >
+                        +
+                      </Button>
+                      <h6 className="mt-2 pt-1">{product.quantity}</h6> */}
                     </Row>
                   </Col>
                   <Col md={2}>
-                    <p className="small text-muted pb-3">Unit price</p>
-                    <h6 className="mt-4 pt-1">{product.price} ILS</h6>
+                    <p className="small text-muted pb-2">Unit price</p>
+                    <h6 className="mt-3 pt-2">₪ {product.price}</h6>
                   </Col>
                   <Col md={2}>
-                    <p className="small text-muted pb-3">Total</p>
-                    <h6 className="mt-4 pt-1">
-                      {product.price * product.quantity} ILS
+                    <p className="small text-muted pb-2">Total</p>
+                    <h6 className="mt-3 pt-2">
+                      ₪ {product.price * product.quantity}
                     </h6>
                   </Col>
-                  <Col md={1} className=" mt-5 pt-2">
+                  <Col md={1} className=" mt-4 pt-3">
                     <Button variant="link" aria-label="Remove button">
                       <FaTrash
                         color="red"
@@ -104,9 +172,9 @@ const CartPage = () => {
             <Card.Body className="p-2 mt-3">
               <Row>
                 <Col className="d-flex">
-                  <p className="small text-muted ms-4 me-4">Order total:</p>
+                  <p className="small text-muted ms-4 me-5">Order total:</p>
                   <h6>
-                    <b>{orderTotal} ILS</b>
+                    <b>₪ {orderTotal}</b>
                   </h6>
                 </Col>
               </Row>
@@ -122,7 +190,11 @@ const CartPage = () => {
               >
                 Continue shopping
               </Button>
-              <Button variant="primary" className="cart-buttons btn-lg">
+              <Button
+                variant="primary"
+                className="cart-buttons btn-lg"
+                onClick={completeOrder}
+              >
                 Buy now
               </Button>
             </Col>

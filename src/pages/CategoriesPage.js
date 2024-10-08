@@ -57,16 +57,16 @@ const CategoriesPage = () => {
           </Col>
         ))}
       </Row> */}
-      <Row md={4}>
+      <Row lg={4}>
         {filteredProducts.map((product) => (
-          <Col key={product.id} md={4} className="mb-4">
-            <Card>
+          <Col key={product.id} className="mb-4">
+            {/* <Card>
               <Link to={`/product/${product.id}`}>
                 <Card.Img
                   variant="top"
                   src={product.image1}
-                  style={{ height: "150px", width: "auto", objectFit: "contain" }}
-                  className="mt-3"
+                  // style={{ height: "150px", width: "auto", objectFit: "contain" }}
+                  className="product-image mt-3"
                 />
               </Link>
               <Card.Body>
@@ -83,7 +83,8 @@ const CategoriesPage = () => {
                   <Button variant="primary" className="mt-2">View Product</Button>
                 </Link>
               </Card.Body>
-            </Card>
+            </Card> */}
+            <ProductCard product={product} />
           </Col>
         ))}
       </Row>

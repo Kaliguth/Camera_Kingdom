@@ -21,9 +21,9 @@ const LoginRegisterPage = () => {
   // Method to reset the errors
   // Used every time a form is submitted and when changing between login and register
   const resetErrors = () => {
+    setNameError("");
     setEmailError("");
     setPasswordError("");
-    setNameError("");
   };
 
   // Method to clear input fields
@@ -35,16 +35,22 @@ const LoginRegisterPage = () => {
   };
 
   // Method to set the needed error text
-  //                                       CURRENTLY SHOWING ONE ERROR AT A TIME
-  //                                              TRY TO SHOW ALL ERRORS
   const updateErrorMessage = (error) => {
-    if (error.message.includes("name")) {
+    console.log(error);
+    const errorMessage = error.message.toLowerCase();
+    if (errorMessage.includes("verification")) {
+      alert(error.message);
+    } else if (errorMessage.includes("name")) {
       setNameError(error.message);
-    } else if (error.message.includes("email")) {
+    } else if (errorMessage.includes("email")) {
       setEmailError(error.message);
-    } else if (error.message.includes("Password")) {
+    } else if (errorMessage.includes("password")) {
       setPasswordError(error.message);
-    } else {
+    }
+    // else if (error.code === "auth/user-not-found") {
+    // // Check for specific error code
+    // setEmailError(error.message); }
+    else {
       alert(error.message);
     }
   };
@@ -57,31 +63,66 @@ const LoginRegisterPage = () => {
       // Login
       // await login(email, password);
       login(email, password)
-        .then((user) => {
-          if (user.emailVerified) {
-            alert("Logged in successfully!");
-            navigate("/");
-          } else {
-            alert("Email verification needed. Email sent");
-            sendEmailVerification(user);
-            logout();
-            navigate("/login");
-          }
+        // .then(async (userCredentals) => {
+        //   const user = userCredentals.user;
+        //   console.log(user);
+        //   if (email === "ckadmin@camerakingdom.com" || user.emailVerified) {
+        //     alert("Logged in successfully!");
+        //     navigate("/");
+        //   } else {
+        //     alert("Email verification is required.");
+
+        //     // Check when the last email was sent
+        //     const metadata = user.metadata;
+        //     const lastSignInTime = new Date(metadata.lastSignInTime).getTime();
+        //     const now = new Date().getTime();
+
+        //     // Allow resending after 5 minutes
+        //     const oneMinute = 60 * 5000;
+
+        //     if (now - lastSignInTime > oneMinute) {
+        //       try {
+        //         await sendEmailVerification(user);
+        //         alert("Verification email sent. Please check your inbox.");
+        //       } catch (error) {
+        //         if (error.code === "auth/too-many-requests") {
+        //           alert(
+        //             "Too many verification requests. Please try again later."
+        //           );
+        //         } else {
+        //           alert("An error occurred while sending verification email.");
+        //         }
+        //       }
+        //     } else {
+        //       alert(
+        //         "A verification email has already been sent. Please check your inbox."
+        //       );
+        //     }
+        //     logout();
+        //     navigate("/login");
+        //   }
+        // })
+        .then(() => {
+          alert("Logged in successfully!");
+          navigate("/");
         })
         .catch((error) => {
+          logout();
           updateErrorMessage(error);
         });
     } else {
       // Register
       // await register(name, email, password);
       register(name, email, password)
-        .then((user) => {
+        .then((userCredentials) => {
+          const user = userCredentials.user;
           alert(
             "Registered successfully!\nVerification email sent. Please verify your email"
           );
           sendEmailVerification(user);
           logout();
-          navigate("/login");
+          // Force refresh to move to login page
+          window.location.reload();
         })
         .catch((error) => {
           updateErrorMessage(error);
@@ -185,7 +226,7 @@ const LoginRegisterPage = () => {
                   isInvalid={!!nameError}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {nameError}
+                  <b>{nameError}</b>
                 </Form.Control.Feedback>
               </Form.Group>
             )}
@@ -200,7 +241,7 @@ const LoginRegisterPage = () => {
                 isInvalid={!!emailError}
               />
               <Form.Control.Feedback type="invalid">
-                {emailError}
+                <b>{emailError}</b>
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-4" controlId="formBasicPassword">
@@ -214,7 +255,7 @@ const LoginRegisterPage = () => {
                 isInvalid={!!passwordError}
               />
               <Form.Control.Feedback type="invalid">
-                {passwordError}
+                <b>{passwordError}</b>
               </Form.Control.Feedback>
             </Form.Group>
             <Button variant="primary" type="submit">

@@ -64,18 +64,21 @@ export const CartProvider = ({ children }) => {
         // If the product is found in the cart - check the quantity
         if (existingProduct) {
           let updatedCart;
-          // If the quantity is larger than 1 - decrease it by 1
-          if (existingProduct.quantity > 1) {
-            updatedCart = cart.map((product) =>
-              product.id === productToRemove.id
-                ? { ...product, quantity: product.quantity - 1 }
-                : product
-            );
-          } else {
-            updatedCart = cart.filter(
-              (product) => product.id !== productToRemove.id
-            );
-          }
+          // // If the quantity is larger than 1 - decrease it by 1
+          // if (existingProduct.quantity > 1) {
+          //   updatedCart = cart.map((product) =>
+          //     product.id === productToRemove.id
+          //       ? { ...product, quantity: product.quantity - 1 }
+          //       : product
+          //   );
+          // } else {
+          //   updatedCart = cart.filter(
+          //     (product) => product.id !== productToRemove.id
+          //   );
+          // }
+          updatedCart = cart.filter(
+            (product) => product.id !== productToRemove.id
+          );
 
           setCart(updatedCart);
 
@@ -90,6 +93,26 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const handleQuantityChange = async (productId, newQuantity) => {
+    // This part prevent setting the quantity below 1
+    if (newQuantity < 1) return;
+  
+    // Set the new cart and change the quantity of the product
+    const updatedCart = cart.map((product) =>
+      product.id === productId
+        ? { ...product, quantity: newQuantity }
+        : product
+    );
+  
+    setCart(updatedCart);
+  
+    // Update user's cart in firestore
+    await updateDoc(userDocRef, {
+      cart: updatedCart,
+    });
+  };
+  
+
   const completeOrder= () => {
     
   }
@@ -98,6 +121,8 @@ export const CartProvider = ({ children }) => {
     cart,
     addToCart,
     removeFromCart,
+    handleQuantityChange,
+    completeOrder,
   };
 
   return (

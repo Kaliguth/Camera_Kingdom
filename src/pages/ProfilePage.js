@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
+import user from "../assets/user-nobgnew.png";
 
 const ProfilePage = () => {
   const { currentUser, update } = useAuthContext();
@@ -81,7 +82,11 @@ const ProfilePage = () => {
         </Col>
         <Col>
           <h4 className="mb-5">Profile Picture</h4>
-          <Image src={currentUser.photoURL} className="profile-picture" />
+          {currentUser.photoURL ? (
+            <Image src={currentUser.photoURL} className="profile-picture" />
+          ) : (
+            <Image src={user} className="profile-picture" />
+          )}
         </Col>
       </Row>
     </Container>
