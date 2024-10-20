@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Card, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 import ProductCard from "../components/product/ProductCard";
 
@@ -8,6 +8,12 @@ const CategoriesPage = () => {
   const { allProducts } = useProductContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const navigate = useNavigate();
+
+  const clearInputs = () => {
+    setSearchTerm("");
+    setSelectedCategory("all");
+  };
 
   const filteredProducts = allProducts.filter(
     (product) =>
@@ -57,10 +63,31 @@ const CategoriesPage = () => {
           </Col>
         ))}
       </Row> */}
-      <Row lg={4}>
-        {filteredProducts.map((product) => (
-          <Col key={product.id} className="mb-4">
-            {/* <Card>
+      {filteredProducts.length === 0 ? (
+        <Container>
+          <h6>No {selectedCategory} found for <b>"{searchTerm}"</b></h6>
+          <Button
+            variant="success"
+            size="lg"
+            className="m-4"
+            onClick={() => clearInputs()}
+          >
+            Clear search
+          </Button>
+          <br />
+          <Button className="m-2" onClick={() => navigate(-1)}>
+            Go back
+          </Button>
+          <Button className="m-2" onClick={() => navigate("/")}>
+            Home
+          </Button>
+        </Container>
+      ) : (
+        <Container>
+          <Row lg={4}>
+            {filteredProducts.map((product) => (
+              <Col key={product.id} className="mb-4">
+                {/* <Card>
               <Link to={`/product/${product.id}`}>
                 <Card.Img
                   variant="top"
@@ -84,11 +111,12 @@ const CategoriesPage = () => {
                 </Link>
               </Card.Body>
             </Card> */}
-            <ProductCard product={product} />
-          </Col>
-        ))}
-      </Row>
-
+                <ProductCard product={product} />
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      )}
     </Container>
   );
 };

@@ -1,13 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ValidationProvider } from "./contexts/ValidationContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductProvider } from "./contexts/ProductContext";
 import { CartProvider } from "./contexts/CartContext";
+import { PurchaseProvider } from "./contexts/PurchaseContext";
+import ScrollToTop from "./components/utility/ScrollToTop";
 import Header from "./components/layouts/Header";
 import HomePage from "./pages/HomePage";
 import CategoriesPage from "./pages/CategoriesPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import CartPage from "./pages/CartPage";
+import PurchasePage from "./pages/PurchasePage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
 import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -20,27 +24,36 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <ProductProvider>
-          <CartProvider>
-            <Router>
-              <Header />
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/categories" element={<CategoriesPage />} />
-                <Route path="/contactus" element={<ContactUsPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/login" element={<LoginRegisterPage />} />
-                <Route path="/wishlist" element={<WishlistPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/product/:id" element={<ProductDetailsPage />} />
-              </Routes>
-              <Footer />
-            </Router>
-          </CartProvider>
-        </ProductProvider>
-      </AuthProvider>
+      <ValidationProvider>
+        <AuthProvider>
+          <ProductProvider>
+            <CartProvider>
+              <PurchaseProvider>
+                <Router>
+                  <ScrollToTop />
+                  <Header />
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/categories" element={<CategoriesPage />} />
+                    <Route path="/contactus" element={<ContactUsPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/purchase" element={<PurchasePage />} />
+                    <Route path="/login" element={<LoginRegisterPage />} />
+                    <Route path="/wishlist" element={<WishlistPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
+                    <Route
+                      path="/product/:id"
+                      element={<ProductDetailsPage />}
+                    />
+                  </Routes>
+                  <Footer />
+                </Router>
+              </PurchaseProvider>
+            </CartProvider>
+          </ProductProvider>
+        </AuthProvider>
+      </ValidationProvider>
     </div>
   );
 }

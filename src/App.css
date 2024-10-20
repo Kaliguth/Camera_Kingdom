@@ -7,6 +7,12 @@
   text-decoration: none;
 }
 
+.custom-container {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 /* Header */
 .header-logo {
   border-right: thick solid #5e5e5e;
@@ -31,8 +37,12 @@
 }
 
 /* Forms */
+.custom-form-group {
+  min-height: 100px;
+}
+
 .form-controls {
-  background-color: ghostwhite;
+  /* background-color: ghostwhite; */
   border-color: black;
   border-radius: 10px;
   border-width: 2px;
@@ -41,6 +51,37 @@
 .form-controls:focus {
   background-color: mintcream;
   box-shadow: 0 0 0 0.2rem lightgray;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.show-hide-button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.show-hide-button:hover {
+  color: transparent;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid black;
+}
+
+.custom-checkbox input[type="checkbox"]:hover {
+  border-color: #007bff;
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 /* Product cards */
@@ -65,6 +106,7 @@
   color: black;
   font-weight: bold;
   font-size: 1.3em;
+  margin-bottom: 50px;
 }
 
 .product-brand-logo {
@@ -74,11 +116,11 @@
 
 .product-buttons-container {
   position: absolute;
-  bottom: 10px; /* Stick the buttons at the bottom with a small gap */
+  bottom: 10px;
   left: 0;
   right: 0;
   padding: 10px;
-  text-align: center; /* Center the buttons horizontally */
+  text-align: center;
 }
 
 .product-buttons {
@@ -98,7 +140,14 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Cart */
+/* Cart and order */
+.order-container {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: ghostwhite;
+}
+
 .cart-card {
   background-color: ghostwhite;
   max-height: 220px;

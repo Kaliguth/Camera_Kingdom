@@ -7,7 +7,7 @@ const Footer = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
+      if (window.scrollY > 150) {
         setShowScrollTop(true);
       } else {
         setShowScrollTop(false);

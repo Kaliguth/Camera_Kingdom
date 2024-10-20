@@ -4,23 +4,23 @@ import { useParams } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 
 // Sample customer reviews to randomize from
-const reviews = [
-  { review: "Amazing quality, highly recommended!", name: "John Doe" },
-  { review: "A bit pricey, but worth every penny.", name: "Jane Smith" },
-  { review: "Very satisfied with the purchase.", name: "Mike Johnson" },
-  { review: "Top-notch service and product.", name: "Sarah Connor" },
-  { review: "Exceeded my expectations.", name: "James Bond" },
-  { review: "Best purchase I've made this year.", name: "Bruce Wayne" },
-  { review: "Highly recommend to anyone!", name: "Clark Kent" },
-  { review: "Great value for the money.", name: "Diana Prince" },
-  { review: "Will definitely buy again.", name: "Peter Parker" }
-];
+// const reviews = [
+//   { review: "Amazing quality, highly recommended!", name: "John Doe" },
+//   { review: "A bit pricey, but worth every penny.", name: "Jane Smith" },
+//   { review: "Very satisfied with the purchase.", name: "Mike Johnson" },
+//   { review: "Top-notch service and product.", name: "Sarah Connor" },
+//   { review: "Exceeded my expectations.", name: "James Bond" },
+//   { review: "Best purchase I've made this year.", name: "Bruce Wayne" },
+//   { review: "Highly recommend to anyone!", name: "Clark Kent" },
+//   { review: "Great value for the money.", name: "Diana Prince" },
+//   { review: "Will definitely buy again.", name: "Peter Parker" }
+// ];
 
 // Function to get random reviews
-const getRandomReviews = (count) => {
-  let shuffled = [...reviews].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-};
+// const getRandomReviews = (count) => {
+//   let shuffled = [...reviews].sort(() => 0.5 - Math.random());
+//   return shuffled.slice(0, count);
+// };
 
 // Function to calculate a discount (20% in this case)
 const applyDiscount = (price) => {
@@ -32,7 +32,7 @@ const ProductDetailsPage = () => {
   const { getProduct, getRelatedProducts } = useProductContext();
   const product = getProduct(id);
   const relatedProducts = getRelatedProducts(product.category);
-  const randomReviews = getRandomReviews(5);  // Get 5 random reviews
+  // const randomReviews = getRandomReviews(5);  // Get 5 random reviews
 
   return (
     <Container className="mt-4">
@@ -69,9 +69,9 @@ const ProductDetailsPage = () => {
         <Col md={6} className="text-start">
           <h4>Customer Reviews</h4>
           <ListGroup variant="flush">
-            {randomReviews.map((review, index) => (
+            {product.reviews.map((review, index) => (
               <ListGroup.Item key={index}>
-                "{review.review}" - {review.name}
+                "{review.name}" - {review.message}
               </ListGroup.Item>
             ))}
           </ListGroup>

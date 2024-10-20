@@ -5,6 +5,7 @@ import { updateDoc } from "firebase/firestore";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const [cartLoading, setCartLoading] = useState(true);
   const { currentUser, userData, userDocRef } = useAuthContext();
   const [cart, setCart] = useState([]);
 
@@ -12,11 +13,30 @@ export const CartProvider = ({ children }) => {
     const fetchCartItems = async () => {
       if (currentUser && userData?.cart) {
         setCart(userData.cart);
+        setCartLoading(false);
       }
     };
 
     fetchCartItems();
   }, [currentUser, userData]);
+
+  const cartProductsNumber = () => {
+    let products = 0;
+    cart.forEach((product) => {
+      products += product.quantity;
+    });
+
+    return products;
+  };
+
+  const cartTotalPrice = () => {
+    let totalPrice = 0;
+    cart.forEach((product) => {
+      totalPrice += product.price * product.quantity;
+    });
+
+    return totalPrice;
+  };
 
   const addToCart = async (productToAdd) => {
     if (currentUser) {
@@ -96,33 +116,29 @@ export const CartProvider = ({ children }) => {
   const handleQuantityChange = async (productId, newQuantity) => {
     // This part prevent setting the quantity below 1
     if (newQuantity < 1) return;
-  
+
     // Set the new cart and change the quantity of the product
     const updatedCart = cart.map((product) =>
-      product.id === productId
-        ? { ...product, quantity: newQuantity }
-        : product
+      product.id === productId ? { ...product, quantity: newQuantity } : product
     );
-  
+
     setCart(updatedCart);
-  
+
     // Update user's cart in firestore
     await updateDoc(userDocRef, {
       cart: updatedCart,
     });
   };
-  
-
-  const completeOrder= () => {
-    
-  }
 
   const globalVal = {
+    cartLoading,
     cart,
+    setCart,
+    cartProductsNumber,
+    cartTotalPrice,
     addToCart,
     removeFromCart,
     handleQuantityChange,
-    completeOrder,
   };
 
   return (

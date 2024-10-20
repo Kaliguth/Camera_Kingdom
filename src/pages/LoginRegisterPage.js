@@ -3,20 +3,31 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { sendEmailVerification } from "firebase/auth";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const LoginRegisterPage = () => {
   const { login, googleLogin, register, logout } = useAuthContext();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   // Error texts
+  const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [repeatPasswordError, setRepeatPasswordError] = useState("");
 
-  const navigate = useNavigate();
+  // Paswword visability
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
+  // Functions to toggle password visibility
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const toggleRepeatPasswordVisibility = () =>
+    setShowRepeatPassword((prev) => !prev);
 
   // Method to reset the errors
   // Used every time a form is submitted and when changing between login and register
@@ -24,6 +35,7 @@ const LoginRegisterPage = () => {
     setNameError("");
     setEmailError("");
     setPasswordError("");
+    setRepeatPasswordError("");
   };
 
   // Method to clear input fields
@@ -32,11 +44,11 @@ const LoginRegisterPage = () => {
     setName("");
     setEmail("");
     setPassword("");
+    setRepeatPassword("");
   };
 
   // Method to set the needed error text
   const updateErrorMessage = (error) => {
-    console.log(error);
     const errorMessage = error.message.toLowerCase();
     if (errorMessage.includes("verification")) {
       alert(error.message);
@@ -47,15 +59,12 @@ const LoginRegisterPage = () => {
     } else if (errorMessage.includes("password")) {
       setPasswordError(error.message);
     }
-    // else if (error.code === "auth/user-not-found") {
-    // // Check for specific error code
-    // setEmailError(error.message); }
     else {
       alert(error.message);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     resetErrors();
 
@@ -112,7 +121,18 @@ const LoginRegisterPage = () => {
         });
     } else {
       // Register
-      // await register(name, email, password);
+      // Validate repeat password input:
+      // If repeat password is empty
+      if (repeatPassword === "") {
+        setRepeatPasswordError("Please repeat your password");
+        return;
+      }
+      // Check if passwords match
+      if (password !== repeatPassword) {
+        setRepeatPasswordError("Passwords do not match");
+        return;
+      }
+
       register(name, email, password)
         .then((userCredentials) => {
           const user = userCredentials.user;
@@ -207,9 +227,8 @@ const LoginRegisterPage = () => {
   //   </Container>
   // );
 
-  // Todo: Delete user
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 d-flex justify-content-center">
       <Row>
         <Col>
           <h2 className="mb-4">{isLogin ? "Login" : "Register"}</h2>
@@ -235,7 +254,7 @@ const LoginRegisterPage = () => {
               <Form.Control
                 className="form-controls"
                 type="email"
-                placeholder="Enter an email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 isInvalid={!!emailError}
@@ -246,18 +265,66 @@ const LoginRegisterPage = () => {
             </Form.Group>
             <Form.Group className="mb-4" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                className="form-controls"
-                type="password"
-                placeholder="Enter a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                isInvalid={!!passwordError}
-              />
-              <Form.Control.Feedback type="invalid">
+              <Container className="password-container">
+                <Form.Control
+                  className="form-controls"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  isInvalid={!!passwordError}
+                />
+                <Button
+                  variant="none"
+                  onClick={togglePasswordVisibility}
+                  className="show-hide-button"
+                >
+                  {showPassword ? (
+                    <FaRegEyeSlash color="gray" />
+                  ) : (
+                    <FaRegEye color="gray" />
+                  )}
+                </Button>
+              </Container>
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ display: "block" }}
+              >
                 <b>{passwordError}</b>
               </Form.Control.Feedback>
             </Form.Group>
+            {!isLogin && (
+              <Form.Group className="mb-4" controlId="formRepeatPassword">
+                <Form.Label>Repeat password</Form.Label>
+                <Container className="password-container">
+                  <Form.Control
+                    className="form-controls"
+                    type={showRepeatPassword ? "text" : "password"}
+                    placeholder="Repeat the password"
+                    value={repeatPassword}
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    isInvalid={!!repeatPasswordError}
+                  />
+                  <Button
+                    variant="none"
+                    onClick={toggleRepeatPasswordVisibility}
+                    className="show-hide-button"
+                  >
+                    {showRepeatPassword ? (
+                      <FaRegEyeSlash color="gray" />
+                    ) : (
+                      <FaRegEye color="gray" />
+                    )}
+                  </Button>
+                </Container>
+                <Form.Control.Feedback
+                  type="invalid"
+                  style={{ display: "block" }}
+                >
+                  <b>{repeatPasswordError}</b>
+                </Form.Control.Feedback>
+              </Form.Group>
+            )}
             <Button variant="primary" type="submit">
               {isLogin ? "Login" : "Register"}
             </Button>

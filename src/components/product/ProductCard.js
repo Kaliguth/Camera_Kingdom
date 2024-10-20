@@ -1,13 +1,13 @@
 import React from "react";
-import { Button, Card, Row } from "react-bootstrap";
+import { Container, Button, Card } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
-import { useProductContext } from "../../contexts/ProductContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCartContext } from "../../contexts/CartContext";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCartContext();
   const logo = logoMap[product.brand] || null;
+  const navigate = useNavigate();
 
   const squareLogoStyle =
     product.brand === "Nikon" ||
@@ -21,6 +21,11 @@ const ProductCard = ({ product }) => {
   const handleAddToCart = async () => {
     await addToCart(product);
     alert(`${product.model} added to your cart`);
+  };
+
+  const handleBuyNow = async () => {
+    await addToCart(product);
+    navigate("/purchase");
   };
 
   return (
@@ -41,28 +46,36 @@ const ProductCard = ({ product }) => {
         />
       </Link>
       <Card.Title className="mt-2">
-        {product.brand} <br /> {product.model}
+        <b>{product.brand}</b> <br /> {product.model}
       </Card.Title>
       <Card.Body>
         <Card.Text className="price-text">₪ {product.price}</Card.Text>
-      </Card.Body>
-      {/* <Row className="product-buttons-container"> */}
-      <div className="product-buttons-container">
-        <Button
-          variant="success"
-          className="product-buttons"
-          onClick={handleAddToCart}
-        >
-          Add to cart
-        </Button>
-        {/* <span></span> */}
-        <Link to={`/product/${product.id}`}>
-          <Button variant="primary" className="product-buttons">
-            More details
+        {/* </Card.Body> */}
+        {/* <Row className="product-buttons-container"> */}
+        <Container className="product-buttons-container">
+          <Button
+            variant="primary"
+            className="product-buttons"
+            onClick={handleAddToCart}
+          >
+            Add to cart
           </Button>
-        </Link>
-      </div>
-      {/* </Row> */}
+          {/* <span></span> */}
+          <Link to={`/product/${product.id}`}>
+            <Button variant="primary" className="product-buttons">
+              More details
+            </Button>
+          </Link>
+          <Button
+            variant="success"
+            className="product-buttons mt-3"
+            onClick={handleBuyNow}
+          >
+            Buy now
+          </Button>
+        </Container>
+        {/* </Row> */}
+      </Card.Body>
     </Card>
   );
 };

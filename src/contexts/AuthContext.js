@@ -12,10 +12,14 @@ import {
 import { usersRef } from "../firebase/firestore";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { sendEmailVerification } from "firebase/auth";
+import { useValidationContext } from "./ValidationContext";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const { validateEmail, validatePassword, validateName } =
+    useValidationContext();
+  const [userLoading, setUserLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userDocRef, setUserDocRef] = useState(null);
@@ -25,6 +29,7 @@ export const AuthProvider = ({ children }) => {
     const removeAuthListener = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
+        setUserLoading(false);
         const docRef = doc(usersRef, user.uid);
         // setUserDocRef(docRef);
         const userDoc = await getDoc(docRef);
@@ -55,11 +60,12 @@ export const AuthProvider = ({ children }) => {
 
     if (!userDoc.exists()) {
       // If user document doesn't exist - create new document for the user
-      const data = {email: user.email,
-      displayName: user.displayName,
-      isAdmin: false,
-      cart: [],
-      orders: [],
+      const data = {
+        email: user.email,
+        displayName: user.displayName,
+        isAdmin: false,
+        cart: [],
+        orders: [],
       };
 
       await setDoc(docRef, data);
@@ -67,27 +73,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Validation methods:
-  // Email validation
-  const validateEmail = (email) => {
-    // Must contain email characteristics (@ . domain)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  // // Validation methods:
+  // // Email validation
+  // const validateEmail = (email) => {
+  //   // Must contain email characteristics (@ . domain)
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
 
-  // Password validation
-  const validatePassword = (password) => {
-    // Must contain at least 8 characters, one number, one symbol, and one capital letter
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
-  };
+  // // Password validation
+  // const validatePassword = (password) => {
+  //   // Must contain at least 8 characters, one number, one symbol, and one capital letter
+  //   const passwordRegex =
+  //     /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  //   return passwordRegex.test(password);
+  // };
 
-  // Display name validation
-  const validateDisplayName = (name) => {
-    // Can't be empty
-    return name.trim().length > 0;
-  };
+  // // Display name validation
+  // const validateDisplayName = (name) => {
+  //   // Can't be empty
+  //   return name.trim().length > 0;
+  // };
 
   // // Find a user buy email
   // const findUserByEmail = (email) => {
@@ -113,7 +119,7 @@ export const AuthProvider = ({ children }) => {
   // };
 
   // Login method
-  const login = async (email, password) => {
+  const login = (email, password) => {
     // const user = await findUserByEmail(email);
     // console.log(user);
     // Validations:
@@ -137,57 +143,56 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log(user);
-      // Check email verification
-      if (email === "ckadmin@camerakingdom.com" || user.emailVerified) {
-        return userCredentials; // Return user credentials for success
-      } else {
-        const metadata = user.metadata;
-        const lastSignInTime = new Date(metadata.lastSignInTime).getTime();
-        const now = new Date().getTime();
-
-        // Allow resending after 5 minutes
-        const fiveMinutes = 60 * 5000;
-
-        if (now - lastSignInTime > fiveMinutes) {
-          return sendEmailVerification(user)
-            .then(() => {
-              throw new Error(
-                "Email verification required. Verification email sent. Please check your inbox."
-              );
-            })
-            .catch((verificationError) => {
-              if (verificationError.code === "auth/too-many-requests") {
-                throw new Error(
-                  "Too many verification requests. Please try again later or contact support."
-                );
-              } else {
-                throw new Error(
-                  "An error occurred while sending the verification email. Please contact support."
-                );
-              }
-            });
+        // Check email verification
+        if (email === "ckadmin@camerakingdom.com" || user.emailVerified) {
+          return userCredentials;
         } else {
-          throw new Error(
-            "Email verification required. A verification email has already been sent. Please check your inbox."
-          );
+          const metadata = user.metadata;
+          const lastSignInTime = new Date(metadata.lastSignInTime).getTime();
+          const now = new Date().getTime();
+
+          // Allow resending after 5 minutes
+          const fiveMinutes = 60 * 5000;
+
+          if (now - lastSignInTime > fiveMinutes) {
+            return sendEmailVerification(user)
+              .then(() => {
+                throw new Error(
+                  "Email verification required. Verification email sent. Please check your inbox."
+                );
+              })
+              .catch((verificationError) => {
+                if (verificationError.code === "auth/too-many-requests") {
+                  throw new Error(
+                    "Too many verification requests. Please try again later or contact support."
+                  );
+                } else {
+                  throw new Error(
+                    "An error occurred while sending the verification email. Please contact support."
+                  );
+                }
+              });
+          } else {
+            throw new Error(
+              "Email verification required. A verification email has already been sent. Please check your inbox."
+            );
+          }
         }
-      }
-    })
-    .catch((error) => {
-      // Handle different errors
-      console.log(error.code);
-      if (error.code === "auth/user-not-found") {
-        throw new Error("User with the provided email not found");
-      } else if (error.code === "auth/missing-password") {
-        throw new Error("Please fill in the password");
-      } else if (error.code === "auth/wrong-password") {
-        throw new Error("Incorrect password");
-      } else {
-        throw new Error(error.message || "Login failed. Please try again.");
-      }
-    });
-};
+      })
+      .catch((error) => {
+        // Handle firebase errors
+        if (error.code === "auth/user-not-found") {
+          throw new Error("User with the provided email not found");
+        } else if (error.code === "auth/missing-password") {
+          throw new Error("Please fill in the password");
+        } else if (error.code === "auth/wrong-password") {
+          throw new Error("Incorrect password");
+        } else {
+          console.log(error.message);
+          throw new Error(error.message || "Login failed. Please try again.");
+        }
+      });
+  };
 
   // Google login method
   const googleLogin = async () => {
@@ -197,50 +202,84 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Registration method
-  const register = async (name, email, password) => {
-    /* Todo:
-    (צד לקוח)
-    Add input field for password (אימות)                 COMPLETE ME
-    */
+  const register = (name, email, password) => {
     // Validations:
     // Throws error if display name is empty
-    if (!validateDisplayName(name)) {
-      throw new Error("Display name cannot be empty");
+    if (!validateName(name)) {
+      return Promise.reject(new Error("Display name cannot be empty"));
     }
-    // Throws error if invalid email format
+    // Throws error if empty email field or invalid email format
+    if (!email || email === "") {
+      return Promise.reject(new Error("Please fill in your email"));
+    }
     if (!validateEmail(email)) {
-      throw new Error("Invalid email format");
+      return Promise.reject(new Error("Invalid email format"));
     }
     // Throws error if empty or invalid password format
     if (password === "") {
-      throw new Error("Please fill in the password");
+      return Promise.reject(new Error("Please fill in the password"));
     }
     if (!validatePassword(password)) {
-      throw new Error(
-        "Password must be at least 8 characters, include a number, a symbol, and a capital letter."
+      return Promise.reject(
+        new Error(
+          "Password must be at least 8 characters long, include a number, a symbol, and a capital letter."
+        )
       );
     }
 
-    // Collect all user data
-    const newUserData = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    console.log("user data:", newUserData);
+    // // Collect all user data
+    // const newUserData = await createUserWithEmailAndPassword(
+    //   auth,
+    //   email,
+    //   password
+    // );
+    // console.log("user data:", newUserData);
 
-    // Add the display name into the user data
-    await updateProfile(newUserData.user, {
-      displayName: name,
-      photoURL: null,
-    });
-    console.log("Profile updated with display name:", name);
-    // Create a new user document with all user data
-    setUserDocRef(newUserData.user);
-    await createUserDocument(newUserData.user);
+    // // Add the display name into the user data
+    // await updateProfile(newUserData.user, {
+    //   displayName: name,
+    //   photoURL: null,
+    // });
+    // console.log("Profile updated with display name:", name);
+    // // Create a new user document with all user data
+    // setUserDocRef(newUserData.user);
+    // await createUserDocument(newUserData.user);
 
-    // Return user data for registration
-    return newUserData;
+    // // Return user data for registration
+    // return newUserData;
+    // Create user
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then((newUserData) => {
+        // Update the display name for the user
+        return updateProfile(newUserData.user, {
+          displayName: name,
+        })
+          .then(() => {
+            // Set the docRef to the new user
+            return setUserDocRef(newUserData.user);
+          })
+          .then(() => {
+            // Create a new document for the new user
+            return createUserDocument(newUserData.user);
+          })
+          .then(() => {
+            // Return the new user data
+            return newUserData;
+          });
+      })
+      .catch((error) => {
+        // Handle firebase errors
+        if (error.code === "auth/email-already-in-use") {
+          return Promise.reject(
+            new Error("User with this email already exists")
+          );
+        } else {
+          console.log(error.message);
+          return Promise.reject(
+            new Error(error.message || "Registration failed. Please try again.")
+          );
+        }
+      });
   };
 
   // Logout method
@@ -275,6 +314,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const globalVal = {
+    userLoading,
     currentUser,
     userData,
     userDocRef,
