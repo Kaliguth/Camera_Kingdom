@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useCartContext } from "../contexts/CartContext";
 import { usePurchaseContext } from "../contexts/PurchaseContext";
+import { useValidationContext } from "../contexts/ValidationContext";
 import { useNavigate } from "react-router-dom";
 import CartProductCard from "../components/cart/CartProductCard";
 
@@ -12,6 +13,7 @@ const PurchasePage = () => {
   const { cart, cartLoading } = useCartContext();
   const { shippingPrice, orderTotalPrice, orderPayment, completeOrder } =
     usePurchaseContext();
+  const { formatPrice } = useValidationContext();
   // Payment details
   const [cardHolderName, setCardHolderName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -547,50 +549,50 @@ const PurchasePage = () => {
                         onChange={(e) => setNumberOfPayments(e.target.value)}
                       >
                         <option value="1">
-                          1 Payment (1 × ₪ {totalPricePlusShipping})
+                          1 Payment (1 × {formatPrice(totalPricePlusShipping)})
                         </option>
                         <option value="2">
-                          2 Payments (2 × ₪{" "}
+                          2 Payments (2 ×{" "}
                           {orderPayment(totalPricePlusShipping, 2)})
                         </option>
                         <option value="3">
-                          3 Payments (3 × ₪{" "}
+                          3 Payments (3 ×{" "}
                           {orderPayment(totalPricePlusShipping, 3)})
                         </option>
                         <option value="4">
-                          4 Payments (4 × ₪{" "}
+                          4 Payments (4 ×{" "}
                           {orderPayment(totalPricePlusShipping, 4)})
                         </option>
                         <option value="5">
-                          5 Payments (5 × ₪{" "}
+                          5 Payments (5 ×{" "}
                           {orderPayment(totalPricePlusShipping, 5)})
                         </option>
                         <option value="6">
-                          6 Payments (6 × ₪{" "}
+                          6 Payments (6 ×{" "}
                           {orderPayment(totalPricePlusShipping, 6)})
                         </option>
                         <option value="7">
-                          7 Payments (7 × ₪{" "}
+                          7 Payments (7 ×{" "}
                           {orderPayment(totalPricePlusShipping, 7)})
                         </option>
                         <option value="8">
-                          8 Payments (8 × ₪{" "}
+                          8 Payments (8 ×{" "}
                           {orderPayment(totalPricePlusShipping, 8)})
                         </option>
                         <option value="9">
-                          9 Payments (9 × ₪{" "}
+                          9 Payments (9 ×{" "}
                           {orderPayment(totalPricePlusShipping, 9)})
                         </option>
                         <option value="10">
-                          10 Payments (10 × ₪{" "}
+                          10 Payments (10 ×{" "}
                           {orderPayment(totalPricePlusShipping, 10)})
                         </option>
                         <option value="11">
-                          11 Payments (11 × ₪{" "}
+                          11 Payments (11 ×{" "}
                           {orderPayment(totalPricePlusShipping, 11)})
                         </option>
                         <option value="12">
-                          12 Payments (12 × ₪{" "}
+                          12 Payments (12 ×{" "}
                           {orderPayment(totalPricePlusShipping, 12)})
                         </option>
                       </Form.Select>
@@ -617,7 +619,7 @@ const PurchasePage = () => {
                         </p>
                       </Col>
                       <Col className="text-end">
-                        ₪ {product.price * product.quantity}
+                        {formatPrice(product.price * product.quantity)}
                       </Col>
                     </Row>
                   ))}
@@ -633,9 +635,9 @@ const PurchasePage = () => {
                         <b>₪ {shippingPrice(deliveryOption)}</b>
                       </h6>
                       <h6>
-                        ₪{" "}
                         {orderPayment(totalPricePlusShipping, numberOfPayments)}{" "}
-                        × {numberOfPayments} = <b>₪ {totalPricePlusShipping}</b>
+                        × {numberOfPayments} ={" "}
+                        <b>{formatPrice(totalPricePlusShipping)}</b>
                       </h6>
                     </Col>
                   </Row>

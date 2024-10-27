@@ -21,32 +21,61 @@ export const AuthProvider = ({ children }) => {
     useValidationContext();
   const [userLoading, setUserLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(() => {
+    const savedData = localStorage.getItem("userData");
+    return savedData ? JSON.parse(savedData) : null;
+  });
   const [userDocRef, setUserDocRef] = useState(null);
 
   useEffect(() => {
     // Use a listener to change the current user and user document
     const removeAuthListener = onAuthStateChanged(auth, async (user) => {
+      setUserLoading(true);
+
       if (user) {
         setCurrentUser(user);
-        setUserLoading(false);
+        // setUserLoading(false);
+        // console.log(user);
         const docRef = doc(usersRef, user.uid);
+        // console.log(`User UID: '${user.uid}'`);
+        // console.log(docRef);
+        // console.log("docRef:", docRef.path);
         // setUserDocRef(docRef);
         const userDoc = await getDoc(docRef);
+        // console.log(userDoc);
         // console.log(userDoc.exists());
 
-        if (userDoc.exists()) {
-          setUserDocRef(docRef);
-          setUserData(userDoc.data());
-        } else {
-          // await createUserDocument(user);
-          setUserData(null);
+        // if (userDoc.exists()) {
+        //   setUserDocRef(docRef);
+        //   const data = userDoc.data();
+        //   // console.log(userDoc.data());
+        //   setUserData(data);
+        //   localStorage.setItem("userData", JSON.stringify(data));
+        //   // console.log("data: ", data);
+        //   // console.log("user data: ", userData);
+        // } else {
+        //   await createUserDocument(user);
+        //   setUserData(null);
+        // }
+        if (!userDoc.exists()) {
+          await createUserDocument(user);
         }
+
+        setUserDocRef(docRef);
+        const data = userDoc.data();
+        // console.log(userDoc.data());
+        setUserData(data);
+        localStorage.setItem("userData", JSON.stringify(data));
+        // console.log("data: ", data);
+        // console.log("user data: ", userData);
       } else {
         setCurrentUser(null);
         setUserData(null);
         setUserDocRef(null);
+        localStorage.removeItem("userData");
       }
+      setUserLoading(false);
     });
 
     // Return the listener to remove it and avoid reuses
@@ -66,6 +95,7 @@ export const AuthProvider = ({ children }) => {
         isAdmin: false,
         cart: [],
         orders: [],
+        role: "user",
       };
 
       await setDoc(docRef, data);
@@ -152,7 +182,7 @@ export const AuthProvider = ({ children }) => {
           const now = new Date().getTime();
 
           // Allow resending after 5 minutes
-          const fiveMinutes = 60 * 5000;
+          const fiveMinutes = 60 * 5;
 
           if (now - lastSignInTime > fiveMinutes) {
             return sendEmailVerification(user)
@@ -164,11 +194,11 @@ export const AuthProvider = ({ children }) => {
               .catch((verificationError) => {
                 if (verificationError.code === "auth/too-many-requests") {
                   throw new Error(
-                    "Too many verification requests. Please try again later or contact support."
+                    "Too many verification requests. Please check your inbox or contact support."
                   );
                 } else {
                   throw new Error(
-                    "An error occurred while sending the verification email. Please contact support."
+                    "An error occurred while sending the verification email. Please check your inbox or contact support."
                   );
                 }
               });
@@ -207,6 +237,12 @@ export const AuthProvider = ({ children }) => {
     // Throws error if display name is empty
     if (!validateName(name)) {
       return Promise.reject(new Error("Display name cannot be empty"));
+    }
+    // Throws error if the display name is already taken
+    const foundName = doc(usersRef, name);
+
+    if (foundName) {
+      return Promise.reject(new Error("Display name is already taken"));
     }
     // Throws error if empty email field or invalid email format
     if (!email || email === "") {

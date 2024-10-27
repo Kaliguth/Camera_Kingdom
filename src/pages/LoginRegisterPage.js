@@ -117,6 +117,7 @@ const LoginRegisterPage = () => {
         })
         .catch((error) => {
           logout();
+          clearFields();
           updateErrorMessage(error);
         });
     } else {

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useValidationContext } from "./ValidationContext";
 import { updateDoc } from "firebase/firestore";
 
 const CartContext = createContext();
@@ -7,10 +8,13 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartLoading, setCartLoading] = useState(true);
   const { currentUser, userData, userDocRef } = useAuthContext();
+  const { formatPrice } = useValidationContext();
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
+      setCartLoading(true);
+
       if (currentUser && userData?.cart) {
         setCart(userData.cart);
         setCartLoading(false);
@@ -35,7 +39,7 @@ export const CartProvider = ({ children }) => {
       totalPrice += product.price * product.quantity;
     });
 
-    return totalPrice;
+    return formatPrice(totalPrice);
   };
 
   const addToCart = async (productToAdd) => {

@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Card, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 import ProductCard from "../components/product/ProductCard";
+import CategoryCard from "../components/product/CategoryCard";
 
 const CategoriesPage = () => {
   const { allProducts } = useProductContext();
@@ -31,8 +32,27 @@ const CategoriesPage = () => {
   const universalDiscount = 20;
 
   return (
-    <Container>
-      <Row className="mt-4 mb-4">
+    <Container className="custom-container mt-4">
+      <Row className="m-4">
+        <h2>Categories</h2>
+      </Row>
+      <Row className="d-flex justify-content-center">
+        <CategoryCard category={{ name: "cameras" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "lenses" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "accessories" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "bags" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "tripods" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "lighting" }} variant={{size: "lg"}} />
+      </Row>
+      <Row className="custom-centered-buttons-container">
+        <Button className="m-2" onClick={() => navigate(-1)}>
+          Go back
+        </Button>
+        <Button className="m-2" onClick={() => navigate("/")}>
+          Home
+        </Button>
+      </Row>
+      {/* <Row className="mt-4 mb-4">
         <Col md={6}>
           <Form.Control
             className="form-controls"
@@ -56,13 +76,6 @@ const CategoriesPage = () => {
           </Form.Select>
         </Col>
       </Row>
-      {/* <Row>
-        {filteredProducts.map((product) => (
-          <Col className="d-flex justify-content-center" key={product.id}>
-            <ProductCard product={product} />
-          </Col>
-        ))}
-      </Row> */}
       {filteredProducts.length === 0 ? (
         <Container>
           <h6>No {selectedCategory} found for <b>"{searchTerm}"</b></h6>
@@ -87,36 +100,12 @@ const CategoriesPage = () => {
           <Row lg={4}>
             {filteredProducts.map((product) => (
               <Col key={product.id} className="mb-4">
-                {/* <Card>
-              <Link to={`/product/${product.id}`}>
-                <Card.Img
-                  variant="top"
-                  src={product.image1}
-                  // style={{ height: "150px", width: "auto", objectFit: "contain" }}
-                  className="product-image mt-3"
-                />
-              </Link>
-              <Card.Body>
-                <Card.Title>{product.brand}</Card.Title>
-                <>
-                  <span style={{ textDecoration: 'line-through', color: '#dc3545', marginRight: '10px' }}>
-                    {product.price}₪
-                  </span>
-                  <span style={{ color: '#28a745', fontWeight: 'bold', fontSize: '1.6em' }}>
-                    {applyDiscount(product.price, universalDiscount)}₪
-                  </span><br/>
-                </>
-                <Link to={`/product/${product.id}`}>
-                  <Button variant="primary" className="mt-2">View Product</Button>
-                </Link>
-              </Card.Body>
-            </Card> */}
                 <ProductCard product={product} />
               </Col>
             ))}
           </Row>
         </Container>
-      )}
+      )} */}
     </Container>
   );
 };

@@ -17,6 +17,7 @@ export const PurchaseProvider = ({ children }) => {
     validateCreditCardNumber,
     validateExpirationDate,
     validateCvc,
+    formatPrice,
   } = useValidationContext();
 
   // Get order's total price (shipping excluded)
@@ -34,18 +35,28 @@ export const PurchaseProvider = ({ children }) => {
   const shippingPrice = (deliveryOption) => {
     if (deliveryOption === "express") {
       if (cartTotalPrice() > 500) {
-        return 0;
+        return Number(0);
       } else {
-        return 60;
+        return Number(60);
       }
     } else {
-      return 0;
+      return Number(0);
     }
   };
 
   // Get one payment price (תשלום)
-  const orderPayment = (totalPrice, numberOfPayments) =>
-    (totalPrice / numberOfPayments).toFixed(2);
+  const orderPayment = (totalPrice, numberOfPayments) => {
+    const payment = totalPrice / numberOfPayments;
+
+    return formatPrice(payment);
+  };
+
+  // // Get order's total price plus shipping
+  // const finalPrice = (orderTotalPrice, shippingPrice) => {
+  //   const totalPrice = orderTotalPrice + shippingPrice;
+
+  //   return formatPrice(totalPrice);
+  // };
 
   // Method to create a new order document
   const createOrderDocument = (shippingDetails, paymentDetails) => {
@@ -178,6 +189,7 @@ export const PurchaseProvider = ({ children }) => {
     shippingPrice,
     orderTotalPrice,
     orderPayment,
+    // finalPrice,
     completeOrder,
   };
 

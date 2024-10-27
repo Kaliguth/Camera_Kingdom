@@ -1,4 +1,4 @@
-// Context for input validation methods
+// Context for input validation and formatting methods
 import React, { createContext, useContext } from "react";
 
 const ValidationContext = createContext();
@@ -40,7 +40,7 @@ export const ValidationProvider = ({ children }) => {
     const creditCardRegex = /^[\d\s]+$/;
 
     return creditCardRegex.test(cardNumber) && cardNumber.length === 19;
-  }
+  };
 
   // Credit card's expiration date validation
   const validateExpirationDate = (expirationDate) => {
@@ -49,7 +49,7 @@ export const ValidationProvider = ({ children }) => {
     const expirationRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
 
     return expirationRegex.test(expirationDate) && expirationDate.length === 5;
-  }
+  };
 
   // Credit card's CVC security code validation
   const validateCvc = (cvc) => {
@@ -57,7 +57,46 @@ export const ValidationProvider = ({ children }) => {
     const cvcRegex = /^\d+$/;
 
     return cvcRegex.test(cvc) && cvc.length === 3;
-  }
+  };
+
+  // Method to format price text with commas and currency sign
+  const formatPrice = (price) => {
+    const formattedPrice = price.toLocaleString("en-US", {
+      style: "currency",
+      currency: "ILS",
+      minimumFractionDigits: 0,
+    });
+
+    return formattedPrice;
+  };
+
+  // Method to format style for small square logos
+  const smallSquareLogoStyle = (brand) => {
+    const smallSquareLogoStyle =
+      brand === "Nikon" ||
+      brand === "Leica" ||
+      brand === "Zeiss" ||
+      brand === "DJI" ||
+      brand === "Insta360"
+        ? { width: "40px", height: "35px" }
+        : {};
+
+    return smallSquareLogoStyle;
+  };
+
+  // Method to format style for large square logos
+  const largeSquareLogoStyle = (brand) => {
+    const largeSquareLogoStyle =
+      brand === "Nikon" ||
+      brand === "Leica" ||
+      brand === "Zeiss" ||
+      brand === "DJI" ||
+      brand === "Insta360"
+        ? { width: "70px", height: "70px" }
+        : {};
+
+    return largeSquareLogoStyle;
+  };
 
   const globalVal = {
     validateEmail,
@@ -67,6 +106,9 @@ export const ValidationProvider = ({ children }) => {
     validateCreditCardNumber,
     validateExpirationDate,
     validateCvc,
+    formatPrice,
+    smallSquareLogoStyle,
+    largeSquareLogoStyle,
   };
 
   return (

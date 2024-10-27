@@ -1,12 +1,21 @@
 import React from "react";
-import { ListGroup, Container, Row, Col, Card, Button, Image } from "react-bootstrap";
+import { useCartContext } from "../../contexts/CartContext";
+import { useValidationContext } from "../../contexts/ValidationContext";
+import {
+  ListGroup,
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Image,
+} from "react-bootstrap";
 import InputSpinner from "react-bootstrap-input-spinner";
 import { FaTrash } from "react-icons/fa";
-import { useCartContext } from "../../contexts/CartContext";
 
 const CartProductCard = ({ product }) => {
-  const { removeFromCart, handleQuantityChange } =
-    useCartContext();
+  const { removeFromCart, handleQuantityChange } = useCartContext();
+  const { formatPrice } = useValidationContext();
 
   return (
     // <Card className="cart-card">
@@ -100,22 +109,26 @@ const CartProductCard = ({ product }) => {
       <Row className="cart-card w-100">
         {/* Product Image */}
         <Col xs={3} md={2} className="d-flex align-items-center">
-          <Image 
-            src={product.image1} 
-            alt={product.model} 
-            // fluid 
-            height={80} 
+          <Image
+            src={product.image1}
+            alt={product.model}
+            // fluid
+            height={80}
             className="p-2"
           />
         </Col>
 
         {/* Product Name */}
-        <Col xs={4} md={3} className="d-flex flex-column justify-content-between">
+        <Col
+          xs={4}
+          md={3}
+          className="d-flex flex-column justify-content-between"
+        >
           <small className="text-muted">Name</small>
           <h6>
             {product.brand} {product.model}
           </h6>
-          <span/>
+          <span />
         </Col>
 
         {/* Quantity Input */}
@@ -137,30 +150,41 @@ const CartProductCard = ({ product }) => {
         </Col>
 
         {/* Unit Price */}
-        <Col xs={3} md={2} className="d-flex flex-column justify-content-between">
+        <Col
+          xs={3}
+          md={2}
+          className="d-flex flex-column justify-content-between"
+        >
           <small className="text-muted">Unit Price</small>
-          <h6>₪ {product.price}</h6>
-          <span/>
+          <h6>{formatPrice(product.price)}</h6>
+          <span />
         </Col>
 
         {/* Total Price */}
-        <Col xs={3} md={2} className="d-flex flex-column justify-content-between">
+        <Col
+          xs={3}
+          md={2}
+          className="d-flex flex-column justify-content-between"
+        >
           <small className="text-muted">Total</small>
-          <h6>₪ {product.price * product.quantity}</h6>
-          <span/>
+          <h6>{formatPrice(product.price * product.quantity)}</h6>
+          <span />
         </Col>
 
         {/* Remove Button */}
-        <Col xs={1} className="d-flex align-items-center justify-content-center">
-          <Button 
-            variant="link" 
+        <Col
+          xs={1}
+          className="d-flex align-items-center justify-content-center"
+        >
+          <Button
+            variant="link"
             aria-label="Remove product"
             onClick={() => removeFromCart(product)}
           >
             <FaTrash color="red" size={22} />
           </Button>
         </Col>
-      <hr/>
+        <hr />
       </Row>
     </ListGroup.Item>
   );

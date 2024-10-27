@@ -13,9 +13,21 @@
   margin: 0 auto;
 }
 
+.custom-centered-buttons-container {
+  justify-content: center;
+  max-width: 150px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
 /* Header */
-.header-logo {
+.header-logo-container {
   border-right: thick solid #5e5e5e;
+  cursor: pointer;
+}
+
+.admin-dashboard-text {
+  color: darkgreen;
 }
 
 /* Featured products carousel */
@@ -84,22 +96,73 @@
   border-color: #007bff;
 }
 
+/* Category cards */
+.category-card {
+  background-color: ghostwhite;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.category-card-img {
+  max-width: 45%;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.small-category-card {
+  background-color: ghostwhite;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  width: 130px;
+  height: 100px;
+}
+
+.small-category-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.small-category-card-img {
+  max-width: 45%;
+  height: 50px;
+  margin-bottom: 3px;
+}
+
 /* Product cards */
 .product-card {
   background-color: ghostwhite;
-  border: 1px solid gray;
+  border: 2px solid gray;
   padding: 10px;
-  width: 310px;
+  width: 100%;
   height: 100%;
+  max-width: 350px;
   /* min-height: 530px;
   max-height: 530px; */
-  margin-bottom: 50px;
+  /* margin-bottom: 50px; */
 }
 
 .product-image {
-  height: 150px;
+  height: 125px;
   width: auto;
-  object-fit: "contain";
+  margin: 0;
+  padding: 10px;
+  object-fit: "cover";
+  transition: transform 0.3s;
+}
+
+.product-image:hover {
+  transform: scale(1.1);
 }
 
 .price-text {
@@ -110,8 +173,10 @@
 }
 
 .product-brand-logo {
+  display: block;
   max-width: 200px;
   height: 50px;
+  margin: 10px auto;
 }
 
 .product-buttons-container {
@@ -127,8 +192,55 @@
   /* align-self: center;
   max-width: 150px;
   margin-bottom: 10px; */
+  max-width: 200px;
+}
+
+.featured-card {
+  background-color: ghostwhite;
+  border: 1px solid gray;
+  padding: 5px;
+  width: 100%;
+  height: 10p0x;
   max-width: 150px;
-  margin: 0 5px;
+  margin: 10px;
+}
+
+.featured-product-image {
+  height: 75px;
+  width: auto;
+  object-fit: cover;
+  margin: 10px;
+  transition: transform 0.3s;
+}
+
+.featured-product-image:hover {
+  transform: scale(1.1);
+}
+
+.featured-product-brand-logo {
+  display: block;
+  max-width: 90px;
+  height: 20px;
+  margin: 10px auto;
+}
+
+.featured-product-title {
+  font-size: 0.8em;
+}
+
+.small-price-text {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.featured-product-button {
+  width: 90%;
+  margin: 2px;
+}
+
+/* Product details */
+.product-images-container {
+  border-right: thick solid #5e5e5e;
 }
 
 /* Profile */

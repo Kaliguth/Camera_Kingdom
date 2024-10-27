@@ -1,111 +1,72 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Carousel } from "react-bootstrap";
+import React from "react";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useProductContext } from "../contexts/ProductContext";
+import AdCarousel from "../components/design/AdCarousel";
+import CategoryCard from "../components/product/CategoryCard";
+import FeaturedCard from "../components/product/FeaturedCard";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const { allProducts } = useProductContext();
+  const { getFeaturedProducts } = useProductContext();
+  const featuredProducts = getFeaturedProducts();
+  const navigate = useNavigate();
 
   return (
-    // OLD HOME PAGE
-    // <Container className="mt-4">
-    //   <Row className="mb-4">
-    //     <Col>
-    //       <div className="promo-banner">
-    //         <h1>Welcome to Camera Kingdom</h1>
-    //         <p>Your one-stop shop for all camera needs</p>
-    //       </div>
-    //     </Col>
-    //   </Row>
-    //   <h2 className="mb-3">Featured Products</h2>
-    //   <Row>
-    //     <Col>
-    //       <Carousel className="featured-carousel">
-    //         {allProducts.map((product) => (
-    //           <Carousel.Item key={product.id} interval={3000}>
-    //             <img src={product.image1} height={200} alt={product.model} />
-    //             <Carousel.Caption
-    //               style={{
-    //                 position: "static",
-    //                 paddingtop: "10px",
-    //                 color: "black",
-    //               }}
-    //             >
-    //               <h3>{product.model}</h3>
-    //               <p>{product.brand}</p>
-    //             </Carousel.Caption>
-    //           </Carousel.Item>
-    //         ))}
-    //       </Carousel>
-    //     </Col>
-    //   </Row>
-    // </Container>
-
-    // EXPERIMENTAL HOME PAGE
     <Container fluid className="p-0">
-      {/* Image Carousel */}
-      <Carousel>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={require("../assets/Nikon-Z6.jpg")}
-            alt="Nikon Z6III"
-            style={{ height: "500px", objectFit: "cover" }}
-          />
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={require("../assets/Nikon-Z8.jpg")}
-            alt="Nikon Z8"
-            style={{ height: "500px", objectFit: "cover" }}
-          />
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={require("../assets/Leica-Q3.jpg")}
-            alt="Leica Q3"
-            style={{ height: "500px", objectFit: "cover" }}
-          />
-        </Carousel.Item>
-      </Carousel>
+      <AdCarousel />
 
       <Container className="mt-4">
         {/* Welcome and Featured Products */}
         <Row className="mb-4">
           <Col>
-            <div className="promo-banner text-center">
-              <h1>Welcome to Camera Kingdom</h1>
-              <p>Your one-stop shop for all camera needs</p>
-            </div>
+            <h1>Welcome to Camera Kingdom</h1>
+            <h6>Your one-stop shop for all camera needs</h6>
           </Col>
         </Row>
-        <h2 className="mb-3 text-center">Featured Products</h2>
-        <Row>
-          <Col>
-            <Carousel className="featured-carousel">
-              {allProducts.map((product) => (
-                <Carousel.Item key={product.id} interval={3000}>
-                  <img src={product.image1} height={200} alt={product.model} />
-                  <Carousel.Caption
-                    style={{
-                      position: "static",
-                      paddingTop: "10px",
-                      color: "black",
-                    }}
-                  >
-                    <h3>{product.model}</h3>
-                    <p>{product.brand}</p>
-                  </Carousel.Caption>
-                </Carousel.Item>
+
+        <Card className="order-container bg-light p-1 mb-5">
+          <h5 className="mb-3">Quick access categories:</h5>
+          <Row className="ms-4">
+            <CategoryCard
+              category={{ name: "cameras" }}
+              variant={{ size: "sm" }}
+            />
+            <CategoryCard
+              category={{ name: "lenses" }}
+              variant={{ size: "sm" }}
+            />
+            <CategoryCard
+              category={{ name: "accessories" }}
+              variant={{ size: "sm" }}
+            />
+            <CategoryCard
+              category={{ name: "bags" }}
+              variant={{ size: "sm" }}
+            />
+            <CategoryCard
+              category={{ name: "tripods" }}
+              variant={{ size: "sm" }}
+            />
+            <CategoryCard
+              category={{ name: "lighting" }}
+              variant={{ size: "sm" }}
+            />
+          </Row>
+        </Card>
+
+        <Row className="justify-content-center">
+          <h2 className="mb-3 text-center">Featured Products</h2>
+          <Card className="order-container bg-light p-1 mb-5 w-75">
+            <Row className="justify-content-center">
+              {featuredProducts.map((product) => (
+                <FeaturedCard key={product.id} product={product} />
               ))}
-            </Carousel>
-          </Col>
+            </Row>
+          </Card>
         </Row>
       </Container>
 
-      {/* Why Shop With Us? */}
-      <Container className="mt-4">
+      <Container className="mt-0">
         <Row className="justify-content-center">
           <Col
             md={8}
@@ -119,19 +80,28 @@ const HomePage = () => {
             }}
           >
             <h2 style={{ fontWeight: "bold", marginBottom: "15px" }}>
-              Why Shop with Us?
+              Why Shop With Us?
             </h2>
             <p style={{ fontSize: "1.1rem", color: "#6c757d" }}>
-              At Camera Kingdom, we offer the latest camera models, expert advice, 
-              and exceptional customer service. Enjoy competitive pricing, fast shipping, 
-              and a wide selection of accessories. Your satisfaction is our priority.
+              At Camera Kingdom, we offer the latest camera models, expert
+              advice, and exceptional customer service. Enjoy competitive
+              pricing, fast shipping, and a wide selection of accessories. Your
+              satisfaction is our priority.
             </p>
+            <Button
+              variant="success"
+              size="lg"
+              className="m-4"
+              onClick={() => navigate("/categories")}
+            >
+              Start shopping!
+            </Button>
           </Col>
         </Row>
       </Container>
 
       {/* Customer Reviews */}
-      <Container className="mt-4">
+      <Container className="mt-3 mb-5">
         <h2 className="mb-3 text-center">What Our Customers Say</h2>
         <Row className="justify-content-center">
           <Col md={4} className="text-center">

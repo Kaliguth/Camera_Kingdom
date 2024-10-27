@@ -2,18 +2,26 @@ import React from "react";
 import { Navbar, Nav, Dropdown, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import logo from "../../assets/logo_small.png";
-import user from "../../assets/user-nobgnew.png";
+import userImage from "../../assets/user-nobgnew.png";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { currentUser, logout } = useAuthContext();
+  const { userLoading, currentUser, userData, logout } = useAuthContext();
+  const navigate = useNavigate();
+  // console.log(userData);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleLogout = () => {
+    logout()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        alert(
+          "An error occured while attempting to log out. Please contact support"
+        );
+        console.error("Logout failed:", error);
+      });
   };
 
   return (
@@ -22,11 +30,11 @@ const Header = () => {
       expand="sm"
       className="border-bottom border-5 border-dark"
     >
-      <LinkContainer to="/" className="header-logo">
-        <Navbar.Brand>
+      <Navbar.Brand>
+        <LinkContainer to="/" className="header-logo-container">
           <Image src={logo} roundedCircle width={100} height={100} />
-        </Navbar.Brand>
-      </LinkContainer>
+        </LinkContainer>
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
@@ -57,40 +65,58 @@ const Header = () => {
               </Nav.Link>
             </LinkContainer>
           )}
-          {currentUser ? (
-            <Dropdown align="end">
-              <Dropdown.Toggle variant="light" id="dropdown-basic">
-                <h6 className="d-inline">{currentUser.displayName} </h6>
-                {currentUser.photoURL ? (
-                  <Image
-                    src={currentUser.photoURL}
-                    roundedCircle
-                    width={30}
-                    height={30}
-                  />
-                ) : (
-                  <Image
-                    src={user}
-                    roundedCircle
-                    width={35}
-                    height={35}
-                  />
-                )}
-              </Dropdown.Toggle>
+        </Nav>
+        <Nav className="ml-auto">
+          {!userLoading && currentUser ? (
+            <>
+              <Dropdown align="end">
+                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                  <h6 className="d-inline">{currentUser.displayName} </h6>
+                  {currentUser.photoURL ? (
+                    <Image
+                      src={currentUser.photoURL}
+                      roundedCircle
+                      width={30}
+                      height={30}
+                    />
+                  ) : (
+                    <Image
+                      src={userImage}
+                      roundedCircle
+                      width={35}
+                      height={35}
+                    />
+                  )}
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <LinkContainer to="/profile">
-                  <Dropdown.Item>Profile</Dropdown.Item>
+                <Dropdown.Menu>
+                  <LinkContainer to="/profile">
+                    <Dropdown.Item>Profile</Dropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/orders">
+                    <Dropdown.Item>Orders</Dropdown.Item>
+                  </LinkContainer>
+                  {userData.isAdmin && (
+                    <LinkContainer to="/manager">
+                      <Dropdown.Item className="admin-dashboard-text">
+                        Admin Dashboard
+                      </Dropdown.Item>
+                    </LinkContainer>
+                  )}
+                  <Dropdown.Divider />
+                  <Dropdown.Item onClick={handleLogout} className="text-danger">
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              {/* {userData.role === "admin" && (
+                <LinkContainer to="/manager">
+                  <Nav.Link>
+                    <h5>Admin Dashboard</h5>
+                  </Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/orders">
-                  <Dropdown.Item>Orders</Dropdown.Item>
-                </LinkContainer>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={handleLogout} className="text-danger">
-                  Logout
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+              )} */}
+            </>
           ) : (
             <LinkContainer to="/login">
               <Nav.Link>

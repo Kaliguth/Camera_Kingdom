@@ -31,10 +31,6 @@ const CartPage = () => {
     navigate("/purchase");
   };
 
-  if (userLoading || cartLoading) {
-    return <Loader />;
-  }
-
   if (!currentUser) {
     return (
       <Container>
@@ -60,6 +56,10 @@ const CartPage = () => {
         </Row>
       </Container>
     );
+  }
+
+  if (userLoading || cartLoading) {
+    return <Loader />;
   }
 
   return (
@@ -124,7 +124,7 @@ const CartPage = () => {
                     </Col>
                     <Col className="text-end">
                       <h6>
-                        <b>₪ {cartTotalPrice()}</b>
+                        <b>{cartTotalPrice()}</b>
                       </h6>
                     </Col>
                   </Row>
