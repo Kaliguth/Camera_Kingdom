@@ -60,6 +60,10 @@
   border-width: 2px;
 }
 
+.form-controls:hover {
+  border-color: #3399ff;
+}
+
 .form-controls:focus {
   background-color: mintcream;
   box-shadow: 0 0 0 0.2rem lightgray;
@@ -94,6 +98,46 @@
 .custom-checkbox input[type="checkbox"]:checked {
   background-color: #007bff;
   border-color: #007bff;
+}
+
+/* Quantity number input */
+.quantity-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.quantity-input {
+  width: 55px;
+  height: 40px;
+  text-align: center;
+}
+
+.quantity-button {
+  font-family: "IBM Plex Sans", sans-serif;
+  width: 32px;
+  height: 32px;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: mintcream;
+  border: 1px solid darkgray;
+  border-radius: 999px;
+  border-width: 1px;
+  color: #1c2025;
+  transition: all 120ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.increment {
+    position: relative;
+    order: 1;
+  }
+}
+
+.quantity-button:hover {
+  background-color: #007fff;
+  color: #fff;
 }
 
 /* Category cards */
@@ -206,7 +250,7 @@
 }
 
 .featured-product-image {
-  height: 75px;
+  height: 80px;
   width: auto;
   object-fit: cover;
   margin: 10px;
@@ -269,13 +313,13 @@
   max-width: 30px;
 }
 
-.quantity-input-container {
+/* .quantity-input-container {
   width: 150px;
 }
 
 .quantity-input-container input {
   text-align: center;
-}
+} */
 
 .cart-buttons-container {
   margin-top: 25px;

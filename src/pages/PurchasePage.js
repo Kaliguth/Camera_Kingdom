@@ -70,26 +70,40 @@ const PurchasePage = () => {
     const errorMessage = error.message.toLowerCase();
     if (errorMessage.includes("your name")) {
       setNameError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("phone")) {
       setPhoneError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("email")) {
       setEmailError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("street")) {
       setStreetError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("house")) {
       setHouseError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("city")) {
       setCityError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("delivery")) {
       setDeliveryError(error.message);
+      window.scrollTo(0, 480);
     } else if (errorMessage.includes("cardholder")) {
       setCardholderError(error.message);
+      window.scrollTo(0, 1100);
     } else if (errorMessage.includes("card number")) {
       setCardNumberError(error.message);
+      window.scrollTo(0, 1100);
     } else if (errorMessage.includes("expiration")) {
       setExpirationError(error.message);
+      window.scrollTo(0, 1100);
     } else if (errorMessage.includes("cvc")) {
       setCvcError(error.message);
+      window.scrollTo(0, 1100);
+    } else if (errorMessage.includes("confirm")) {
+      setConfirmError(error.message);
+      window.scrollTo(0, 1100);
     } else {
       alert(error.message);
     }
@@ -114,11 +128,6 @@ const PurchasePage = () => {
     e.preventDefault();
     resetErrors();
 
-    if (!confirm) {
-      setConfirmError("Please confirm your information and check this box");
-      return;
-    }
-
     const orderDetails = {
       shipping: {
         fullName,
@@ -139,7 +148,7 @@ const PurchasePage = () => {
       },
     };
 
-    completeOrder(orderDetails)
+    completeOrder(orderDetails, confirm)
       .then(() => {
         alert("Order completed successfully!");
         navigate("/");

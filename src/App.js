@@ -10,6 +10,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProductProvider } from "./contexts/ProductContext";
 import { CartProvider } from "./contexts/CartContext";
 import { PurchaseProvider } from "./contexts/PurchaseContext";
+import { ToastContainer, Bounce, Slide } from "react-toastify";
 import Header from "./components/layouts/Header";
 import ScrollToTop from "./components/utility/ScrollToTop";
 import Footer from "./components/layouts/Footer";
@@ -24,10 +25,11 @@ import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
-import ManagerDashboard from './pages/ManagerDashboard';
+import ManagerDashboard from "./pages/ManagerDashboard";
 import UserManagement from "./components/UserManagement";
 import ProductManagement from "./components/ProductManagement";
 import OrderManagement from "./components/OrderManagement";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -38,6 +40,19 @@ const Layout = () => (
     <ScrollToTop />
     <Outlet />
     <Footer />
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      pauseOnHover
+      draggable
+      theme="light"
+      transition={Slide}
+    />
   </>
 );
 

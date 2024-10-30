@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        // Check email verification
+        // Check email verification or designated global admin user
         if (email === "ckadmin@camerakingdom.com" || user.emailVerified) {
           return userCredentials;
         } else {
@@ -218,8 +218,8 @@ export const AuthProvider = ({ children }) => {
         } else if (error.code === "auth/wrong-password") {
           throw new Error("Incorrect password");
         } else {
-          console.log(error.message);
-          throw new Error(error.message || "Login failed. Please try again.");
+          console.log("Login failed: ", error);
+          throw new Error("Login failed. Please try again.");
         }
       });
   };

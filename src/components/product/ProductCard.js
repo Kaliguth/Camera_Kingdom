@@ -4,6 +4,7 @@ import { Button, Card, Row, Col } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import { Link, useNavigate } from "react-router-dom";
 import { useValidationContext } from "../../contexts/ValidationContext";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCartContext();
@@ -11,9 +12,14 @@ const ProductCard = ({ product }) => {
   const logo = logoMap[product.brand] || null;
   const navigate = useNavigate();
 
-  const handleAddToCart = async () => {
-    await addToCart(product);
-    alert(`${product.model} added to your cart`);
+  const handleAddToCart = () => {
+    addToCart(product)
+      .then(() => {
+        toast.success(`${product.model} added to your cart`);
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
   const handleBuyNow = async () => {

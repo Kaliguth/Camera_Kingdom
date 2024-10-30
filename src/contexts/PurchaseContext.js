@@ -96,7 +96,7 @@ export const PurchaseProvider = ({ children }) => {
   };
 
   // Method to finalize and create the order
-  const completeOrder = (orderDetails) => {
+  const completeOrder = (orderDetails, confirm) => {
     const shippingDetails = orderDetails.shipping;
     const paymentDetails = orderDetails.payment;
 
@@ -160,6 +160,11 @@ export const PurchaseProvider = ({ children }) => {
     }
     if (!validateCvc(paymentDetails.cvc)) {
       return Promise.reject(new Error("Invalid CVC (must be a 3 digit code)"));
+    }
+
+    // Check if cofirm message is checked
+    if (!confirm) {
+      return Promise.reject(new Error("Please confirm your information and check this box"));
     }
 
     // Create a new order document

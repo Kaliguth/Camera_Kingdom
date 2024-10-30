@@ -72,66 +72,82 @@ export const CartProvider = ({ children }) => {
           cart: updatedCart,
         });
       } catch (error) {
-        alert("Failed to add product to the cart", error);
+        console.log("Error while adding product to the cart: ", error);
+        throw new Error(
+          "Failed to add product to the cart. Please contant support"
+        );
       }
     }
   };
 
   const removeFromCart = async (productToRemove) => {
-    if (currentUser) {
-      try {
-        // Check if the added product is found inside the cart
-        const existingProduct = cart.find(
-          (product) => product.id === productToRemove.id
+    try {
+      // Check if the added product is found inside the cart
+      const existingProduct = cart.find(
+        (product) => product.id === productToRemove.id
+      );
+
+      // If the product is found in the cart - check the quantity
+      if (existingProduct) {
+        let updatedCart;
+        // // If the quantity is larger than 1 - decrease it by 1
+        // if (existingProduct.quantity > 1) {
+        //   updatedCart = cart.map((product) =>
+        //     product.id === productToRemove.id
+        //       ? { ...product, quantity: product.quantity - 1 }
+        //       : product
+        //   );
+        // } else {
+        //   updatedCart = cart.filter(
+        //     (product) => product.id !== productToRemove.id
+        //   );
+        // }
+        updatedCart = cart.filter(
+          (product) => product.id !== productToRemove.id
         );
 
-        // If the product is found in the cart - check the quantity
-        if (existingProduct) {
-          let updatedCart;
-          // // If the quantity is larger than 1 - decrease it by 1
-          // if (existingProduct.quantity > 1) {
-          //   updatedCart = cart.map((product) =>
-          //     product.id === productToRemove.id
-          //       ? { ...product, quantity: product.quantity - 1 }
-          //       : product
-          //   );
-          // } else {
-          //   updatedCart = cart.filter(
-          //     (product) => product.id !== productToRemove.id
-          //   );
-          // }
-          updatedCart = cart.filter(
-            (product) => product.id !== productToRemove.id
-          );
+        setCart(updatedCart);
 
-          setCart(updatedCart);
-
-          // Update user's cart in firestore
-          await updateDoc(userDocRef, {
-            cart: updatedCart,
-          });
-        }
-      } catch (error) {
-        alert("Failed to remove product from the cart", error);
+        // Update user's cart in firestore
+        await updateDoc(userDocRef, {
+          cart: updatedCart,
+        });
       }
+    } catch (error) {
+      console.log("Error while removing product from the cart: ", error);
+      throw new Error(
+        "Failed to remove product from the cart. Please contant support"
+      );
     }
   };
 
-  const handleQuantityChange = async (productId, newQuantity) => {
-    // This part prevent setting the quantity below 1
-    if (newQuantity < 1) return;
+  const changeQuantity = (productId, newQuantity) => {
+    // Throw errors if received below minimal or above maximal quantity
+    if (newQuantity < 1) {
+      return Promise.reject(new Error("Minimal quantity per product is 1"));
+    }
+    if (newQuantity > 100) {
+      return Promise.reject(new Error("Maximal quantity per product is 100"));
+    }
 
     // Set the new cart and change the quantity of the product
     const updatedCart = cart.map((product) =>
       product.id === productId ? { ...product, quantity: newQuantity } : product
     );
 
-    setCart(updatedCart);
-
     // Update user's cart in firestore
-    await updateDoc(userDocRef, {
+    return updateDoc(userDocRef, {
       cart: updatedCart,
-    });
+    })
+      .then(() => {
+        setCart(updatedCart);
+      })
+      .catch((error) => {
+        console.log("Error changing product quantity: ", error);
+        throw new Error(
+          "Failed to change product's quantity. Please contact support"
+        );
+      });
   };
 
   const globalVal = {
@@ -142,7 +158,7 @@ export const CartProvider = ({ children }) => {
     cartTotalPrice,
     addToCart,
     removeFromCart,
-    handleQuantityChange,
+    changeQuantity,
   };
 
   return (

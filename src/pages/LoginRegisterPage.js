@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { sendEmailVerification } from "firebase/auth";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const LoginRegisterPage = () => {
   const { login, googleLogin, register, logout } = useAuthContext();
@@ -51,16 +52,15 @@ const LoginRegisterPage = () => {
   const updateErrorMessage = (error) => {
     const errorMessage = error.message.toLowerCase();
     if (errorMessage.includes("verification")) {
-      alert(error.message);
+      toast.error(error.message);
     } else if (errorMessage.includes("name")) {
       setNameError(error.message);
     } else if (errorMessage.includes("email")) {
       setEmailError(error.message);
     } else if (errorMessage.includes("password")) {
       setPasswordError(error.message);
-    }
-    else {
-      alert(error.message);
+    } else {
+      toast.error(error.message);
     }
   };
 
@@ -111,8 +111,8 @@ const LoginRegisterPage = () => {
         //     navigate("/login");
         //   }
         // })
-        .then(() => {
-          alert("Logged in successfully!");
+        .then((userCredentials) => {
+          toast(`Welcome ${userCredentials.user.displayName}!`);
           navigate("/");
         })
         .catch((error) => {
@@ -137,7 +137,7 @@ const LoginRegisterPage = () => {
       register(name, email, password)
         .then((userCredentials) => {
           const user = userCredentials.user;
-          alert(
+          toast.success(
             "Registered successfully!\nVerification email sent. Please verify your email"
           );
           sendEmailVerification(user);
@@ -151,14 +151,16 @@ const LoginRegisterPage = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await googleLogin();
-      alert("Signed in with Google");
-      navigate("/");
-    } catch (error) {
-      alert("Failed to sign in with google", error.message);
-    }
+  const handleGoogleSignIn = () => {
+    googleLogin()
+      .then((userCredentials) => {
+        toast(`Welcome ${userCredentials.user.displayName}!`);
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error("Failed to sign in with google");
+        console.log("Error while signing in with google: ", error);
+      });
   };
 
   // return (
