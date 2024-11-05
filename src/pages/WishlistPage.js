@@ -1,18 +1,50 @@
-// src/pages/Wishlist.js
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Loader from "../components/utility/Loader";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useCartContext } from "../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
+import CartProductCard from "../components/cart/CartProductCard";
 
-const WishlistPage = () => {
-  const { currentUser } = useAuthContext();
-  const [wishlist, setWishlist] = useState([]);
+const CartPage = () => {
+  const { currentUser, userLoading } = useAuthContext();
+  const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
+    useCartContext();
+  const navigate = useNavigate();
+
+  const handleContinueShopping = () => {
+    navigate("/categories");
+  };
+
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
+
+  if (userLoading || cartLoading) {
+    return <Loader />;
+  }
 
   if (!currentUser) {
     return (
       <Container>
         <Row className="mt-4">
           <Col>
-            <p>Please log in to view your wishlist.</p>
+            <p>Please log in to view your wishlist</p>
+            <Button
+              variant="success"
+              size="lg"
+              className="m-4"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
+            <br />
+            <Button className="m-2" onClick={() => navigate(-1)}>
+              Go back
+            </Button>
+            <Button className="m-2" onClick={() => navigate("/")}>
+              Home
+            </Button>
           </Col>
         </Row>
       </Container>
@@ -20,15 +52,99 @@ const WishlistPage = () => {
   }
 
   return (
-    <Container className="mt-4">
-      <h2 className="mb-4">Your Wishlist</h2>
-      {wishlist.length === 0 ? (
-        <p>You haven't saved any products yet</p>
+    <Container className="custom-container mt-4 mb-5">
+      <Row className="m-4">
+        <h2>Wishlist</h2>
+      </Row>
+      {cart.length === 0 ? (
+        <>
+          <h5>Your wishlist is empty</h5>
+          <Button
+            variant="success"
+            size="lg"
+            className="m-4"
+            onClick={() => navigate("/categories")}
+          >
+            Start shopping
+          </Button>
+          <br />
+          <Button className="m-2" onClick={() => navigate(-1)}>
+            Go back
+          </Button>
+          <Button className="m-2" onClick={() => navigate("/")}>
+            Home
+          </Button>
+        </>
       ) : (
-        <Row>{/* Need to complete */}</Row>
+        <>
+          <Row>
+            <Col>
+              <Card className="order-container">
+                <Card.Header className="mb-3">
+                  <h5 className="m-3">Products</h5>
+                  {/* <h6 className="mb-3">
+                    (There are {cartProductsNumber()} items in your cart)
+                  </h6> */}
+                </Card.Header>
+                {cart.map((product) => (
+                  <CartProductCard key={product.id} product={product} />
+                ))}
+              </Card>
+            </Col>
+          </Row>
+
+          <Row className="d-flex justify-content-center m-5">
+            <Col md={4}>
+              <Row className="cart-buttons-container">
+                <Col className="d-flex justify-content-center">
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={handleContinueShopping}
+                    className="cart-buttons me-3"
+                  >
+                    Continue shopping
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          {/* <Card className="cart-card mt-5 mb-3 w-25 ms-auto">
+              <Card.Body className="p-2 mt-3">
+                <Row>
+                  <Col className="d-flex">
+                    <p className="small text-muted ms-4 me-5">Order total:</p>
+                    <h6>
+                      <b>₪ {cartTotalPrice()}</b>
+                    </h6>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+
+          <Row className="cart-buttons-container">
+            <Col className="d-flex justify-content-end">
+              <Button
+                variant="secondary"
+                onClick={handleContinueShopping}
+                className="cart-buttons btn-lg me-3"
+              >
+                Continue shopping
+              </Button>
+              <Button
+                variant="primary"
+                className="cart-buttons btn-lg"
+                onClick={handleCheckout}
+              >
+                Go to checkout
+              </Button>
+            </Col>
+          </Row> */}
+        </>
       )}
     </Container>
   );
 };
 
-export default WishlistPage;
+export default CartPage;

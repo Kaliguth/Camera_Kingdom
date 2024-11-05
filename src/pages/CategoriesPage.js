@@ -37,20 +37,28 @@ const CategoriesPage = () => {
         <h2>Categories</h2>
       </Row>
       <Row className="d-flex justify-content-center">
-        <CategoryCard category={{ name: "cameras" }} variant={{size: "lg"}} />
-        <CategoryCard category={{ name: "lenses" }} variant={{size: "lg"}} />
-        <CategoryCard category={{ name: "accessories" }} variant={{size: "lg"}} />
-        <CategoryCard category={{ name: "bags" }} variant={{size: "lg"}} />
-        <CategoryCard category={{ name: "tripods" }} variant={{size: "lg"}} />
-        <CategoryCard category={{ name: "lighting" }} variant={{size: "lg"}} />
+        <CategoryCard category={{ name: "cameras" }} variant={{ size: "lg" }} />
+        <CategoryCard category={{ name: "lenses" }} variant={{ size: "lg" }} />
+        <CategoryCard
+          category={{ name: "accessories" }}
+          variant={{ size: "lg" }}
+        />
+        <CategoryCard category={{ name: "bags" }} variant={{ size: "lg" }} />
+        <CategoryCard category={{ name: "tripods" }} variant={{ size: "lg" }} />
+        <CategoryCard
+          category={{ name: "lighting" }}
+          variant={{ size: "lg" }}
+        />
       </Row>
-      <Row className="custom-centered-buttons-container">
-        <Button className="m-2" onClick={() => navigate(-1)}>
-          Go back
-        </Button>
-        <Button className="m-2" onClick={() => navigate("/")}>
-          Home
-        </Button>
+      <Row className="mt-4 mb-4">
+        <Col>
+          <Button className="m-2" onClick={() => navigate(-1)}>
+            Go back
+          </Button>
+          <Button className="m-2" onClick={() => navigate("/")}>
+            Home
+          </Button>
+        </Col>
       </Row>
       {/* <Row className="mt-4 mb-4">
         <Col md={6}>

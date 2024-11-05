@@ -16,10 +16,11 @@ export const ProductProvider = ({ children }) => {
 
       const prductsCollection = await getDocs(productsRef);
       const sortedProducts = prductsCollection.docs
-        .map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }))
+        .map((doc) => {
+          const productData = { ...doc.data(), id: doc.id };
+
+          return productData;
+        })
         .sort((a, b) => {
           const brandComparison = a.brand.localeCompare(b.brand);
           if (brandComparison !== 0) {
@@ -94,10 +95,10 @@ export const ProductProvider = ({ children }) => {
         setAllProducts(updatedProducts);
       })
       .catch((error) => {
-        console.log("Error adding review: ", error);
+        console.log("Error submitting review: ", error);
         return Promise.reject(
           new Error(
-            "Failed to add your review. Please try again or contact support"
+            "Failed to submit your review. Please try again or contact support"
           )
         );
       });
@@ -180,11 +181,13 @@ export const ProductProvider = ({ children }) => {
 
         const currentProduct = allProducts[randomIndex];
 
-        if (
-          currentProduct.type === product.type ||
-          currentProduct.brand === product.brand
-        ) {
-          relatedProducts.push(allProducts[randomIndex]);
+        if (currentProduct !== product) {
+          if (
+            currentProduct.type === product.type ||
+            currentProduct.brand === product.brand
+          ) {
+            relatedProducts.push(allProducts[randomIndex]);
+          }
         }
       }
 
@@ -198,17 +201,47 @@ export const ProductProvider = ({ children }) => {
     return relatedProducts;
   };
 
+  // Method to update stocks of products inside a cart when a purchase is made
+  const updateCartProductStock = (cart) => {
+    // Creating array of all stock updates
+    const stockUpdates = cart.map((item) => {
+      // Getting each product's doc ref and calculating the new stock
+      // (Users cannot input a quantity larger than the product's stock so there will never be negative stock)
+      const productRef = getProductDocRef(item.id);
+      const newStock = item.stock - item.quantity;
+
+      // Update the product's stock
+      return updateDoc(productRef, { stock: newStock })
+        .then(() => {
+          // Update local products list with the new product's stock
+          setAllProducts((prevProducts) =>
+            prevProducts.map((product) =>
+              product.id === item.id ? { ...product, stock: newStock } : product
+            )
+          );
+        })
+        .catch((error) => {
+          console.log("Error updating product stocks: ", error);
+          throw new Error(
+            "An unexpected error occured. Please try again or contact support."
+          );
+        });
+    });
+
+    // Return a Promise that completes when all updates are done
+    return Promise.all(stockUpdates);
+  };
+
   const globalVal = {
     productsLoading,
-    // selectedProductLoading,
     allProducts,
-    // selectedProduct,
     getProduct,
     getProductDocRef,
     addReview,
     removeReview,
     getRelatedProducts,
     getFeaturedProducts,
+    updateCartProductStock,
   };
 
   return (

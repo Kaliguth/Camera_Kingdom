@@ -15,6 +15,7 @@ import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import QuantityInput from "../utility/QuantityInput";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
+import noImage from "../../assets/noImage.png";
 
 const CartProductCard = ({ product }) => {
   const { removeFromCart, changeQuantity } = useCartContext();
@@ -58,7 +59,7 @@ const CartProductCard = ({ product }) => {
 
   return (
     <ListGroup.Item className="d-flex align-items-center">
-      <Row className="cart-card w-100">
+      <Row className="cart-product-card w-100">
         {/* Product Image */}
         <Col
           xs={3}
@@ -67,11 +68,11 @@ const CartProductCard = ({ product }) => {
         >
           <Link to={`/product/${product.id}`}>
             <Image
-              src={product.image1}
+              src={product.images[0] || { noImage }}
               alt={product.model}
               // fluid
               height={80}
-              className="featured-product-image p-2"
+              className="small-product-image p-2"
             />
           </Link>
         </Col>
@@ -99,7 +100,7 @@ const CartProductCard = ({ product }) => {
           <QuantityInput
             defaultValue={product.quantity}
             min={1}
-            max={100}
+            max={product.stock <= 100 ? product.stock : 100}
             step={1}
             onChange={(_, newQuantity) => handleQuantityChange(newQuantity)}
           />
@@ -140,7 +141,7 @@ const CartProductCard = ({ product }) => {
             <FaTrash color="red" size={22} />
           </Button>
         </Col>
-        <hr />
+        <hr className="ms-2" />
       </Row>
     </ListGroup.Item>
   );

@@ -2,14 +2,16 @@ import React, { createContext, useContext } from "react";
 import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
-import { ordersRef } from "../firebase/firestore";
+import { ordersRef, couponsRef } from "../firebase/firestore";
 import { addDoc, updateDoc } from "firebase/firestore";
+import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
 
 export const PurchaseProvider = ({ children }) => {
   const { currentUser, userData, userDocRef } = useAuthContext();
   const { cart, setCart, cartTotalPrice } = useCartContext();
+  const { updateCartProductStock } = useProductContext();
   const {
     validateEmail,
     validateName,
@@ -51,12 +53,12 @@ export const PurchaseProvider = ({ children }) => {
     return formatPrice(payment);
   };
 
-  // // Get order's total price plus shipping
-  // const finalPrice = (orderTotalPrice, shippingPrice) => {
-  //   const totalPrice = orderTotalPrice + shippingPrice;
+  // Get price after coupon discount
+  const discountedPrice = (totalPrice, discount) => {
+    const finalPrice = totalPrice * (1 - discount / 100);
 
-  //   return formatPrice(totalPrice);
-  // };
+    return formatPrice(finalPrice);
+  };
 
   // Method to create a new order document
   const createOrderDocument = (shippingDetails, paymentDetails) => {
@@ -164,37 +166,56 @@ export const PurchaseProvider = ({ children }) => {
 
     // Check if cofirm message is checked
     if (!confirm) {
-      return Promise.reject(new Error("Please confirm your information and check this box"));
+      return Promise.reject(
+        new Error("Please confirm your information and check this box")
+      );
     }
 
     // Create a new order document
     const newOrder = createOrderDocument(shippingDetails, paymentDetails);
 
     // Add the order to the orders collection in Firestore
-    return addDoc(ordersRef, newOrder).then(() => {
-      // Empty the user's cart in the app and firebase
-      return updateDoc(userDocRef, { cart: [] })
-        .then(() => {
-          setCart([]);
+    return addDoc(ordersRef, newOrder)
+      .then(() => {
+        // Update stock for each product in the cart
+        return updateCartProductStock(cart);
+      })
+      .then(() => {
+        // Empty the user's cart in the app and firebase
+        return updateDoc(userDocRef, { cart: [] })
+          .then(() => {
+            // Clear products from the cart state and local storage userData cart
+            setCart([]);
+            const updatedUserData = { ...userData, cart: [] };
+            localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
-          // Add the new order to the user's orders array
-          const currentOrders = userData.orders || [];
-          const updatedOrders = [...currentOrders, newOrder];
-          return updateDoc(userDocRef, {
-            orders: updatedOrders,
+            // Add the new order to the user's orders array
+            const currentOrders = userData.orders || [];
+            const updatedOrders = [...currentOrders, newOrder];
+            return updateDoc(userDocRef, {
+              orders: updatedOrders,
+            });
+          })
+          .catch((error) => {
+            console.log("Error completing order - document updates: ", error);
+            throw new Error(
+              "Failed to complete your order. Please try again or contact support"
+            );
           });
-        })
-        .catch((error) => {
-          alert("Failed to complete the order", error);
-        });
-    });
+      })
+      .catch((error) => {
+        console.log("Error completing order - product stocks: ", error);
+        throw new Error(
+          "Failed to complete your order. Please try again or contact support"
+        );
+      });
   };
 
   const globalVal = {
     shippingPrice,
-    orderTotalPrice,
     orderPayment,
-    // finalPrice,
+    orderTotalPrice,
+    discountedPrice,
     completeOrder,
   };
 

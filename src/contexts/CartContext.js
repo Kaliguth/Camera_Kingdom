@@ -7,7 +7,7 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartLoading, setCartLoading] = useState(true);
-  const { currentUser, userData, userDocRef } = useAuthContext();
+  const { currentUser, userData, setUserData, userDocRef } = useAuthContext();
   const { formatPrice } = useValidationContext();
   const [cart, setCart] = useState([]);
 
@@ -17,8 +17,8 @@ export const CartProvider = ({ children }) => {
 
       if (currentUser && userData?.cart) {
         setCart(userData.cart);
-        setCartLoading(false);
       }
+      setCartLoading(false);
     };
 
     fetchCartItems();
@@ -65,7 +65,14 @@ export const CartProvider = ({ children }) => {
           updatedCart = [...cart, { ...productToAdd, quantity: 1 }];
         }
 
+        // Update cart state, userData state and userData local storage object
         setCart(updatedCart);
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          cart: updatedCart,
+        }));
+        const updatedUserData = { ...userData, cart: updatedCart };
+        localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
         // Update user's cart in firestore
         await updateDoc(userDocRef, {
@@ -106,7 +113,14 @@ export const CartProvider = ({ children }) => {
           (product) => product.id !== productToRemove.id
         );
 
+        // Update cart state, userData state and userData local storage object
         setCart(updatedCart);
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          cart: updatedCart,
+        }));
+        const updatedUserData = { ...userData, cart: updatedCart };
+        localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
         // Update user's cart in firestore
         await updateDoc(userDocRef, {

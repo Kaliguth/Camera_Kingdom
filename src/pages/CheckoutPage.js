@@ -6,14 +6,20 @@ import { useCartContext } from "../contexts/CartContext";
 import { usePurchaseContext } from "../contexts/PurchaseContext";
 import { useValidationContext } from "../contexts/ValidationContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import CartProductCard from "../components/cart/CartProductCard";
 
-const PurchasePage = () => {
+const CheckoutPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const { cart, cartLoading } = useCartContext();
-  const { shippingPrice, orderTotalPrice, orderPayment, completeOrder } =
-    usePurchaseContext();
-  const { formatPrice } = useValidationContext();
+  const {
+    shippingPrice,
+    orderPayment,
+    orderTotalPrice,
+    discountedPrice,
+    completeOrder,
+  } = usePurchaseContext();
+  const { formatPrice, getCoupon } = useValidationContext();
   // Payment details
   const [cardHolderName, setCardHolderName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -29,6 +35,9 @@ const PurchasePage = () => {
   const [city, setCity] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("none");
   const [deliveryInfo, setDeliveryInfo] = useState("");
+  // Coupon
+  const [couponCode, setCouponCode] = useState("");
+  const [coupon, setCoupon] = useState(null);
   // Details confirmation
   const [confirm, setConfirm] = useState(false);
   // useNavigate
@@ -46,6 +55,7 @@ const PurchasePage = () => {
   const [cardNumberError, setCardNumberError] = useState("");
   const [expirationError, setExpirationError] = useState("");
   const [cvcError, setCvcError] = useState("");
+  const [couponError, setCouponError] = useState("");
   const [confirmError, setConfirmError] = useState("");
 
   // Method to reset the errors
@@ -62,6 +72,7 @@ const PurchasePage = () => {
     setCardNumberError("");
     setExpirationError("");
     setCvcError("");
+    setCouponError("");
     setConfirmError("");
   };
 
@@ -101,20 +112,16 @@ const PurchasePage = () => {
     } else if (errorMessage.includes("cvc")) {
       setCvcError(error.message);
       window.scrollTo(0, 1100);
+    } else if (errorMessage.includes("coupon")) {
+      setCouponError(error.message);
+      window.scrollTo(0, 1100);
     } else if (errorMessage.includes("confirm")) {
       setConfirmError(error.message);
       window.scrollTo(0, 1100);
     } else {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
-
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     setFullName(currentUser.displayName || "");
-  //     setEmail(currentUser.email || "");
-  //   }
-  // }, [currentUser]);
 
   // Const for total price with shipping
   const totalPricePlusShipping =
@@ -122,6 +129,24 @@ const PurchasePage = () => {
 
   const handleContinueShopping = () => {
     navigate("/categories");
+  };
+
+  const handleApplyCoupon = (e) => {
+    e.preventDefault();
+    resetErrors();
+
+    getCoupon(couponCode)
+      .then((coupon) => {
+        if (coupon === null || coupon === undefined) {
+          setCouponError("Invalid coupon code");
+        } else {
+          setCoupon(coupon);
+          toast.success("Coupon applied!");
+        }
+      })
+      .catch((error) => {
+        updateErrorMessage(error);
+      });
   };
 
   const handleCompleteOrder = (e) => {
@@ -150,7 +175,7 @@ const PurchasePage = () => {
 
     completeOrder(orderDetails, confirm)
       .then(() => {
-        alert("Order completed successfully!");
+        toast.success("Order completed successfully!");
         navigate("/");
       })
       .catch((error) => {
@@ -160,6 +185,33 @@ const PurchasePage = () => {
 
   if (userLoading || cartLoading) {
     return <Loader />;
+  }
+
+  if (!currentUser) {
+    return (
+      <Container>
+        <Row className="mt-4">
+          <Col>
+            <p>Please log in to start shopping</p>
+            <Button
+              variant="success"
+              size="lg"
+              className="m-4"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
+            <br />
+            <Button className="m-2" onClick={() => navigate(-1)}>
+              Go back
+            </Button>
+            <Button className="m-2" onClick={() => navigate("/")}>
+              Home
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+    );
   }
 
   return (
@@ -253,7 +305,7 @@ const PurchasePage = () => {
             <Col md={8}>
               <Card className="order-container">
                 <Card.Header>
-                  <h5 className="m-3">Shipment details</h5>
+                  <h5 className="m-3">Shipping details</h5>
                   <p>Please fill in the shipping information</p>
                   {/* <Container className="mt-4 d-flex justify-content-center"> */}
                 </Card.Header>
@@ -638,18 +690,66 @@ const PurchasePage = () => {
                     <Col>
                       <h6>Shipping:</h6>
                       <h6>Total price:</h6>
+                      {coupon && (
+                        <>
+                          <h6>Discount:</h6>
+                          <h6>Final price:</h6>
+                        </>
+                      )}
                     </Col>
                     <Col md={7} className="text-end">
                       <h6>
-                        <b>₪ {shippingPrice(deliveryOption)}</b>
+                        <b>₪{shippingPrice(deliveryOption)}</b>
                       </h6>
                       <h6>
                         {orderPayment(totalPricePlusShipping, numberOfPayments)}{" "}
                         × {numberOfPayments} ={" "}
                         <b>{formatPrice(totalPricePlusShipping)}</b>
                       </h6>
+                      {coupon && (
+                        <>
+                          <h6>
+                            <b>{coupon.discount}%</b>
+                          </h6>
+                          <h6>
+                            {formatPrice(totalPricePlusShipping)} -{" "}
+                            {coupon.discount}% ={" "}
+                            {discountedPrice(
+                              totalPricePlusShipping,
+                              coupon.discount
+                            )}
+                          </h6>
+                        </>
+                      )}
                     </Col>
                   </Row>
+
+                  <Form.Group className="mt-3">
+                    <Form.Label className="me-2">Coupon code:</Form.Label>
+                    <div className="d-flex align-items-center">
+                      <Form.Control
+                        className="form-controls me-2"
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        isInvalid={!!couponError}
+                      />
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={handleApplyCoupon}
+                        className="cart-buttons"
+                      >
+                        Apply coupon
+                      </Button>
+                    </div>
+                    <Form.Control.Feedback
+                      type="invalid"
+                      className="d-block mt-1"
+                    >
+                      <b>{couponError}</b>
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
                   <Form.Group
                     className="mt-3 text-start"
@@ -749,4 +849,4 @@ const PurchasePage = () => {
   );
 };
 
-export default PurchasePage;
+export default CheckoutPage;

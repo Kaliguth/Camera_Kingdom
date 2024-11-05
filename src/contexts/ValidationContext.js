@@ -1,5 +1,7 @@
 // Context for input validation and formatting methods
 import React, { createContext, useContext } from "react";
+import { couponsRef } from "../firebase/firestore";
+import { getDocs } from "firebase/firestore";
 
 const ValidationContext = createContext();
 
@@ -59,6 +61,38 @@ export const ValidationProvider = ({ children }) => {
     return cvcRegex.test(cvc) && cvc.length === 3;
   };
 
+  // Method to get a coupon with given code
+  const getCoupon = (code) => {
+    // Error handling if no code is given
+    if (!code || code.trim() === "")
+      return Promise.reject(new Error("Please fill in a coupon code"));
+
+    // Get all coupon docs from coupons collection
+    return getDocs(couponsRef)
+      .then((coupons) => {
+        // Variable to hold coupon data if found
+        let couponData = null;
+
+        // Go over all coupons to find coupon with the same code
+        coupons.forEach((coupon) => {
+          const currentCouponCode = coupon.data().code;
+          // If same code - save coupon data
+          if (currentCouponCode === code) {
+            couponData = coupon.data();
+          }
+        });
+
+        // Return the coupon data if found
+        // Null if not found
+        return couponData;
+      })
+      .catch((error) => {
+        console.log("Error checking coupon code: ", error);
+        // Return null if an error occured
+        return null;
+      });
+  };
+
   // Method to format price text with commas and currency sign
   const formatPrice = (price) => {
     const formattedPrice = price.toLocaleString("en-US", {
@@ -106,6 +140,7 @@ export const ValidationProvider = ({ children }) => {
     validateCreditCardNumber,
     validateExpirationDate,
     validateCvc,
+    getCoupon,
     formatPrice,
     smallSquareLogoStyle,
     largeSquareLogoStyle,

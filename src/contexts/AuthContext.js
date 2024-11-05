@@ -353,6 +353,7 @@ export const AuthProvider = ({ children }) => {
     userLoading,
     currentUser,
     userData,
+    setUserData,
     userDocRef,
     login,
     googleLogin,

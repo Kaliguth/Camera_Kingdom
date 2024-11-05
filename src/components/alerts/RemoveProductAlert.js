@@ -15,9 +15,12 @@ const RemoveProductAlert = (productName) => {
       return result.isConfirmed;
     })
     .catch((error) => {
-      console.log("Error showing product removal alert: ", error);
+      console.log(
+        "Error showing remove from cart confirmation message: ",
+        error
+      );
       throw new Error(
-        "An error occured while displaying the removal confirmation. Please try again or contact support"
+        "An unexpected error occured. Please try again or contact support"
       );
     });
 };

@@ -9,22 +9,22 @@ const FeaturedCard = ({ product }) => {
   const { formatPrice, smallSquareLogoStyle } = useValidationContext();
 
   return (
-    <Card className="featured-card">
+    <Card className="small-product-card">
       <Link to={`/product/${product.id}`} className="black-link-text">
         <Card.Img
           variant="top"
-          src={product.image1}
-          className="featured-product-image"
+          src={product.images[0]}
+          className="small-product-image"
         />
         <Card.Img
           variant="top"
           src={logo}
-          className="featured-product-brand-logo"
+          className="small-product-brand-logo"
           style={smallSquareLogoStyle(product.brand)}
         />
       </Link>
       <Card.Body>
-        <Card.Title className="featured-product-title">
+        <Card.Title className="small-product-title">
           <b>
             {product.brand} {product.model}
           </b>
@@ -34,7 +34,7 @@ const FeaturedCard = ({ product }) => {
         </Card.Text>
       </Card.Body>
       <Link to={`/product/${product.id}`}>
-        <Button variant="primary" size="sm" className="featured-product-button">
+        <Button variant="primary" size="sm" className="small-product-button">
           More details
         </Button>
       </Link>

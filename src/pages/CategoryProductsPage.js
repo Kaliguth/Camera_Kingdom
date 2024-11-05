@@ -16,7 +16,7 @@ const CategoryProductsPage = () => {
   );
 
   const categoryUpperCaseLetter =
-    category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+    category.charAt(0).toUpperCase() + category.slice(1);
 
   if (productsLoading) {
     return <Loader />;
@@ -43,19 +43,15 @@ const CategoryProductsPage = () => {
           ))}
         </Row>
       )}
-      <Row className="custom-centered-buttons-container">
-        <Button
-          className="m-2 custom-centered-buttons"
-          onClick={() => navigate(-1)}
-        >
-          Go back
-        </Button>
-        <Button
-          className="m-2 custom-centered-buttons"
-          onClick={() => navigate("/")}
-        >
-          Home
-        </Button>
+      <Row className="mt-4 mb-4">
+        <Col>
+          <Button className="m-2" onClick={() => navigate(-1)}>
+            Go back
+          </Button>
+          <Button className="m-2" onClick={() => navigate("/")}>
+            Home
+          </Button>
+        </Col>
       </Row>
     </Container>
   );

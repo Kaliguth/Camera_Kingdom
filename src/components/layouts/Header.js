@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuthContext } from "../../contexts/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Dropdown, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { PiListStar } from "react-icons/pi";
+import { BsCart2 } from "react-icons/bs";
 import logo from "../../assets/logo_small.png";
 import userImage from "../../assets/user-nobgnew.png";
-import { useAuthContext } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { userLoading, currentUser, userData, logout } = useAuthContext();
+  const [cartCount, setCartCount] = useState(
+    JSON.parse(localStorage.getItem("userData"))?.cart.length || 0
+  );
   const navigate = useNavigate();
-  // console.log(userData);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      setCartCount(JSON.parse(localStorage.getItem("userData"))?.cart?.length);
+    };
+
+    updateCartCount();
+  }, [localStorage.getItem("userData")]);
 
   const handleLogout = () => {
     logout()
@@ -35,38 +47,53 @@ const Header = () => {
           <Image src={logo} roundedCircle width={100} height={100} />
         </LinkContainer>
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
+      <Navbar.Toggle aria-controls="basic-navbar-nav" className="me-3" />
+      <Navbar.Collapse id="basic-navbar-nav" className="mt-2">
+        <Nav>
           <LinkContainer to="/">
-            <Nav.Link>
+            <Nav.Link className="me-3">
               <h5>Home</h5>
             </Nav.Link>
           </LinkContainer>
           <LinkContainer to="/categories">
-            <Nav.Link>
+            <Nav.Link className="me-3">
               <h5>Categories</h5>
             </Nav.Link>
           </LinkContainer>
           <LinkContainer to="/contactus">
-            <Nav.Link>
+            <Nav.Link className="me-3">
               <h5>Contact Us</h5>
             </Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/cart">
-            <Nav.Link>
-              <h5>Cart</h5>
-            </Nav.Link>
-          </LinkContainer>
-          {currentUser && (
-            <LinkContainer to="/wishlist">
-              <Nav.Link>
-                <h5>Wishlist</h5>
-              </Nav.Link>
-            </LinkContainer>
-          )}
         </Nav>
-        <Nav className="ml-auto">
+        <Nav className="ms-auto me-4">
+          {currentUser && (
+            <>
+              <LinkContainer to="/wishlist">
+                <Nav.Link className="d-flex align-items-center ms-auto me-3">
+                  <PiListStar
+                    size={25}
+                    color="cadetblue"
+                    style={{ marginTop: "-7px" }}
+                  />
+                  <h6 className="ms-2">Wishlist</h6>
+                </Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/cart">
+                <Nav.Link className="d-flex align-items-center ms-auto me-3">
+                  {userData && (
+                    <span className="cart-count-badge">{cartCount || "0"}</span>
+                  )}
+                  <BsCart2
+                    size={22}
+                    color="darkblue"
+                    style={{ marginTop: "-10px" }}
+                  />
+                  <h6 className="ms-2">Cart</h6>
+                </Nav.Link>
+              </LinkContainer>
+            </>
+          )}
           {!userLoading && currentUser ? (
             <>
               <Dropdown align="end">
@@ -120,7 +147,7 @@ const Header = () => {
           ) : (
             <LinkContainer to="/login">
               <Nav.Link>
-                <h5>Login/Register</h5>
+                <h6>Login/Register</h6>
               </Nav.Link>
             </LinkContainer>
           )}

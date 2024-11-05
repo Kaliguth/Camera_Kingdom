@@ -11,7 +11,6 @@ const CartPage = () => {
   const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
     useCartContext();
   const navigate = useNavigate();
-  console.log(cart);
 
   // let orderTotal = 0;
   // cart.forEach((product) => {
@@ -28,15 +27,19 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    navigate("/purchase");
+    navigate("/checkout");
   };
+
+  if (userLoading || cartLoading) {
+    return <Loader />;
+  }
 
   if (!currentUser) {
     return (
       <Container>
         <Row className="mt-4">
           <Col>
-            <p>Please log in to view your cart.</p>
+            <p>Please log in to view your cart</p>
             <Button
               variant="success"
               size="lg"
@@ -56,10 +59,6 @@ const CartPage = () => {
         </Row>
       </Container>
     );
-  }
-
-  if (userLoading || cartLoading) {
-    return <Loader />;
   }
 
   return (

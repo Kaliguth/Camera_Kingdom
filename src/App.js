@@ -19,7 +19,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import CartPage from "./pages/CartPage";
-import PurchasePage from "./pages/PurchasePage";
+import CheckoutPage from "./pages/CheckoutPage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
 import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -75,7 +75,7 @@ function App() {
                       />
                       <Route path="contactus" element={<ContactUsPage />} />
                       <Route path="cart" element={<CartPage />} />
-                      <Route path="purchase" element={<PurchasePage />} />
+                      <Route path="checkout" element={<CheckoutPage />} />
                       <Route path="login" element={<LoginRegisterPage />} />
                       <Route path="wishlist" element={<WishlistPage />} />
                       <Route path="profile" element={<ProfilePage />} />

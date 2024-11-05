@@ -2,14 +2,14 @@ import React from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { useCartContext } from "../../contexts/CartContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
-import { Button, Card, Row, Col } from "react-bootstrap";
+import { Button, Card, Row, Col, ListGroup, Image } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
-const ProductCard = ({ product }) => {
+const ProductDetailsCard = ({ product }) => {
   const { currentUser } = useAuthContext();
   const { addToCart } = useCartContext();
   const { formatPrice, largeSquareLogoStyle } = useValidationContext();
@@ -18,11 +18,6 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = () => {
     if (!currentUser) {
-      // toast.warning(
-      //   "Please login or create an account to add products to your cart"
-      // );
-      // return;
-
       LoginToPurchaseAlert()
         .then((isConfirmed) => {
           if (isConfirmed) {
@@ -75,66 +70,57 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Card className="product-card">
-      <Link to={`/product/${product.id}`} className="black-link-text">
-        <Card.Img
-          variant="top"
-          src={product.images[0]}
-          className="product-image"
-        />
-        <Card.Img
-          src={logo}
-          className="product-brand-logo"
-          style={largeSquareLogoStyle(product.brand)}
-        />
-      </Link>
-
-      <Card.Body>
-        <div>
-          <Card.Title className="mt-2">
-            <b>{product.brand}</b> <br /> {product.model}
-          </Card.Title>
-          <Card.Text className="price-text">
-            {formatPrice(product.price)}
-          </Card.Text>
-        </div>
-      </Card.Body>
-
-      <div className="mt-4">
+    <Card>
         <Row>
-          <Col className="p-1">
-            <Button
-              variant="primary"
-              size="md"
-              className="product-buttons"
-              onClick={handleAddToCart}
-            >
-              Add to cart
-            </Button>
+          <Col md={6} className="product-images-container">
+            <Image
+              className="mt-5"
+              src={product.images[0]}
+              fluid
+              style={{ maxHeight: "300px", width: "auto" }}
+            />
           </Col>
-          <Col className="p-1">
-            <Link to={`/product/${product.id}`}>
-              <Button variant="primary" size="md" className="product-buttons">
-                More details
+          <Col md={6} className="mt-4 pe-4">
+            <h2>
+              <b>
+                {product.brand} {product.model}
+              </b>
+            </h2>
+
+            <hr />
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <strong>Brand:</strong> {product.brand}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Model:</strong> {product.model}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Type:</strong> {product.type}
+              </ListGroup.Item>
+            </ListGroup>
+            <hr />
+
+            <h5><b>About this product:</b></h5>
+            <small>{product.description}</small>
+            <hr />
+
+            <div className="d-inline-block mt-0 mb-3">
+              <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
+              <Button variant="success" size="lg" className="me-2" onClick={handleBuyNow}>
+                Buy now
               </Button>
-            </Link>
+              <Button variant="primary" size="lg" className="me-2" onClick={handleAddToCart}>
+                Add to cart
+              </Button>
+              <Button variant="secondary" size="lg">
+                Add to Wishlist
+              </Button>
+            </div>
           </Col>
         </Row>
-        <Row>
-          <Col className="p-1">
-            <Button
-              variant="success"
-              size="lg"
-              className="product-buttons w-100 mt-2"
-              onClick={handleBuyNow}
-            >
-              Buy now
-            </Button>
-          </Col>
-        </Row>
-      </div>
-    </Card>
+      </Card>
   );
 };
 
-export default ProductCard;
+export default ProductDetailsCard;
