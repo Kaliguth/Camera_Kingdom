@@ -39,7 +39,7 @@ export const CartProvider = ({ children }) => {
       totalPrice += product.price * product.quantity;
     });
 
-    return formatPrice(totalPrice);
+    return totalPrice;
   };
 
   const addToCart = async (productToAdd) => {

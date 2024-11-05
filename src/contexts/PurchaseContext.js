@@ -19,7 +19,7 @@ export const PurchaseProvider = ({ children }) => {
     validateCreditCardNumber,
     validateExpirationDate,
     validateCvc,
-    formatPrice,
+    // formatPrice,
   } = useValidationContext();
 
   // Get order's total price (shipping excluded)
@@ -50,25 +50,31 @@ export const PurchaseProvider = ({ children }) => {
   const orderPayment = (totalPrice, numberOfPayments) => {
     const payment = totalPrice / numberOfPayments;
 
-    return formatPrice(payment);
+    return payment;
   };
 
   // Get price after coupon discount
   const discountedPrice = (totalPrice, discount) => {
     const finalPrice = totalPrice * (1 - discount / 100);
 
-    return formatPrice(finalPrice);
+    return finalPrice;
   };
 
   // Method to create a new order document
   const createOrderDocument = (shippingDetails, paymentDetails) => {
+    const orderTotalPrice =
+      cartTotalPrice() + shippingPrice(shippingDetails.deliveryOption);
+
     const order = {
       purchase: {
         products: cart,
+        coupon: paymentDetails.coupon?.code || null,
         shippingPrice: shippingPrice(shippingDetails.deliveryOption),
         productsPrice: cartTotalPrice(),
-        totalPrice:
-          cartTotalPrice() + shippingPrice(shippingDetails.deliveryOption),
+        totalPrice: orderTotalPrice,
+        discountedPrice:
+          discountedPrice(orderTotalPrice, paymentDetails.coupon?.discount) ||
+          orderTotalPrice,
         date: new Date().toDateString(),
       },
       customer: {

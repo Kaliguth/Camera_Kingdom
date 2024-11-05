@@ -5,11 +5,13 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { useCartContext } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import CartProductCard from "../components/cart/CartProductCard";
+import { useValidationContext } from "../contexts/ValidationContext";
 
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
     useCartContext();
+    const { formatPrice } = useValidationContext();
   const navigate = useNavigate();
 
   // let orderTotal = 0;
@@ -123,7 +125,7 @@ const CartPage = () => {
                     </Col>
                     <Col className="text-end">
                       <h6>
-                        <b>{cartTotalPrice()}</b>
+                        <b>{formatPrice(cartTotalPrice())}</b>
                       </h6>
                     </Col>
                   </Row>
