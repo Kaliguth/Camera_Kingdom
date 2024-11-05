@@ -250,6 +250,17 @@
   margin: 10px auto;
 }
 
+.out-of-stock-container {
+  background-color: firebrick;
+  justify-content: center;
+  border: solid black;
+  border-radius: 20px;
+  color: mintcream;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
 .product-buttons-container {
   position: absolute;
   bottom: 10px;
@@ -291,6 +302,10 @@
 }
 
 /* Product details */
+.product-details-card {
+  background-color: ghostwhite;
+}
+
 .product-images-container {
   border-right: thick solid #5e5e5e;
 }

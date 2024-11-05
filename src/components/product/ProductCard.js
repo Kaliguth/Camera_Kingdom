@@ -6,7 +6,6 @@ import { Button, Card, Row, Col } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
 const ProductCard = ({ product }) => {
@@ -100,7 +99,12 @@ const ProductCard = ({ product }) => {
         </div>
       </Card.Body>
 
-      <div className="mt-4">
+      <div className="mt-2">
+      {!product.stock || product.stock <= 0 ? (
+          <div className="out-of-stock-container">
+            <span>OUT OF STOCK</span>
+          </div>
+        ) : null}
         <Row>
           <Col className="p-1">
             <Button
@@ -108,6 +112,7 @@ const ProductCard = ({ product }) => {
               size="md"
               className="product-buttons"
               onClick={handleAddToCart}
+              disabled={!product.stock || product.stock <= 0}
             >
               Add to cart
             </Button>
@@ -127,6 +132,7 @@ const ProductCard = ({ product }) => {
               size="lg"
               className="product-buttons w-100 mt-2"
               onClick={handleBuyNow}
+              disabled={!product.stock || product.stock <= 0}
             >
               Buy now
             </Button>

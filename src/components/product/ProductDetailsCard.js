@@ -70,56 +70,77 @@ const ProductDetailsCard = ({ product }) => {
   };
 
   return (
-    <Card>
-        <Row>
-          <Col md={6} className="product-images-container">
-            <Image
-              className="mt-5"
-              src={product.images[0]}
-              fluid
-              style={{ maxHeight: "300px", width: "auto" }}
-            />
-          </Col>
-          <Col md={6} className="mt-4 pe-4">
-            <h2>
-              <b>
-                {product.brand} {product.model}
-              </b>
-            </h2>
+    <Card className="product-details-card">
+      <Row>
+        <Col md={6} className="product-images-container">
+          <Image
+            className="mt-5"
+            src={product.images[0]}
+            fluid
+            style={{ maxHeight: "300px", width: "auto" }}
+          />
+        </Col>
+        <Col md={6} className="mt-4 pe-4">
+          <h2>
+            <b>
+              {product.brand} {product.model}
+            </b>
+          </h2>
 
-            <hr />
-            <ListGroup variant="flush">
-              <ListGroup.Item>
-                <strong>Brand:</strong> {product.brand}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <strong>Model:</strong> {product.model}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <strong>Type:</strong> {product.type}
-              </ListGroup.Item>
-            </ListGroup>
-            <hr />
+          <hr />
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <strong>Brand:</strong> {product.brand}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Model:</strong> {product.model}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Type:</strong> {product.type}
+            </ListGroup.Item>
+          </ListGroup>
+          <hr />
 
-            <h5><b>About this product:</b></h5>
-            <small>{product.description}</small>
-            <hr />
+          <h5>
+            <b>About this product:</b>
+          </h5>
+          <small>{product.description}</small>
+          <hr />
 
-            <div className="d-inline-block mt-0 mb-3">
-              <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
-              <Button variant="success" size="lg" className="me-2" onClick={handleBuyNow}>
-                Buy now
-              </Button>
-              <Button variant="primary" size="lg" className="me-2" onClick={handleAddToCart}>
-                Add to cart
-              </Button>
-              <Button variant="secondary" size="lg">
-                Add to Wishlist
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Card>
+          <div className="mt-2">
+            {!product.stock || product.stock <= 0 ? (
+              <div className="out-of-stock-container">
+                <span>OUT OF STOCK</span>
+              </div>
+            ) : null}
+          </div>
+          <div className="d-inline-block mt-0 mb-3">
+            <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
+            <Button
+              variant="success"
+              size="lg"
+              className="me-2"
+              onClick={handleBuyNow}
+              disabled={!product.stock || product.stock <= 0}
+            >
+              Buy now
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="me-2"
+              onClick={handleAddToCart}
+              disabled={!product.stock || product.stock <= 0}
+            >
+              Add to cart
+            </Button>
+            <Button variant="secondary" size="lg">
+              Add to Wishlist
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </Card>
   );
 };
 
