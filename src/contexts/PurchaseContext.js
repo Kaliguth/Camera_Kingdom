@@ -191,14 +191,17 @@ export const PurchaseProvider = ({ children }) => {
         return updateDoc(userDocRef, { cart: [] })
           .then(() => {
             // Clear products from the cart state and local storage userData cart
+            // Also add new order to local storage orders
+            const currentUserData = JSON.parse(localStorage.getItem("userData")) || {};
+            const currentOrders = currentUserData.orders || [];
+            const updatedOrders = [...currentOrders, newOrder];
+            const updatedUserData = { ...currentUserData, cart: [], orders: updatedOrders };
             setCart([]);
-            const updatedUserData = { ...userData, cart: [] };
             localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
-            // Add the new order to the user's orders array
-            const currentOrders = userData.orders || [];
-            const updatedOrders = [...currentOrders, newOrder];
+            // Add the new order to the local storage userData and user's orders array
             return updateDoc(userDocRef, {
+              cart: [],
               orders: updatedOrders,
             });
           })
