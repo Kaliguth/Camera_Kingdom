@@ -1,14 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
-import { useValidationContext } from "./ValidationContext";
 import { updateDoc } from "firebase/firestore";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { currentUser, userData, updateUserData, userDocRef } =
+    useAuthContext();
   const [cartLoading, setCartLoading] = useState(true);
-  const { currentUser, userData, setUserData, userDocRef } = useAuthContext();
-  const { formatPrice } = useValidationContext();
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -66,13 +65,14 @@ export const CartProvider = ({ children }) => {
         }
 
         // Update cart state, userData state and userData local storage object
-        setCart(updatedCart);
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          cart: updatedCart,
-        }));
         const updatedUserData = { ...userData, cart: updatedCart };
-        localStorage.setItem("userData", JSON.stringify(updatedUserData));
+        // setUserData((prevUserData) => ({
+        //   ...prevUserData,
+        //   cart: updatedCart,
+        // }));
+        // localStorage.setItem("userData", JSON.stringify(updatedUserData));
+        updateUserData(updatedUserData);
+        setCart(updatedCart);
 
         // Update user's cart in firestore
         await updateDoc(userDocRef, {
@@ -114,13 +114,14 @@ export const CartProvider = ({ children }) => {
         );
 
         // Update cart state, userData state and userData local storage object
-        setCart(updatedCart);
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          cart: updatedCart,
-        }));
         const updatedUserData = { ...userData, cart: updatedCart };
-        localStorage.setItem("userData", JSON.stringify(updatedUserData));
+        // setUserData((prevUserData) => ({
+        //   ...prevUserData,
+        //   cart: updatedCart,
+        // }));
+        // localStorage.setItem("userData", JSON.stringify(updatedUserData));
+        updateUserData(updatedUserData);
+        setCart(updatedCart);
 
         // Update user's cart in firestore
         await updateDoc(userDocRef, {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Navbar, Nav, Dropdown, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { PiListStar } from "react-icons/pi";
@@ -11,17 +11,17 @@ import userImage from "../../assets/user-nobgnew.png";
 const Header = () => {
   const { userLoading, currentUser, userData, logout } = useAuthContext();
   const [cartCount, setCartCount] = useState(
-    JSON.parse(localStorage.getItem("userData"))?.cart.length || 0
+    userData?.cart?.length || 0
   );
   const navigate = useNavigate();
 
   useEffect(() => {
     const updateCartCount = () => {
-      setCartCount(JSON.parse(localStorage.getItem("userData"))?.cart?.length);
+      setCartCount(userData?.cart?.length);
     };
 
     updateCartCount();
-  }, [localStorage.getItem("userData")]);
+  }, [userData]);
 
   const handleLogout = () => {
     logout()

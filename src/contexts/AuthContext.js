@@ -82,6 +82,12 @@ export const AuthProvider = ({ children }) => {
     return () => removeAuthListener();
   }, []);
 
+  // Method to update the userData state and local storage object after making changes (cart, orders, etc...)
+  const updateUserData = (newData) => {
+    setUserData(newData);
+    localStorage.setItem("userData", JSON.stringify(newData));
+  };
+
   // Method to create a new user document
   const createUserDocument = async (user) => {
     const docRef = doc(usersRef, user.uid);
@@ -353,8 +359,8 @@ export const AuthProvider = ({ children }) => {
     userLoading,
     currentUser,
     userData,
-    setUserData,
     userDocRef,
+    updateUserData,
     login,
     googleLogin,
     register,

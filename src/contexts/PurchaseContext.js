@@ -2,14 +2,15 @@ import React, { createContext, useContext } from "react";
 import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
-import { ordersRef, couponsRef } from "../firebase/firestore";
+import { ordersRef } from "../firebase/firestore";
 import { addDoc, updateDoc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
 
 export const PurchaseProvider = ({ children }) => {
-  const { currentUser, userData, userDocRef } = useAuthContext();
+  const { currentUser, userData, updateUserData, userDocRef } =
+    useAuthContext();
   const { cart, setCart, cartTotalPrice } = useCartContext();
   const { updateCartProductStock } = useProductContext();
   const {
@@ -192,16 +193,20 @@ export const PurchaseProvider = ({ children }) => {
           .then(() => {
             // Clear products from the cart state and local storage userData cart
             // Also add new order to local storage orders
-            const currentUserData = JSON.parse(localStorage.getItem("userData")) || {};
-            const currentOrders = currentUserData.orders || [];
+            // const currentUserData = JSON.parse(localStorage.getItem("userData"));
+            const currentOrders = userData.orders;
             const updatedOrders = [...currentOrders, newOrder];
-            const updatedUserData = { ...currentUserData, cart: [], orders: updatedOrders };
+            const updatedUserData = {
+              ...userData,
+              cart: [],
+              orders: updatedOrders,
+            };
+            updateUserData(updatedUserData);
             setCart([]);
-            localStorage.setItem("userData", JSON.stringify(updatedUserData));
+            // localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
             // Add the new order to the local storage userData and user's orders array
             return updateDoc(userDocRef, {
-              cart: [],
               orders: updatedOrders,
             });
           })

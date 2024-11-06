@@ -615,47 +615,64 @@ const CheckoutPage = () => {
                         </option>
                         <option value="2">
                           2 Payments (2 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 2))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 2))}
+                          )
                         </option>
                         <option value="3">
                           3 Payments (3 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 3))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 3))}
+                          )
                         </option>
                         <option value="4">
                           4 Payments (4 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 4))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 4))}
+                          )
                         </option>
                         <option value="5">
                           5 Payments (5 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 5))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 5))}
+                          )
                         </option>
                         <option value="6">
                           6 Payments (6 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 6))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 6))}
+                          )
                         </option>
                         <option value="7">
                           7 Payments (7 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 7))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 7))}
+                          )
                         </option>
                         <option value="8">
                           8 Payments (8 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 8))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 8))}
+                          )
                         </option>
                         <option value="9">
                           9 Payments (9 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 9))})
+                          {formatPrice(orderPayment(totalPricePlusShipping, 9))}
+                          )
                         </option>
                         <option value="10">
                           10 Payments (10 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 10))})
+                          {formatPrice(
+                            orderPayment(totalPricePlusShipping, 10)
+                          )}
+                          )
                         </option>
                         <option value="11">
                           11 Payments (11 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 11))})
+                          {formatPrice(
+                            orderPayment(totalPricePlusShipping, 11)
+                          )}
+                          )
                         </option>
                         <option value="12">
                           12 Payments (12 ×{" "}
-                          {formatPrice(orderPayment(totalPricePlusShipping, 12))})
+                          {formatPrice(
+                            orderPayment(totalPricePlusShipping, 12)
+                          )}
+                          )
                         </option>
                       </Form.Select>
                     </Form.Group>
@@ -703,7 +720,9 @@ const CheckoutPage = () => {
                         <b>₪{shippingPrice(deliveryOption)}</b>
                       </h6>
                       <h6>
-                        {formatPrice(orderPayment(totalPricePlusShipping, numberOfPayments))}{" "}
+                        {formatPrice(
+                          orderPayment(totalPricePlusShipping, numberOfPayments)
+                        )}{" "}
                         × {numberOfPayments} ={" "}
                         <b>{formatPrice(totalPricePlusShipping)}</b>
                       </h6>
@@ -715,11 +734,15 @@ const CheckoutPage = () => {
                           <h6>
                             {formatPrice(totalPricePlusShipping)} -{" "}
                             {coupon.discount}% ={" "}
-                            <b>{formatPrice(discountedPrice(
-                              totalPricePlusShipping,
-                              coupon.discount
-                            ))}
-                          </b></h6>
+                            <b>
+                              {formatPrice(
+                                discountedPrice(
+                                  totalPricePlusShipping,
+                                  coupon.discount
+                                )
+                              )}
+                            </b>
+                          </h6>
                         </>
                       )}
                     </Col>
