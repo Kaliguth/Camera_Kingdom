@@ -45,6 +45,9 @@ export const CartProvider = ({ children }) => {
     if (currentUser) {
       // Update the cart array with the newly added product
       try {
+        if (productToAdd.stock === 0) {
+          return Promise.reject(new Error("Product is out of stock"));
+        }
         // Check if the added product is found inside the cart
         const existingProduct = cart.find(
           (product) => product.id === productToAdd.id

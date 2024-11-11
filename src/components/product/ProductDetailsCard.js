@@ -1,20 +1,44 @@
 import React from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { useCartContext } from "../../contexts/CartContext";
+import { useProductContext } from "../../contexts/ProductContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
 import { Button, Card, Row, Col, ListGroup, Image } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import { AiOutlineLike, AiFillLike } from "react-icons/ai";
+import LoginToLikeAlert from "../alerts/LoginToLikeAlert";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
 const ProductDetailsCard = ({ product }) => {
   const { currentUser } = useAuthContext();
   const { addToCart } = useCartContext();
+  const { updateProductLikes } = useProductContext();
   const { formatPrice, largeSquareLogoStyle } = useValidationContext();
   const logo = logoMap[product.brand] || null;
   const navigate = useNavigate();
+
+  const handleLike = () => {
+    if (!currentUser) {
+      LoginToLikeAlert()
+        .then((isConfirmed) => {
+          if (isConfirmed) {
+            toast.info("Moving to login page");
+            navigate("/login");
+          }
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+
+      return;
+    }
+
+    updateProductLikes(product, currentUser.uid).catch((error) => {
+      toast.error(error.message);
+    });
+  };
 
   const handleAddToCart = () => {
     if (!currentUser) {
@@ -37,7 +61,7 @@ const ProductDetailsCard = ({ product }) => {
         toast.success(`${product.model} added to your cart`);
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(error.message);
       });
   };
 
@@ -65,7 +89,7 @@ const ProductDetailsCard = ({ product }) => {
         navigate("/checkout");
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(error.message);
       });
   };
 
@@ -86,6 +110,27 @@ const ProductDetailsCard = ({ product }) => {
               {product.brand} {product.model}
             </b>
           </h2>
+          <Button variant="outline-primary" size="sm" onClick={handleLike}>
+            {!product.likes?.includes(currentUser.uid) ? (
+              <AiOutlineLike
+                size={20}
+                className="me-2"
+                style={{ marginTop: "-5px" }}
+              />
+            ) : (
+              <AiFillLike
+                size={20}
+                className="me-2"
+                style={{ marginTop: "-5px" }}
+              />
+            )}
+            {!product.likes?.includes(currentUser.uid) ? (
+              <>Like</>
+            ) : (
+              <>Unlike</>
+            )}
+          </Button>
+          <h6 className="d-inline ms-3">{product.likes?.length} likes</h6>
 
           <hr />
           <ListGroup variant="flush">
@@ -112,9 +157,13 @@ const ProductDetailsCard = ({ product }) => {
               <div className="out-of-stock-container">
                 <span>OUT OF STOCK</span>
               </div>
+            ) : product.stock < 50 ? (
+              <div className="low-stock-container">
+                <span>ONLY {product.stock} LEFT IN STOCK!</span>
+              </div>
             ) : null}
           </div>
-          <div className="d-inline-block mt-0 mb-3">
+          <div className="mb-3">
             <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
             <Button
               variant="success"

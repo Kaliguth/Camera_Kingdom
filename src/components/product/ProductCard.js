@@ -41,7 +41,7 @@ const ProductCard = ({ product }) => {
         toast.success(`${product.model} added to your cart`);
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(error.message);
       });
   };
 
@@ -100,9 +100,13 @@ const ProductCard = ({ product }) => {
       </Card.Body>
 
       <div className="mt-2">
-      {!product.stock || product.stock <= 0 ? (
+        {!product.stock || product.stock <= 0 ? (
           <div className="out-of-stock-container">
             <span>OUT OF STOCK</span>
+          </div>
+        ) : product.stock < 50 ? (
+          <div className="low-stock-container">
+            <span>ONLY {product.stock} LEFT IN STOCK!</span>
           </div>
         ) : null}
         <Row>

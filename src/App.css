@@ -252,12 +252,20 @@
 
 .out-of-stock-container {
   background-color: firebrick;
+  color: mintcream;
   justify-content: center;
   border: solid black;
   border-radius: 20px;
-  color: mintcream;
   font-weight: bold;
   font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.low-stock-container {
+  color: crimson;
+  display: inline-block;
+  justify-content: center;
+  font-weight: bold;
   margin-bottom: 20px;
 }
 

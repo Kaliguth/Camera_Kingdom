@@ -8,16 +8,11 @@ import CartProductCard from "../components/cart/CartProductCard";
 
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
-  const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
-    useCartContext();
+  const { cart, cartLoading } = useCartContext();
   const navigate = useNavigate();
 
   const handleContinueShopping = () => {
     navigate("/categories");
-  };
-
-  const handleCheckout = () => {
-    navigate("/checkout");
   };
 
   if (userLoading || cartLoading) {

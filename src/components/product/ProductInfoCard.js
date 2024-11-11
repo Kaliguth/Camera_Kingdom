@@ -20,8 +20,8 @@ const ProductInfoCard = ({ product }) => {
         <h6>
           <u>{productSpecs[0]?.name}</u>
         </h6>
-        {productSpecs[0]?.text.map((text) => {
-          return <p>{text}</p>;
+        {productSpecs[0]?.text.map((text, index) => {
+          return <p key={index}>{text}</p>;
         })}
         <hr />
       </Row>
@@ -51,7 +51,13 @@ const ProductInfoCard = ({ product }) => {
           })}
         </Col>
 
-        <Col xs="auto" sm="auto" md="auto" lg="auto" className="d-flex justify-content-center">
+        <Col
+          xs="auto"
+          sm="auto"
+          md="auto"
+          lg="auto"
+          className="d-flex justify-content-center"
+        >
           <span
             style={{
               borderLeft: "2px solid #ccc",

@@ -29,6 +29,15 @@ export const ProductProvider = ({ children }) => {
           return a.model.localeCompare(b.model);
         });
 
+      // // Update each document to set likes as an empty array
+      // await Promise.all(
+      //   sortedProducts.map((product) =>
+      //     updateDoc(doc(productsRef, product.id), {
+      //       likes: [],
+      //     })
+      //   )
+      // );
+
       setAllProducts(sortedProducts);
       setProductsLoading(false);
     };
@@ -232,6 +241,31 @@ export const ProductProvider = ({ children }) => {
     return Promise.all(stockUpdates);
   };
 
+  // Method to update a product likes
+  const updateProductLikes = (product, userId) => {
+    const productRef = getProductDocRef(product.id);
+    const updatedLikes = product.likes?.includes(userId)
+      ? product.likes.filter((like) => like !== userId)
+      : [...product.likes, userId];
+
+    return updateDoc(productRef, { likes: updatedLikes })
+      .then(() => {
+        setAllProducts((prevProducts) =>
+          prevProducts.map((currentProduct) =>
+            currentProduct.id === product.id
+              ? { ...currentProduct, likes: updatedLikes }
+              : currentProduct
+          )
+        );
+      })
+      .catch((error) => {
+        console.log("Error updating product likes: ", error);
+        throw new Error(
+          "Failed to like the product. Please try again or contact support."
+        );
+      });
+  };
+
   const globalVal = {
     productsLoading,
     allProducts,
@@ -242,6 +276,7 @@ export const ProductProvider = ({ children }) => {
     getRelatedProducts,
     getFeaturedProducts,
     updateCartProductStock,
+    updateProductLikes,
   };
 
   return (
