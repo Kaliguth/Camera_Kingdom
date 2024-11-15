@@ -32,6 +32,7 @@ import OrderManagement from "./components/OrderManagement";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { WishlistProvider } from "./contexts/WishlistContext";
 
 // Layout Component to contain all layour components
 const Layout = () => (
@@ -62,46 +63,48 @@ function App() {
       <ValidationProvider>
         <AuthProvider>
           <ProductProvider>
-            <CartProvider>
-              <PurchaseProvider>
-                <Router>
-                  <Routes>
-                    <Route path="/" element={<Layout />}>
-                      <Route index element={<HomePage />} />
-                      <Route path="categories" element={<CategoriesPage />} />
-                      <Route
-                        path="categories/:category"
-                        element={<CategoryProductsPage />}
-                      />
-                      <Route path="contactus" element={<ContactUsPage />} />
-                      <Route path="cart" element={<CartPage />} />
-                      <Route path="checkout" element={<CheckoutPage />} />
-                      <Route path="login" element={<LoginRegisterPage />} />
-                      <Route path="wishlist" element={<WishlistPage />} />
-                      <Route path="profile" element={<ProfilePage />} />
-                      <Route path="orders" element={<OrdersPage />} />
-                      <Route
-                        path="product/:id"
-                        element={<ProductDetailsPage />}
-                      />
-                      <Route path="/manager" element={<ManagerDashboard />} />
-                      <Route
-                        path="/manager/users"
-                        element={<UserManagement />}
-                      />
-                      <Route
-                        path="/manager/products"
-                        element={<ProductManagement />}
-                      />
-                      <Route
-                        path="/manager/orders"
-                        element={<OrderManagement />}
-                      />
-                    </Route>
-                  </Routes>
-                </Router>
-              </PurchaseProvider>
-            </CartProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <PurchaseProvider>
+                  <Router>
+                    <Routes>
+                      <Route path="/" element={<Layout />}>
+                        <Route index element={<HomePage />} />
+                        <Route path="categories" element={<CategoriesPage />} />
+                        <Route
+                          path="categories/:category"
+                          element={<CategoryProductsPage />}
+                        />
+                        <Route path="contactus" element={<ContactUsPage />} />
+                        <Route path="cart" element={<CartPage />} />
+                        <Route path="checkout" element={<CheckoutPage />} />
+                        <Route path="login" element={<LoginRegisterPage />} />
+                        <Route path="wishlist" element={<WishlistPage />} />
+                        <Route path="profile" element={<ProfilePage />} />
+                        <Route path="orders" element={<OrdersPage />} />
+                        <Route
+                          path="product/:id"
+                          element={<ProductDetailsPage />}
+                        />
+                        <Route path="/manager" element={<ManagerDashboard />} />
+                        <Route
+                          path="/manager/users"
+                          element={<UserManagement />}
+                        />
+                        <Route
+                          path="/manager/products"
+                          element={<ProductManagement />}
+                        />
+                        <Route
+                          path="/manager/orders"
+                          element={<OrderManagement />}
+                        />
+                      </Route>
+                    </Routes>
+                  </Router>
+                </PurchaseProvider>
+              </CartProvider>
+            </WishlistProvider>
           </ProductProvider>
         </AuthProvider>
       </ValidationProvider>

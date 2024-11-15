@@ -1,61 +1,54 @@
 import React from "react";
-import { useCartContext } from "../../contexts/CartContext";
+// import { useWishlistContext } from "../../contexts/WishlistContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
+import { useCartContext } from "../../contexts/CartContext";
+import { useWishlistContext } from "../../contexts/WishlistContext";
 import {
   ListGroup,
-  Container,
   Row,
   Col,
-  Card,
-  Button,
   Image,
+  Button,
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
-import QuantityInput from "../utility/QuantityInput";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
 import noImage from "../../assets/noImage.png";
 
-const CartProductCard = ({ product }) => {
-  const { removeFromCart, changeQuantity } = useCartContext();
+const WishlistProductCard = ({ product }) => {
+  const { removeFromWishlist } = useWishlistContext();
+  const { addToCart } = useCartContext();
   const { formatPrice } = useValidationContext();
 
-  // Remove from cart tooltip when hovering over remove button
+  // Remove from wishlist tooltip when hovering over remove button
   const removeProductTooltip = (props) => (
-    <Tooltip {...props}>
-      Remove from cart
-    </Tooltip>
+    <Tooltip {...props}>Remove from wishlist</Tooltip>
   );
 
-  const handleQuantityChange = (newQuantity) => {
-    changeQuantity(product.id, newQuantity)
+  const handleAddToCart = () => {
+    addToCart(product)
       .then(() => {
-        console.log(`Quantity change for ${product.model}: ${newQuantity}`);
+        toast.success(`${product.model} added to your cart`);
       })
       .catch((error) => {
-        // Show warning if invalid quantity or error if quantity change failed
-        if (!error.message.includes("Failed")) {
-          toast.warning(error.message);
-        } else {
-          toast.error(error.message);
-        }
+        toast.error(error.message);
       });
   };
 
-  const handleRemoveFromCart = () => {
+  const handleRemoveFromWishlist = () => {
     RemoveProductAlert(product.model)
       .then((isConfirmed) => {
         if (isConfirmed) {
-          return removeFromCart(product);
+          return removeFromWishlist(product);
         } else {
           throw new Error("canceled");
         }
       })
       .then(() => {
-        toast.info(`${product.model} removed from your cart`);
+        toast.info(`${product.model} removed from your wishlist`);
       })
       .catch((error) => {
         if (error.message === "canceled") {
@@ -73,11 +66,11 @@ const CartProductCard = ({ product }) => {
         <Col
           xs={3}
           md={2}
-          className="d-flex flex-column justify-content-center"
+          className="d-flex flex-column justify-content-between"
         >
           <Link to={`/product/${product.id}`}>
             <Image
-              src={product.images[0] || { noImage }}
+              src={product.images[0] || noImage}
               alt={product.model}
               height={80}
               className="small-product-image p-2"
@@ -88,7 +81,7 @@ const CartProductCard = ({ product }) => {
         {/* Product Name */}
         <Col
           xs={4}
-          md={3}
+          md={4}
           className="d-flex flex-column justify-content-center"
         >
           {/* <small className="text-muted">Product</small> */}
@@ -100,42 +93,29 @@ const CartProductCard = ({ product }) => {
           <span />
         </Col>
 
-        {/* Quantity Input */}
-        <Col
-          xs={3}
-          md={2}
-          className="d-flex flex-column justify-content-center"
-        >
-          {/* <small className="text-muted">Quantity</small> */}
-          <QuantityInput
-            defaultValue={product.quantity}
-            min={1}
-            max={product.stock <= 100 ? product.stock : 100}
-            step={1}
-            onChange={(_, newQuantity) => handleQuantityChange(newQuantity)}
-          />
-        </Col>
-
         {/* Unit Price */}
         <Col
-          xs={3}
-          md={2}
+          xs={4}
+          md={3}
           className="d-flex flex-column justify-content-center"
         >
-          {/* <small className="text-muted">Unit Price</small> */}
+          {/* <small className="text-muted">Price</small> */}
           <h6>{formatPrice(product.price)}</h6>
           <span />
         </Col>
 
-        {/* Total Price */}
+        {/* Add to Cart Button */}
         <Col
-          xs={3}
-          md={2}
-          className="d-flex flex-column justify-content-center"
+          xs={2}
+          className="d-flex flex-column align-items-center justify-content-center"
         >
-          {/* <small className="text-muted">Total</small> */}
-          <h6>{formatPrice(product.price * product.quantity)}</h6>
-          <span />
+          <Button
+            variant="success"
+            aria-label="Add to Cart"
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </Button>
         </Col>
 
         {/* Remove Button */}
@@ -148,7 +128,10 @@ const CartProductCard = ({ product }) => {
             delay={{ show: 250, hide: 200 }}
             overlay={removeProductTooltip}
           >
-            <Button variant="link" onClick={handleRemoveFromCart}>
+            <Button
+              variant="link"
+              onClick={handleRemoveFromWishlist}
+            >
               <FaTrash color="red" size={22} />
             </Button>
           </OverlayTrigger>
@@ -159,4 +142,4 @@ const CartProductCard = ({ product }) => {
   );
 };
 
-export default CartProductCard;
+export default WishlistProductCard;

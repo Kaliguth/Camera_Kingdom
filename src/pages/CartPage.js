@@ -11,18 +11,8 @@ const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
     useCartContext();
-    const { formatPrice } = useValidationContext();
+  const { formatPrice } = useValidationContext();
   const navigate = useNavigate();
-
-  // let orderTotal = 0;
-  // cart.forEach((product) => {
-  //   orderTotal += product.price * product.quantity;
-  // });
-
-  // let products = 0;
-  // cart.forEach((product) => {
-  //   products += product.quantity;
-  // });
 
   const handleContinueShopping = () => {
     navigate("/categories");
@@ -98,9 +88,30 @@ const CartPage = () => {
                     (There are {cartProductsNumber()} items in your cart)
                   </h6> */}
                 </Card.Header>
-                {cart.map((product) => (
-                  <CartProductCard key={product.id} product={product} />
-                ))}
+                <Card.Body>
+                  <Row>
+                    <Col xs={4} md={4}>
+                      <small className="text-muted">Product</small>
+                    </Col>
+                    <Col xs={3} md={3}>
+                      <small className="text-muted ms-5 ps-4">
+                        Quantity
+                      </small>
+                    </Col>
+                    <Col xs={2} md={2}>
+                      <small className="text-muted" style={{ marginLeft: -33 }}>Unit price</small>
+                    </Col>
+                    <Col xs={2} md={2}>
+                      <small className="text-muted" style={{ marginLeft: -45 }}>Total price</small>
+                    </Col>
+                    <Col xs={1} md={1}>
+                      <small className="text-muted" style={{ marginLeft: -50 }}>Actions</small>
+                    </Col>
+                  </Row>
+                  {cart.map((product) => (
+                    <CartProductCard key={product.id} product={product} />
+                  ))}
+                </Card.Body>
               </Card>
             </Col>
           </Row>

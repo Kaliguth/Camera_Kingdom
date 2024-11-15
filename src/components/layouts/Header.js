@@ -10,9 +10,7 @@ import userImage from "../../assets/user-nobgnew.png";
 
 const Header = () => {
   const { userLoading, currentUser, userData, logout } = useAuthContext();
-  const [cartCount, setCartCount] = useState(
-    userData?.cart?.length || 0
-  );
+  const [cartCount, setCartCount] = useState(userData?.cart?.length || 0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,10 +96,10 @@ const Header = () => {
             <>
               <Dropdown align="end">
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
-                  <h6 className="d-inline">{currentUser.displayName} </h6>
-                  {currentUser.photoURL ? (
+                  <h6 className="d-inline">{userData.displayName} </h6>
+                  {userData.photoURL ? (
                     <Image
-                      src={currentUser.photoURL}
+                      src={userData.photoURL}
                       roundedCircle
                       width={30}
                       height={30}

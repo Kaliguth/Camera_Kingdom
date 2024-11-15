@@ -1,27 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { useCartContext } from "../../contexts/CartContext";
+import { useWishlistContext } from "../../contexts/WishlistContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
-import { Button, Card, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Row,
+  Col,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import { logoMap } from "../../assets/LogoMap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
 const ProductCard = ({ product }) => {
-  const { currentUser } = useAuthContext();
+  const { currentUser, userData } = useAuthContext();
   const { addToCart } = useCartContext();
+  const { addToWishlist, removeFromWishlist } = useWishlistContext();
   const { formatPrice, largeSquareLogoStyle } = useValidationContext();
   const logo = logoMap[product.brand] || null;
+  const [isHovered, setIsHovered] = useState(false); // Wishlist icon hover state
   const navigate = useNavigate();
+
+  const isInWishlist = userData?.wishlist?.find(
+    (currentProduct) => currentProduct.id === product.id
+  );
+
+  const wishlistTooltip = (props) => (
+    <Tooltip {...props}>
+      {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+    </Tooltip>
+  );
+
+  const handleAddToWishlist = () => {
+    addToWishlist(product)
+      .then(() => {
+        toast.success(`${product.model} added to your wishlist!`);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
+  const handleRemoveFromWishlist = () => {
+    removeFromWishlist(product)
+      .then(() => {
+        toast.success(`${product.model} removed from your wishlist!`);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   const handleAddToCart = () => {
     if (!currentUser) {
-      // toast.warning(
-      //   "Please login or create an account to add products to your cart"
-      // );
-      // return;
-
       LoginToPurchaseAlert()
         .then((isConfirmed) => {
           if (isConfirmed) {
@@ -38,7 +74,7 @@ const ProductCard = ({ product }) => {
 
     addToCart(product)
       .then(() => {
-        toast.success(`${product.model} added to your cart`);
+        toast.success(`${product.model} added to your cart!`);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -64,7 +100,7 @@ const ProductCard = ({ product }) => {
     addToCart(product)
       .then(() => {
         toast.success(
-          `${product.model} added to your cart. moving to checkout page`
+          `${product.model} added to your cart! moving to checkout page`
         );
         navigate("/checkout");
       })
@@ -74,8 +110,55 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Card className="product-card">
-      <Link to={`/product/${product.id}`} className="black-link-text">
+    <Card className="product-card position-relative">
+      {currentUser && (
+        <>
+          {isInWishlist ? (
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 200 }}
+              overlay={wishlistTooltip}
+            >
+              <Button
+                variant="link"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="position-absolute top-0 end-0 mt-1"
+                onClick={handleRemoveFromWishlist}
+              >
+                {/* Change icon based on hover state */}
+                {isHovered ? (
+                  <FaRegStar color="gold" size={30} />
+                ) : (
+                  <FaStar color="gold" size={30} />
+                )}
+              </Button>
+            </OverlayTrigger>
+          ) : (
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 200 }}
+              overlay={wishlistTooltip}
+            >
+              <Button
+                variant="link"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="position-absolute top-0 end-0 mt-1"
+                onClick={handleAddToWishlist}
+              >
+                {/* Change icon based on hover state */}
+                {isHovered ? (
+                  <FaStar color="gold" size={30} />
+                ) : (
+                  <FaRegStar color="gold" size={30} />
+                )}
+              </Button>
+            </OverlayTrigger>
+          )}
+        </>
+      )}
+      <Link to={`/product/${product.id}`} className="black-link-text mt-3">
         <Card.Img
           variant="top"
           src={product.images[0]}

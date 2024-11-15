@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     return () => removeAuthListener();
   }, []);
 
-  // Method to update the userData state and local storage object after making changes (cart, orders, etc...)
+  // Method to update the userData state and local storage object after making changes (cart, orders, wishlist, etc...)
   const updateUserData = (newData) => {
     setUserData(newData);
     localStorage.setItem("userData", JSON.stringify(newData));
