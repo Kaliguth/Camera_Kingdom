@@ -22,8 +22,8 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCartContext();
   const { addToWishlist, removeFromWishlist } = useWishlistContext();
   const { formatPrice, largeSquareLogoStyle } = useValidationContext();
-  const logo = logoMap[product.brand] || null;
   const [isHovered, setIsHovered] = useState(false); // Wishlist icon hover state
+  const logo = logoMap[product.brand] || null;
   const navigate = useNavigate();
 
   const isInWishlist = userData?.wishlist?.find(

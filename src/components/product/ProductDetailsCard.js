@@ -1,23 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { useCartContext } from "../../contexts/CartContext";
 import { useProductContext } from "../../contexts/ProductContext";
+import { useWishlistContext } from "../../contexts/WishlistContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
-import { Button, Card, Row, Col, ListGroup, Image } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import LoginToLikeAlert from "../alerts/LoginToLikeAlert";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
 const ProductDetailsCard = ({ product }) => {
-  const { currentUser } = useAuthContext();
+  const { currentUser, userData } = useAuthContext();
   const { addToCart } = useCartContext();
   const { updateProductLikes } = useProductContext();
+  const { addToWishlist, removeFromWishlist } = useWishlistContext();
   const { formatPrice, largeSquareLogoStyle } = useValidationContext();
+  const [isHovered, setIsHovered] = useState(false); // Wishlist icon hover state
   const logo = logoMap[product.brand] || null;
   const navigate = useNavigate();
+
+  const isInWishlist = userData?.wishlist?.find(
+    (currentProduct) => currentProduct.id === product.id
+  );
+
+  const wishlistTooltip = (props) => (
+    <Tooltip {...props}>
+      {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+    </Tooltip>
+  );
+
+  const handleAddToWishlist = () => {
+    addToWishlist(product)
+      .then(() => {
+        toast.success(`${product.model} added to your wishlist!`);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
+  const handleRemoveFromWishlist = () => {
+    removeFromWishlist(product)
+      .then(() => {
+        toast.success(`${product.model} removed from your wishlist!`);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   const handleLike = () => {
     if (!currentUser) {
@@ -95,6 +138,53 @@ const ProductDetailsCard = ({ product }) => {
 
   return (
     <Card className="product-details-card">
+      {currentUser && (
+        <>
+          {isInWishlist ? (
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 200 }}
+              overlay={wishlistTooltip}
+            >
+              <Button
+                variant="link"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="position-absolute top-0 end-0 mt-1"
+                onClick={handleRemoveFromWishlist}
+              >
+                {/* Change icon based on hover state */}
+                {isHovered ? (
+                  <FaRegStar color="gold" size={30} />
+                ) : (
+                  <FaStar color="gold" size={30} />
+                )}
+              </Button>
+            </OverlayTrigger>
+          ) : (
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 200 }}
+              overlay={wishlistTooltip}
+            >
+              <Button
+                variant="link"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="position-absolute top-0 end-0 mt-1"
+                onClick={handleAddToWishlist}
+              >
+                {/* Change icon based on hover state */}
+                {isHovered ? (
+                  <FaStar color="gold" size={30} />
+                ) : (
+                  <FaRegStar color="gold" size={30} />
+                )}
+              </Button>
+            </OverlayTrigger>
+          )}
+        </>
+      )}
       <Row>
         <Col md={6} className="product-images-container">
           <Image
@@ -104,7 +194,7 @@ const ProductDetailsCard = ({ product }) => {
             style={{ maxHeight: "300px", width: "auto" }}
           />
         </Col>
-        <Col md={6} className="mt-4 pe-4">
+        <Col md={6} className="mt-4 pt-2 pe-4">
           <h2>
             <b>
               {product.brand} {product.model}
