@@ -43,7 +43,7 @@ const ProductInfoCard = ({ product }) => {
                         <p key={index}>{text}</p>
                       );
                     })}
-                    <hr />
+                    {index !== productSpecs.length / 2 - 1 && <hr />}
                   </Row>
                 );
               }
@@ -81,7 +81,7 @@ const ProductInfoCard = ({ product }) => {
                         <p key={index}>{text}</p>
                       );
                     })}
-                    <hr />
+                    {index !== productSpecs.length - 1 && <hr />}
                   </Row>
                 );
               }

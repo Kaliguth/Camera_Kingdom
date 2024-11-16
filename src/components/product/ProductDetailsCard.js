@@ -21,6 +21,7 @@ import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import LoginToLikeAlert from "../alerts/LoginToLikeAlert";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
+import ProductImagesSwiperLarge from "../design/ProductImagesSwiperLarge";
 
 const ProductDetailsCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();
@@ -187,12 +188,13 @@ const ProductDetailsCard = ({ product }) => {
       )}
       <Row>
         <Col md={6} className="product-images-container">
-          <Image
+          <ProductImagesSwiperLarge product={product} />
+          {/* <Image
             className="mt-5"
             src={product.images[0]}
             fluid
             style={{ maxHeight: "300px", width: "auto" }}
-          />
+          /> */}
         </Col>
         <Col md={6} className="mt-4 pt-2 pe-4">
           <h2>
