@@ -21,7 +21,8 @@ import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import LoginToLikeAlert from "../alerts/LoginToLikeAlert";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
-import ProductImagesSwiperLarge from "../design/ProductImagesSwiperLarge";
+import ProductImagesSwiper from "../design/ProductImagesSwiper";
+import noImage from "../../assets/noImage.png";
 
 const ProductDetailsCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();
@@ -188,7 +189,15 @@ const ProductDetailsCard = ({ product }) => {
       )}
       <Row>
         <Col md={6} className="product-images-container">
-          <ProductImagesSwiperLarge product={product} />
+          <Card.Img
+            src={logo}
+            className="small-product-brand-logo position-absolute top-0 start-0 ms-2 mt-2"
+            style={largeSquareLogoStyle(product.brand)}
+            onError={(e) => {
+              e.target.src = noImage;
+            }}
+          />
+          <ProductImagesSwiper product={product} size={"large"} />
           {/* <Image
             className="mt-5"
             src={product.images[0]}
@@ -226,13 +235,13 @@ const ProductDetailsCard = ({ product }) => {
 
           <hr />
           <ListGroup variant="flush">
-            <ListGroup.Item>
+            <ListGroup.Item style={{ backgroundColor: "ghostwhite" }}>
               <strong>Brand:</strong> {product.brand}
             </ListGroup.Item>
-            <ListGroup.Item>
+            <ListGroup.Item style={{ backgroundColor: "ghostwhite" }}>
               <strong>Model:</strong> {product.model}
             </ListGroup.Item>
-            <ListGroup.Item>
+            <ListGroup.Item style={{ backgroundColor: "ghostwhite" }}>
               <strong>Type:</strong> {product.type}
             </ListGroup.Item>
           </ListGroup>
@@ -275,8 +284,14 @@ const ProductDetailsCard = ({ product }) => {
             >
               Add to cart
             </Button>
-            <Button variant="secondary" size="lg">
-              Add to Wishlist
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={
+                isInWishlist ? handleRemoveFromWishlist : handleAddToWishlist
+              }
+            >
+              {isInWishlist ? "Remove from wishlist" : "Add to Wishlist"}
             </Button>
           </div>
         </Col>

@@ -37,11 +37,7 @@ const ProductInfoCard = ({ product }) => {
                       <u>{spec.name}</u>
                     </h6>
                     {spec?.text.map((text, index) => {
-                      return text === "break" ? (
-                        <br key={index} />
-                      ) : (
-                        <p key={index}>{text}</p>
-                      );
+                      return <p key={index}>{text}</p>;
                     })}
                     {index !== productSpecs.length / 2 - 1 && <hr />}
                   </Row>
@@ -76,7 +72,7 @@ const ProductInfoCard = ({ product }) => {
                     </h6>
                     {spec?.text.map((text, index) => {
                       return text === "break" ? (
-                        <br key={index} />
+                        <p key={index} />
                       ) : (
                         <p key={index}>{text}</p>
                       );

@@ -3,6 +3,7 @@ import { useValidationContext } from "../../contexts/ValidationContext";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { logoMap } from "../../assets/LogoMap";
+import noImage from "../../assets/noImage.png";
 
 const FeaturedCard = ({ product }) => {
   const logo = logoMap[product.brand] || null;
@@ -15,6 +16,9 @@ const FeaturedCard = ({ product }) => {
           variant="top"
           src={product.images[0]}
           className="small-product-image"
+          onError={(e) => {
+            e.target.src = noImage;
+          }}
         />
         <Card.Img
           variant="top"

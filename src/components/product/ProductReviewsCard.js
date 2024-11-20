@@ -93,11 +93,14 @@ const ProductReviewsCard = ({ product }) => {
                     <p>"{review.message}"</p>
                     <Image
                       className="me-3"
-                      src={review.user.photoURL || userImage}
+                      src={review.user.photoURL}
                       alt="Profile picture"
                       roundedCircle
                       width={35}
                       height={35}
+                      onError={(e) => {
+                        e.target.src = userImage;
+                      }}
                     />
                     <small>
                       <b>{review.user.displayName || "Anonymous"}</b>

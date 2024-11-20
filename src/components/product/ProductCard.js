@@ -13,9 +13,11 @@ import {
 } from "react-bootstrap";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { logoMap } from "../../assets/LogoMap";
+import noImage from "../../assets/noImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
+import ProductImagesSwiper from "../design/ProductImagesSwiper";
 
 const ProductCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();
@@ -159,15 +161,20 @@ const ProductCard = ({ product }) => {
         </>
       )}
       <Link to={`/product/${product.id}`} className="black-link-text mt-3">
-        <Card.Img
+        {/* <Card.Img
           variant="top"
           src={product.images[0]}
           className="product-image"
-        />
+        /> */}
+        <ProductImagesSwiper product={product} size={"small"} />
+
         <Card.Img
           src={logo}
           className="product-brand-logo"
           style={largeSquareLogoStyle(product.brand)}
+          onError={(e) => {
+            e.target.src = noImage;
+          }}
         />
       </Link>
 

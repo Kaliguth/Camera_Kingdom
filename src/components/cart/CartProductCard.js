@@ -25,9 +25,7 @@ const CartProductCard = ({ product }) => {
 
   // Remove from cart tooltip when hovering over remove button
   const removeProductTooltip = (props) => (
-    <Tooltip {...props}>
-      Remove from cart
-    </Tooltip>
+    <Tooltip {...props}>Remove from cart</Tooltip>
   );
 
   const handleQuantityChange = (newQuantity) => {
@@ -77,10 +75,13 @@ const CartProductCard = ({ product }) => {
         >
           <Link to={`/product/${product.id}`}>
             <Image
-              src={product.images[0] || { noImage }}
+              src={product.images[0]}
               alt={product.model}
               height={80}
               className="small-product-image p-2"
+              onError={(e) => {
+                e.target.src = noImage;
+              }}
             />
           </Link>
         </Col>

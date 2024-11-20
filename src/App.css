@@ -215,7 +215,7 @@
   width: auto;
   margin: 0;
   padding: 10px;
-  object-fit: "cover";
+  object-fit: cover;
   transition: transform 0.3s;
 }
 
@@ -227,7 +227,9 @@
   height: 80px;
   width: auto;
   object-fit: cover;
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 2px;
   transition: transform 0.3s;
 }
 
@@ -235,8 +237,17 @@
   transform: scale(1.1);
 }
 
+.product-brand-logo {
+  display: block;
+  object-fit: contain;
+  max-width: 200px;
+  height: 50px;
+  margin: 10px auto;
+}
+
 .small-product-brand-logo {
   display: block;
+  object-fit: contain;
   max-width: 90px;
   height: 20px;
   margin: 10px auto;
@@ -247,13 +258,6 @@
   font-weight: bold;
   font-size: 1.3em;
   margin-bottom: 50px;
-}
-
-.product-brand-logo {
-  display: block;
-  max-width: 200px;
-  height: 50px;
-  margin: 10px auto;
 }
 
 .out-of-stock-container {
@@ -333,7 +337,6 @@
 .image-swiper-large {
   width: 80%;
   height: 60%;
-  /* margin: auto; */
   margin-top: 50px;
   margin-bottom: 20px;
 }
@@ -346,15 +349,34 @@
 
 .image-swiper-large .swiper-slide img {
   /* display: block; */
-  width: 80%;
+  width: 60%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.image-swiper-small {
+  width: 100%;
+  height: 130px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.image-swiper-small .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-swiper-small .swiper-slide img {
+  /* display: block; */
+  width: 60%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .image-thumbnails-swiper {
   height: 20%;
   box-sizing: border-box;
-  /* padding: 10px 0; */
   margin-left: 10px;
 }
 
@@ -364,9 +386,10 @@
 }
 
 .image-thumbnails-swiper .swiper-slide img {
-  width: 70%;
+  width: 60%;
   height: 70%;
   opacity: 0.4;
+  object-fit: contain;
 }
 
 .image-thumbnails-swiper .swiper-slide-thumb-active img {
@@ -374,6 +397,28 @@
   border: solid 1px black;
 }
 
+/* .image-thumbnails-swiper-small {
+  height: 10%;
+  box-sizing: border-box;
+  margin-left: 10px;
+}
+
+.image-thumbnails-swiper-small .swiper-slide {
+  width: 25%;
+  height: 100%;
+}
+
+.image-thumbnails-swiper-small .swiper-slide img {
+  width: 80%;
+  height: 100%;
+  opacity: 0.4;
+  object-fit: contain;
+}
+
+.image-thumbnails-swiper-small .swiper-slide-thumb-active img {
+  opacity: 1;
+  border: solid 1px black;
+} */
 
 /* Profile */
 .profile-picture {

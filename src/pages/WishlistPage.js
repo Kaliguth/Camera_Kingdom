@@ -80,9 +80,6 @@ const WishlistPage = () => {
               <Card className="order-container">
                 <Card.Header className="mb-3">
                   <h5 className="m-3">Wishlist products</h5>
-                  {/* <h6 className="mb-3">
-                    (There are {cartProductsNumber()} items in your cart)
-                  </h6> */}
                 </Card.Header>
                 <Card.Body>
                   <Row>
