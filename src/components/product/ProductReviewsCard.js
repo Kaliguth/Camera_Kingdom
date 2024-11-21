@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
-import { useCartContext } from "../../contexts/CartContext";
-import { useValidationContext } from "../../contexts/ValidationContext";
 import {
   Button,
   Card,
@@ -11,11 +9,8 @@ import {
   Image,
   Form,
 } from "react-bootstrap";
-import { logoMap } from "../../assets/LogoMap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 import { useProductContext } from "../../contexts/ProductContext";
 import userImage from "../../assets/user-nobgnew.png";
 import { FaTrash } from "react-icons/fa";
@@ -93,8 +88,8 @@ const ProductReviewsCard = ({ product }) => {
                     <p>"{review.message}"</p>
                     <Image
                       className="me-3"
-                      src={review.user.photoURL}
-                      alt="Profile picture"
+                      src={review.user.photoURL || userImage}
+                      alt={`${review.user.displayName}'s Profile picture`}
                       roundedCircle
                       width={35}
                       height={35}

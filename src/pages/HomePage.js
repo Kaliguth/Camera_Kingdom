@@ -3,8 +3,8 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useProductContext } from "../contexts/ProductContext";
 import AdCarousel from "../components/design/AdCarousel";
 import CategoryCard from "../components/product/CategoryCard";
-import SmallProductCard from "../components/product/SmallProductCard";
 import { useNavigate } from "react-router-dom";
+import ProductsSwiper from "../components/design/ProductsSwiper";
 
 const HomePage = () => {
   const { getFeaturedProducts } = useProductContext();
@@ -20,7 +20,8 @@ const HomePage = () => {
         <Row className="mb-4">
           <Col>
             <h1>Welcome to Camera Kingdom</h1>
-            <h6>Your one-stop shop for all camera needs</h6>
+            <h5>Where quality meets affordability.</h5>
+            <h5><b>Capture every moment!</b></h5>
           </Col>
         </Row>
 
@@ -56,11 +57,9 @@ const HomePage = () => {
 
         <Row className="justify-content-center">
           <h2 className="mb-3 text-center">Featured Products</h2>
-          <Card className="order-container bg-light p-1 mb-5 w-75">
+          <Card className="order-container bg-light p-1 mb-5">
             <Row className="justify-content-center">
-              {featuredProducts.map((product) => (
-                <SmallProductCard key={product.id} product={product} />
-              ))}
+              <ProductsSwiper products={featuredProducts} />
             </Row>
           </Card>
         </Row>
@@ -101,7 +100,7 @@ const HomePage = () => {
       </Container>
 
       {/* Customer Reviews */}
-      <Container className="mt-3 mb-5">
+      <Container className="mt-5 mb-5">
         <h2 className="mb-3 text-center">What Our Customers Say</h2>
         <Row className="justify-content-center">
           <Col md={4} className="text-center">

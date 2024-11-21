@@ -62,6 +62,11 @@ const Header = () => {
               <h5>Contact Us</h5>
             </Nav.Link>
           </LinkContainer>
+          <LinkContainer to="/aboutus">
+            <Nav.Link className="me-3">
+              <h5>About Us</h5>
+            </Nav.Link>
+          </LinkContainer>
         </Nav>
         <Nav className="ms-auto me-4">
           {currentUser && (

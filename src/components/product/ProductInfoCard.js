@@ -1,17 +1,9 @@
 import React from "react";
-import { useAuthContext } from "../../contexts/AuthContext";
-import { useCartContext } from "../../contexts/CartContext";
-import { useValidationContext } from "../../contexts/ValidationContext";
-import { Button, Card, Row, Col, ListGroup, Image } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 
 const ProductInfoCard = ({ product }) => {
   const logo = logoMap[product.brand] || null;
-  const navigate = useNavigate();
   const productSpecs = product.specs || [];
 
   return (

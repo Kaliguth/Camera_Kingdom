@@ -18,6 +18,7 @@ import HomePage from "./pages/HomePage";
 import CategoriesPage from "./pages/CategoriesPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import ContactUsPage from "./pages/ContactUsPage";
+import AboutUsPage from "./pages/AbousUsPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import LoginRegisterPage from "./pages/LoginRegisterPage";
@@ -80,6 +81,7 @@ function App() {
                           element={<CategoryProductsPage />}
                         />
                         <Route path="contactus" element={<ContactUsPage />} />
+                        <Route path="aboutus" element={<AboutUsPage />} />
                         <Route path="cart" element={<CartPage />} />
                         <Route path="checkout" element={<CheckoutPage />} />
                         <Route path="login" element={<LoginRegisterPage />} />

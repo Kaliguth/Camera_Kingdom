@@ -157,15 +157,26 @@ export const ProductProvider = ({ children }) => {
 
     // Generate random indexes until we have 5 unique items or run out of products
     while (
-      featuredProducts.length < 5 &&
+      featuredProducts.length < 10 &&
       featuredProducts.length < allProducts.length
     ) {
       const randomIndex = Math.floor(Math.random() * allProducts.length);
 
       // Check if this index was already used
       if (!usedIndexes.includes(randomIndex)) {
+        if (
+          allProducts[randomIndex].likes.length >= 3 ||
+          allProducts[randomIndex].reviews.length >= 2
+        ) {
+          featuredProducts.push(allProducts[randomIndex]);
+        }
         usedIndexes.push(randomIndex);
-        featuredProducts.push(allProducts[randomIndex]);
+      }
+
+      // If all products were iterated over - stop generating
+      // (There can be less than 10 related products)
+      if (usedIndexes.length === allProducts.length) {
+        break;
       }
     }
 
@@ -201,7 +212,7 @@ export const ProductProvider = ({ children }) => {
       }
 
       // If all products were iterated over - stop generating
-      // (There can be less than 10 related products)
+      // (There can be less than 15 related products)
       if (usedIndexes.length === allProducts.length) {
         break;
       }

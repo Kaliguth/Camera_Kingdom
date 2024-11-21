@@ -9,7 +9,7 @@ const ads = [BlackFriday, NikonZ6, NikonZ8, LeicaQ3];
 
 const AdCarousel = () => {
   return (
-    <Carousel interval={5000} pause="none" indicators={true}>
+    <Carousel interval={4000} pause="hover" indicators={true}>
       {ads.map((ad, index) => (
         <Carousel.Item key={index}>
           <img
