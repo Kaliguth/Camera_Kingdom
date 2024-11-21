@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { logoMap } from "../../assets/LogoMap";
 import noImage from "../../assets/noImage.png";
 
-const FeaturedCard = ({ product }) => {
+const SmallProductCard = ({ product }) => {
   const logo = logoMap[product.brand] || null;
   const { formatPrice, smallSquareLogoStyle } = useValidationContext();
 
@@ -28,6 +28,7 @@ const FeaturedCard = ({ product }) => {
         />
       </Link>
       <Card.Body>
+        <div>
         <Card.Title className="small-product-title">
           <b>
             {product.brand} {product.model}
@@ -36,6 +37,7 @@ const FeaturedCard = ({ product }) => {
         <Card.Text className="small-price-text">
           {formatPrice(product.price)}
         </Card.Text>
+        </div>
       </Card.Body>
       <Link to={`/product/${product.id}`}>
         <Button variant="primary" size="sm" className="small-product-button">
@@ -46,4 +48,4 @@ const FeaturedCard = ({ product }) => {
   );
 };
 
-export default FeaturedCard;
+export default SmallProductCard;

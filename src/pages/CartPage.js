@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Loader from "../components/utility/Loader";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -9,10 +9,22 @@ import { useValidationContext } from "../contexts/ValidationContext";
 
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
-  const { cart, cartLoading, cartProductsNumber, cartTotalPrice } =
-    useCartContext();
+  const {
+    removeOutOfStockProducts,
+    cart,
+    cartLoading,
+    cartProductsNumber,
+    cartTotalPrice,
+  } = useCartContext();
   const { formatPrice } = useValidationContext();
   const navigate = useNavigate();
+
+  // useEffect to Remove out of stock products from the cart when the user changes
+  useEffect(() => {
+    if (currentUser) {
+      removeOutOfStockProducts();
+    }
+  }, [currentUser, removeOutOfStockProducts]);
 
   const handleContinueShopping = () => {
     navigate("/categories");
@@ -94,18 +106,22 @@ const CartPage = () => {
                       <small className="text-muted">Product</small>
                     </Col>
                     <Col xs={3} md={3}>
-                      <small className="text-muted ms-5 ps-4">
-                        Quantity
+                      <small className="text-muted ms-5 ps-4">Quantity</small>
+                    </Col>
+                    <Col xs={2} md={2}>
+                      <small className="text-muted" style={{ marginLeft: -33 }}>
+                        Unit price
                       </small>
                     </Col>
                     <Col xs={2} md={2}>
-                      <small className="text-muted" style={{ marginLeft: -33 }}>Unit price</small>
-                    </Col>
-                    <Col xs={2} md={2}>
-                      <small className="text-muted" style={{ marginLeft: -45 }}>Total price</small>
+                      <small className="text-muted" style={{ marginLeft: -45 }}>
+                        Total price
+                      </small>
                     </Col>
                     <Col xs={1} md={1}>
-                      <small className="text-muted" style={{ marginLeft: -50 }}>Actions</small>
+                      <small className="text-muted" style={{ marginLeft: -50 }}>
+                        Actions
+                      </small>
                     </Col>
                   </Row>
                   {cart.map((product) => (

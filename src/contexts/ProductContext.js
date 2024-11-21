@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { productsRef } from "../firebase/firestore";
-import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { doc, getDocs, updateDoc } from "firebase/firestore";
 
 const ProductContext = createContext();
 
@@ -177,9 +177,9 @@ export const ProductProvider = ({ children }) => {
     const relatedProducts = [];
     const usedIndexes = [];
 
-    // Generate random indexes until we have 10 unique items or run out of products
+    // Generate random indexes until we have 15 unique items or run out of products
     while (
-      relatedProducts.length < 10 &&
+      relatedProducts.length < 15 &&
       relatedProducts.length < allProducts.length
     ) {
       const randomIndex = Math.floor(Math.random() * allProducts.length);

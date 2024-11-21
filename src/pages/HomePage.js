@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useProductContext } from "../contexts/ProductContext";
 import AdCarousel from "../components/design/AdCarousel";
 import CategoryCard from "../components/product/CategoryCard";
-import FeaturedCard from "../components/product/FeaturedCard";
+import SmallProductCard from "../components/product/SmallProductCard";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
@@ -59,7 +59,7 @@ const HomePage = () => {
           <Card className="order-container bg-light p-1 mb-5 w-75">
             <Row className="justify-content-center">
               {featuredProducts.map((product) => (
-                <FeaturedCard key={product.id} product={product} />
+                <SmallProductCard key={product.id} product={product} />
               ))}
             </Row>
           </Card>

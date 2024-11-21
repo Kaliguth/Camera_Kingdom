@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useProductContext } from "./ProductContext";
 import { updateDoc } from "firebase/firestore";
 
 const CartContext = createContext();
@@ -7,6 +8,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const { currentUser, userData, updateUserData, userDocRef } =
     useAuthContext();
+  const { allProducts } = useProductContext();
   const [cartLoading, setCartLoading] = useState(true);
   const [cart, setCart] = useState([]);
 
@@ -17,12 +19,37 @@ export const CartProvider = ({ children }) => {
       if (currentUser && userData?.cart) {
         setCart(userData.cart);
       }
+
       setCartLoading(false);
     };
 
     fetchCartItems();
   }, [currentUser, userData]);
 
+  // Method to remove out of stock products or products with higher quantity than current stock from the cart
+  const removeOutOfStockProducts = () => {
+    const updatedCart = cart.filter((product) => {
+      const matchingProduct = allProducts.find(
+        (prod) => prod.id === product.id
+      );
+      // Remove the product if its stock is 0 or its quantity in cart is more than available stock
+      return (
+        matchingProduct &&
+        matchingProduct.stock > 0 &&
+        product.quantity <= matchingProduct.stock
+      );
+    });
+
+    // Update cart state, userData state and local storage with the updated cart
+    const updatedUserData = { ...userData, cart: updatedCart };
+    updateUserData(updatedUserData);
+    setCart(updatedCart);
+
+    // Return the updated cart
+    return updatedCart;
+  };
+
+  // Method to get the number of products in the cart (counts quantity of each product)
   const cartProductsNumber = () => {
     let products = 0;
     cart.forEach((product) => {
@@ -32,6 +59,7 @@ export const CartProvider = ({ children }) => {
     return products;
   };
 
+  // Method to get the cart's total price
   const cartTotalPrice = () => {
     let totalPrice = 0;
     cart.forEach((product) => {
@@ -171,6 +199,7 @@ export const CartProvider = ({ children }) => {
     cartLoading,
     cart,
     setCart,
+    removeOutOfStockProducts,
     cartProductsNumber,
     cartTotalPrice,
     addToCart,

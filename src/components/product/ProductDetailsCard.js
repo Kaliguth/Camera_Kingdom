@@ -10,7 +10,6 @@ import {
   Row,
   Col,
   ListGroup,
-  Image,
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";

@@ -3,10 +3,8 @@ import { useCartContext } from "../../contexts/CartContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
 import {
   ListGroup,
-  Container,
   Row,
   Col,
-  Card,
   Button,
   Image,
   Tooltip,
@@ -29,18 +27,14 @@ const CartProductCard = ({ product }) => {
   );
 
   const handleQuantityChange = (newQuantity) => {
-    changeQuantity(product.id, newQuantity)
-      .then(() => {
-        console.log(`Quantity change for ${product.model}: ${newQuantity}`);
-      })
-      .catch((error) => {
-        // Show warning if invalid quantity or error if quantity change failed
-        if (!error.message.includes("Failed")) {
-          toast.warning(error.message);
-        } else {
-          toast.error(error.message);
-        }
-      });
+    changeQuantity(product.id, newQuantity).catch((error) => {
+      // Show warning if invalid quantity or error if quantity change failed
+      if (!error.message.includes("Failed")) {
+        toast.warning(error.message);
+      } else {
+        toast.error(error.message);
+      }
+    });
   };
 
   const handleRemoveFromCart = () => {

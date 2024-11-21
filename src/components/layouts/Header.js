@@ -36,9 +36,8 @@ const Header = () => {
 
   return (
     <Navbar
-      bg="light"
       expand="sm"
-      className="border-bottom border-5 border-dark"
+      className="header"
     >
       <Navbar.Brand>
         <LinkContainer to="/" className="header-logo-container">
