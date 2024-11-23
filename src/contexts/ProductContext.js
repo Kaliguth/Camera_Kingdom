@@ -222,7 +222,7 @@ export const ProductProvider = ({ children }) => {
   };
 
   // Method to update stocks of products inside a cart when a purchase is made
-  const updateCartProductStock = (cart) => {
+  const updateProductsStock = (cart) => {
     // Creating array of all stock updates
     const stockUpdates = cart.map((item) => {
       // Getting each product's doc ref and calculating the new stock
@@ -286,7 +286,7 @@ export const ProductProvider = ({ children }) => {
     removeReview,
     getRelatedProducts,
     getFeaturedProducts,
-    updateCartProductStock,
+    updateProductsStock,
     updateProductLikes,
   };
 

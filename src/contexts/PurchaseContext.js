@@ -1,9 +1,9 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
 import { ordersRef } from "../firebase/firestore";
-import { addDoc, updateDoc } from "firebase/firestore";
+import { getDocs, addDoc, updateDoc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
@@ -12,7 +12,7 @@ export const PurchaseProvider = ({ children }) => {
   const { currentUser, userData, updateUserData, userDocRef } =
     useAuthContext();
   const { cart, setCart, cartTotalPrice } = useCartContext();
-  const { updateCartProductStock } = useProductContext();
+  const { updateProductsStock } = useProductContext();
   const {
     validateEmail,
     validateName,
@@ -20,8 +20,27 @@ export const PurchaseProvider = ({ children }) => {
     validateCreditCardNumber,
     validateExpirationDate,
     validateCvc,
-    // formatPrice,
   } = useValidationContext();
+  // State to determine next order number
+  const [nextOrderNumber, setNextOrderNumber] = useState(0);
+
+  // useEffect to fetch the orders collection size for next order number
+  useEffect(() => {
+    const fetchOrderNumber = () => {
+      getDocs(ordersRef)
+        .then((ordersCollection) => {
+          // Set next order number based on the number of orders in the collection + 1000
+          setNextOrderNumber(ordersCollection.size + 1000);
+        })
+        .catch((error) => {
+          console.log("Error fetching orders collection: ", error);
+          // Order number -1 to indicate failure
+          setNextOrderNumber(-1);
+        });
+    };
+
+    fetchOrderNumber();
+  }, []);
 
   // Get order's total price (shipping excluded)
   const orderTotalPrice = () => {
@@ -63,13 +82,17 @@ export const PurchaseProvider = ({ children }) => {
 
   // Method to create a new order document
   const createOrderDocument = (shippingDetails, paymentDetails) => {
+    // Get the order's total price
     const orderTotalPrice =
       cartTotalPrice() + shippingPrice(shippingDetails.deliveryOption);
 
+    // Create the new order document
     const order = {
+      orderNumber: nextOrderNumber,
       purchase: {
         products: cart,
         coupon: paymentDetails.coupon?.code || null,
+        discount: `${paymentDetails.coupon?.discount}%` || null,
         shippingPrice: shippingPrice(shippingDetails.deliveryOption),
         productsPrice: cartTotalPrice(),
         totalPrice: orderTotalPrice,
@@ -181,11 +204,24 @@ export const PurchaseProvider = ({ children }) => {
     // Create a new order document
     const newOrder = createOrderDocument(shippingDetails, paymentDetails);
 
+    // Check if order number generation failed
+    if (newOrder.orderNumber === -1) {
+      console.log("Error generating order number");
+      return Promise.reject(
+        new Error(
+          "Failed to generate your order number. Please try again or contact support"
+        )
+      );
+    }
+
     // Add the order to the orders collection in Firestore
     return addDoc(ordersRef, newOrder)
       .then(() => {
+        // Incrememnt next order number
+        setNextOrderNumber((prevOrderNumber) => prevOrderNumber + 1);
+
         // Update stock for each product in the cart
-        return updateCartProductStock(cart);
+        return updateProductsStock(cart);
       })
       .then(() => {
         // Empty the user's cart in the app and firebase
@@ -193,7 +229,6 @@ export const PurchaseProvider = ({ children }) => {
           .then(() => {
             // Clear products from the cart state and local storage userData cart
             // Also add new order to local storage orders
-            // const currentUserData = JSON.parse(localStorage.getItem("userData"));
             const currentOrders = userData.orders;
             const updatedOrders = [...currentOrders, newOrder];
             const updatedUserData = {
@@ -203,9 +238,8 @@ export const PurchaseProvider = ({ children }) => {
             };
             updateUserData(updatedUserData);
             setCart([]);
-            // localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
-            // Add the new order to the local storage userData and user's orders array
+            // Add the new order to the user's orders array
             return updateDoc(userDocRef, {
               orders: updatedOrders,
             });

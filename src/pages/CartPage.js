@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import Loader from "../components/utility/Loader";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useCartContext } from "../contexts/CartContext";
-import { useNavigate } from "react-router-dom";
-import CartProductCard from "../components/cart/CartProductCard";
 import { useValidationContext } from "../contexts/ValidationContext";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/utility/Loader";
+import CartProductCard from "../components/cart/CartProductCard";
 
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
@@ -21,10 +21,10 @@ const CartPage = () => {
 
   // useEffect to Remove out of stock products from the cart when the user changes
   useEffect(() => {
-    if (currentUser) {
+    if (!userLoading && currentUser) {
       removeOutOfStockProducts();
     }
-  }, [currentUser, removeOutOfStockProducts]);
+  }, [userLoading, currentUser, removeOutOfStockProducts]);
 
   const handleContinueShopping = () => {
     navigate("/categories");

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useProductContext } from "./ProductContext";
 import { updateDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const CartContext = createContext();
 
@@ -32,18 +33,39 @@ export const CartProvider = ({ children }) => {
       const matchingProduct = allProducts.find(
         (prod) => prod.id === product.id
       );
-      // Remove the product if its stock is 0 or its quantity in cart is more than available stock
-      return (
+
+      // In stock conditions
+      const inStock =
         matchingProduct &&
         matchingProduct.stock > 0 &&
-        product.quantity <= matchingProduct.stock
-      );
+        product.quantity <= matchingProduct.stock;
+      // Keep in stock products in cart
+      return inStock;
     });
 
-    // Update cart state, userData state and local storage with the updated cart
-    const updatedUserData = { ...userData, cart: updatedCart };
-    updateUserData(updatedUserData);
-    setCart(updatedCart);
+    // Update cart states with the updated cart
+    // (ONLY IF NEW CONTENTS ARE DIFFERENT FROM CURRENT CART - HENCE JSON STRINGIFY USED)
+    if (JSON.stringify(cart) !== JSON.stringify(updatedCart)) {
+      const updatedUserData = { ...userData, cart: updatedCart };
+
+      // Update userData state and local storage
+      updateUserData(updatedUserData);
+      setCart(updatedCart);
+
+      // Update user's cart in firestore
+      updateDoc(userDocRef, {
+        cart: updatedCart,
+      }).catch((error) => {
+        setCart([]);
+        console.log(
+          "Error removing out of stock products - document updates: ",
+          error
+        );
+        toast.error(
+          "Some products in your cart are out of stock! Cart cleared"
+        );
+      });
+    }
 
     // Return the updated cart
     return updatedCart;
