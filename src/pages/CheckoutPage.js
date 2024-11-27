@@ -175,9 +175,9 @@ const CheckoutPage = () => {
     };
 
     completeOrder(orderDetails, confirm)
-      .then(() => {
+      .then((order) => {
         toast.success("Order completed successfully!");
-        navigate("/");
+        navigate(`/ordersummary/${order.orderNumber}`);
       })
       .catch((error) => {
         updateErrorMessage(error);
@@ -247,57 +247,11 @@ const CheckoutPage = () => {
                 <Card.Header className="mb-3">
                   <h5 className="m-3">Order items</h5>
                 </Card.Header>
-                {/* <Container> */}
-                {/* <ListGroup> */}
                 <>
                   {cart.map((product) => (
                     <CartProductCard key={product.id} product={product} />
-                    // <ListGroup.Item className="d-flex align-items-center mb-3">
-                    //   {/* Product Image */}
-                    //   <Image
-                    //     src={product.image1}
-                    //     alt={product.model}
-                    //     rounded
-                    //     style={{ width: "80px", height: "80px", objectFit: "cover" }}
-                    //     className="me-3"
-                    //   />
-
-                    //   {/* Product Details */}
-                    //   <div className="flex-grow-1">
-                    //     <h6>{product.model}</h6>
-                    //     <p className="text-muted small">Price: ₪ {product.price}</p>
-                    //   </div>
-
-                    //   {/* Quantity Selector */}
-                    //   <Form.Control
-                    //     type="number"
-                    //     min="1"
-                    //     value={product.quantity}
-                    //     onChange={(newQuantity) =>
-                    //       handleQuantityChange(product.id, newQuantity)
-                    //     }
-                    //     style={{ width: "80px" }}
-                    //     className="me-3"
-                    //   />
-
-                    //   {/* Total Price for Product */}
-                    //   <p className="mb-0 me-3">
-                    //     ₪ {product.price * product.quantity}
-                    //   </p>
-
-                    //   {/* Remove Button */}
-                    //   <Button
-                    //     variant="danger"
-                    //     size="sm"
-                    //     onClick={() =>removeFromCart(product)}
-                    //   >
-                    //     Remove
-                    //   </Button>
-                    // </ListGroup.Item>
                   ))}
                 </>
-
-                {/* </ListGroup> */}
               </Card>
             </Col>
           </Row>
@@ -308,7 +262,6 @@ const CheckoutPage = () => {
                 <Card.Header>
                   <h5 className="m-3">Shipping details</h5>
                   <p>Please fill in the shipping information</p>
-                  {/* <Container className="mt-4 d-flex justify-content-center"> */}
                 </Card.Header>
                 <Card.Body>
                   <Form>
@@ -328,7 +281,6 @@ const CheckoutPage = () => {
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             isInvalid={!!nameError}
-                            // placeholder="Enter your name"
                           />
                           <Form.Control.Feedback type="invalid">
                             <b>{nameError}</b>
@@ -344,17 +296,8 @@ const CheckoutPage = () => {
                             type="text"
                             maxLength={10}
                             value={phoneNumber}
-                            // onInput={(e) => {
-                            //   // Do not allow non-numeric characters
-                            //   const value = e.target.value.replace(/\D/g, "");
-
-                            //   // Set the modified value
-                            //   e.target.value = value;
-                            //   setPhoneNumber(e.target.value);
-                            // }}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                             isInvalid={!!phoneError}
-                            // placeholder="Enter your name"
                           />
                           <Form.Control.Feedback type="invalid">
                             <b>{phoneError}</b>
@@ -371,7 +314,6 @@ const CheckoutPage = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             isInvalid={!!emailError}
-                            // placeholder="Enter email"
                           />
                           <Form.Control.Feedback type="invalid">
                             <b>{emailError}</b>

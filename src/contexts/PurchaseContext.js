@@ -3,7 +3,7 @@ import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
 import { ordersRef } from "../firebase/firestore";
-import { getDocs, addDoc, updateDoc } from "firebase/firestore";
+import { getDocs, addDoc, updateDoc, getDoc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
@@ -78,6 +78,24 @@ export const PurchaseProvider = ({ children }) => {
     const finalPrice = totalPrice * (1 - discount / 100);
 
     return finalPrice;
+  };
+
+  // Method to get order data by order number
+  const getOrder = (orderNumber) => {
+    const orderDocRef = doc(ordersRef, orderNumber);
+
+    return getDoc(orderDocRef)
+      .then((orderDoc) => {
+        if (orderDoc.exists()) {
+          return orderDoc.data();
+        } else {
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.log("Error fetching order: ", error);
+        return null;
+      });
   };
 
   // Method to create a new order document
@@ -244,6 +262,7 @@ export const PurchaseProvider = ({ children }) => {
               orders: updatedOrders,
             });
           })
+          .then(() => newOrder)
           .catch((error) => {
             console.log("Error completing order - document updates: ", error);
             throw new Error(
