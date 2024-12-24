@@ -185,60 +185,39 @@ export const AuthProvider = ({ children }) => {
           // Return the user credentials if login succeeded
           return userCredentials;
         } else {
-          // If email not verified
-          const metadata = user.metadata;
-          const lastSignInTime = new Date(metadata.lastSignInTime).getTime();
-          const now = new Date().getTime();
-          console.log("lastsign: ", lastSignInTime);
-          console.log("now: ", now);
-
-          // Allow resending of verification email after 5 minutes (in milliseconds)
-          const fiveMinutes = 60 * 5000;
-          console.log(now - lastSignInTime);
-
-          // If 5 minutes did not pass since last sign in
-          if (now - lastSignInTime < fiveMinutes) {
-            logout();
-            return Promise.reject(
-              new Error(
-                "Email verification required. A verification email has already been sent. Please check your inbox"
-              )
-            );
-          } else {
-            // If 5 minutes passed since last sign in - send verification email
-            return sendEmailVerification(user)
-              .then(() => {
-                logout();
+          return sendEmailVerification(user)
+            .then(() => {
+              logout();
+              return Promise.reject(
+                new Error(
+                  "Email verification required. Verification email sent. Please check your inbox"
+                )
+              );
+            })
+            .catch((verificationError) => {
+              logout();
+              // If too many verification requests
+              if (verificationError.code === "auth/too-many-requests") {
                 return Promise.reject(
                   new Error(
-                    "Email verification required. Verification email sent. Please check your inbox"
+                    "Email verification required. A verification email has already been sent. Please check your inbox"
                   )
                 );
-              })
-              .catch((verificationError) => {
-                logout();
-                // If too many verification requests
-                if (verificationError.code === "auth/too-many-requests") {
-                  return Promise.reject(
-                    new Error(
-                      "Too many verification requests. Please check your inbox or contact support"
-                    )
-                  );
-                } else if (verificationError.message.includes("required")) {
-                  // Email verification required errors
-                  return Promise.reject(new Error(verificationError));
-                } else {
-                  // If sending verification email failed
-                  console.log(verificationError.code);
-                  console.log(verificationError);
-                  return Promise.reject(
-                    new Error(
-                      "Email verification failed. Please check your inbox or contact support"
-                    )
-                  );
-                }
-              });
-          }
+              } else if (verificationError.message.includes("required")) {
+                // Catching email verification sent error
+                return Promise.reject(new Error(verificationError.message));
+              } else {
+                // If sending verification email failed
+                console.log(verificationError.code);
+                console.log(verificationError);
+                return Promise.reject(
+                  new Error(
+                    "Error sending verification email. Please check your inbox or contact support"
+                  )
+                );
+              }
+            });
+          // }
         }
       })
       .catch((error) => {
@@ -365,7 +344,6 @@ export const AuthProvider = ({ children }) => {
           "Failed to log out. Please try again or contact support"
         );
       });
-    // return await signOut(auth);
   };
 
   // Update method for update profile page

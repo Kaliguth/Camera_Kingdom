@@ -63,7 +63,7 @@ const LoginRegisterPage = () => {
   const updateErrorMessage = (error) => {
     const errorMessage = error.message.toLowerCase();
     if (errorMessage.includes("verification")) {
-      toast.error(error.message);
+      toast.info(error.message);
     } else if (errorMessage.includes("name")) {
       setNameError(error.message);
     } else if (errorMessage.includes("email")) {
