@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
-import noImage from "../../assets/noImage.png";
+import noImage from "../../assets/no-image.png";
 
 const WishlistProductCard = ({ product }) => {
   const { removeFromWishlist } = useWishlistContext();

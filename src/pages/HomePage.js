@@ -5,6 +5,7 @@ import AdCarousel from "../components/design/AdCarousel";
 import CategoryCard from "../components/product/CategoryCard";
 import { useNavigate } from "react-router-dom";
 import ProductsSwiper from "../components/design/ProductsSwiper";
+import BrandsSwiper from "../components/design/BrandsSwiper";
 
 const HomePage = () => {
   const { getFeaturedProducts } = useProductContext();
@@ -21,48 +22,57 @@ const HomePage = () => {
           <Col>
             <h1>Welcome to Camera Kingdom</h1>
             <h5>Where quality meets affordability.</h5>
-            <h5><b>Capture every moment!</b></h5>
+            <h5>
+              <b>Capture every moment!</b>
+            </h5>
           </Col>
         </Row>
 
         <Card className="order-container bg-light p-1 mb-5">
-          <h5 className="mb-3">Quick access categories:</h5>
-          <Row className="ms-4">
-            <CategoryCard
-              category={{ name: "cameras" }}
-              variant={{ size: "sm" }}
-            />
-            <CategoryCard
-              category={{ name: "lenses" }}
-              variant={{ size: "sm" }}
-            />
-            <CategoryCard
-              category={{ name: "accessories" }}
-              variant={{ size: "sm" }}
-            />
-            <CategoryCard
-              category={{ name: "bags" }}
-              variant={{ size: "sm" }}
-            />
-            <CategoryCard
-              category={{ name: "tripods" }}
-              variant={{ size: "sm" }}
-            />
-            <CategoryCard
-              category={{ name: "lighting" }}
-              variant={{ size: "sm" }}
-            />
+          {/* <h5 className="mb-3">Quick access categories:</h5> */}
+          <Row className="ms-2 mt-2">
+            <Col>
+              <CategoryCard category="cameras" size="sm" />
+            </Col>
+            <Col>
+              <CategoryCard category="lenses" size="sm" />
+            </Col>
+            <Col>
+              <CategoryCard category="accessories" size="sm" />
+            </Col>
+            <Col>
+              <CategoryCard category="bags" size="sm" />
+            </Col>
+            <Col>
+              <CategoryCard category="tripods" size="sm" />
+            </Col>
+            <Col>
+              <CategoryCard category="lighting" size="sm" />
+            </Col>
           </Row>
         </Card>
 
-        <Row className="justify-content-center">
-          <h2 className="mb-3 text-center">Featured Products</h2>
-          <Card className="order-container bg-light p-1 mb-5">
-            <Row className="justify-content-center">
+        {/* <Row className="justify-content-center"> */}
+        <h2 className="mb-3">Featured Products</h2>
+        <Card className="order-container bg-light p-1 mb-5">
+          <Row className="justify-content-center">
+            <Col>
               <ProductsSwiper products={featuredProducts} />
-            </Row>
-          </Card>
-        </Row>
+            </Col>
+          </Row>
+        </Card>
+        {/* </Row> */}
+
+        {/* <Row className="justify-content-center"> */}
+        <h2 className="mb-3">Our Brands</h2>
+        <Card className="order-container bg-light p-1 mb-5">
+          <Row>
+            <Col>
+              <BrandsSwiper />
+            </Col>
+          </Row>
+        </Card>
+        {/* </Row> */}
       </Container>
 
       <Container className="mt-0">
@@ -71,7 +81,7 @@ const HomePage = () => {
             md={8}
             className="text-center"
             style={{
-              backgroundColor: "#f8f9fa",
+              backgroundColor: "ghostwhite",
               padding: "20px",
               borderRadius: "10px",
               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",

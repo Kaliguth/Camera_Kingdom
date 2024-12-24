@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { logoMap } from "../../assets/LogoMap";
-import noImage from "../../assets/noImage.png";
+import noImage from "../../assets/no-image.png";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";

@@ -1,14 +1,14 @@
 import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 import Loader from "../components/utility/Loader";
 import ProductCard from "../components/product/ProductCard";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const CategoryProductsPage = () => {
   const { category } = useParams();
   const { productsLoading, allProducts } = useProductContext();
-  const navigate = useNavigate();
 
   // Filter products based on the category in the URL
   const filteredProducts = allProducts.filter(
@@ -43,16 +43,8 @@ const CategoryProductsPage = () => {
           ))}
         </Row>
       )}
-      <Row className="mt-4 mb-4">
-        <Col>
-          <Button className="m-2" onClick={() => navigate(-1)}>
-            Go back
-          </Button>
-          <Button className="m-2" onClick={() => navigate("/")}>
-            Home
-          </Button>
-        </Col>
-      </Row>
+
+      <HomeButtons size={"md"} />
     </Container>
   );
 };

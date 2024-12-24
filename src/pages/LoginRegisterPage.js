@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { sendEmailVerification } from "firebase/auth";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import Loader from "../components/utility/Loader";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const LoginRegisterPage = () => {
-  const { login, googleLogin, register, logout } = useAuthContext();
+  const { userLoading, currentUser, login, googleLogin, register, logout } =
+    useAuthContext();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,10 +70,27 @@ const LoginRegisterPage = () => {
       setEmailError(error.message);
     } else if (errorMessage.includes("password")) {
       setPasswordError(error.message);
+    } else if (
+      errorMessage.includes("repeat") ||
+      errorMessage.includes("match")
+    ) {
+      setRepeatPasswordError(error.message);
     } else {
       toast.error(error.message);
     }
   };
+
+  const showPasswordTooltip = (props) => (
+    <Tooltip {...props}>
+      {showPassword ? "Hide password" : "Show password"}
+    </Tooltip>
+  );
+
+  const showRepeatPasswordTooltip = (props) => (
+    <Tooltip {...props}>
+      {showRepeatPassword ? "Hide password" : "Show password"}
+    </Tooltip>
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,80 +98,46 @@ const LoginRegisterPage = () => {
 
     if (isLogin) {
       // Login
-      // await login(email, password);
       login(email, password)
-        // .then(async (userCredentals) => {
-        //   const user = userCredentals.user;
-        //   console.log(user);
-        //   if (email === "ckadmin@camerakingdom.com" || user.emailVerified) {
-        //     alert("Logged in successfully!");
-        //     navigate("/");
-        //   } else {
-        //     alert("Email verification is required.");
-
-        //     // Check when the last email was sent
-        //     const metadata = user.metadata;
-        //     const lastSignInTime = new Date(metadata.lastSignInTime).getTime();
-        //     const now = new Date().getTime();
-
-        //     // Allow resending after 5 minutes
-        //     const oneMinute = 60 * 5000;
-
-        //     if (now - lastSignInTime > oneMinute) {
-        //       try {
-        //         await sendEmailVerification(user);
-        //         alert("Verification email sent. Please check your inbox.");
-        //       } catch (error) {
-        //         if (error.code === "auth/too-many-requests") {
-        //           alert(
-        //             "Too many verification requests. Please try again later."
-        //           );
-        //         } else {
-        //           alert("An error occurred while sending verification email.");
-        //         }
-        //       }
-        //     } else {
-        //       alert(
-        //         "A verification email has already been sent. Please check your inbox."
-        //       );
-        //     }
-        //     logout();
-        //     navigate("/login");
-        //   }
-        // })
         .then((userCredentials) => {
           toast(`Welcome ${userCredentials.user.displayName}!`);
           navigate("/");
         })
         .catch((error) => {
-          logout();
-          clearFields();
           updateErrorMessage(error);
         });
     } else {
       // Register
-      // Validate repeat password input:
-      // If repeat password is empty
-      if (repeatPassword === "") {
-        setRepeatPasswordError("Please repeat your password");
-        return;
-      }
-      // Check if passwords match
-      if (password !== repeatPassword) {
-        setRepeatPasswordError("Passwords do not match");
-        return;
-      }
-
-      register(name, email, password)
+      register(name, email, password, repeatPassword)
         .then((userCredentials) => {
+          // // Validate repeat password input:
+          // // If repeat password is empty
+          // if (repeatPassword === "") {
+          //   setRepeatPasswordError("Please repeat your password");
+          //   return;
+          // }
+          // // Check if passwords match
+          // if (password !== repeatPassword) {
+          //   setRepeatPasswordError("Passwords do not match");
+          //   return;
+          // }
+          logout()
+            .then(() => {
+              // Force refresh to return to login page
+              // window.location.reload();
+              // navigate("/");
+              clearFields();
+              setIsLogin(true);
+            })
+            .catch((error) => {
+              clearFields();
+              toast.error(error.message);
+            });
           const user = userCredentials.user;
           toast.success(
-            "Registered successfully!\nVerification email sent. Please verify your email"
+            `Registered successfully!\nVerification email sent to ${email}. Please verify your email address`
           );
           sendEmailVerification(user);
-          logout();
-          // Force refresh to move to login page
-          window.location.reload();
         })
         .catch((error) => {
           updateErrorMessage(error);
@@ -163,81 +157,36 @@ const LoginRegisterPage = () => {
       });
   };
 
-  // return (
-  //   <Container className="mt-4">
-  //     <Row className="justify-content-center">
-  //       <Col md={6}>
-  //         <h2 className="mb-4 text-center">{isLogin ? "Login" : "Register"}</h2>
-  //         <Form onSubmit={handleSubmit}>
-  //           {!isLogin && (
-  //             <Form.Group className="mb-3" controlId="formBasicName">
-  //               <Form.Label>Name</Form.Label>
-  //               <Form.Control
-  //                 type="text"
-  //                 placeholder="Enter your name"
-  //                 value={name}
-  //                 onChange={(e) => setName(e.target.value)}
-  //               />
-  //             </Form.Group>
-  //           )}
-  //           <Form.Group className="mb-3" controlId="formBasicEmail">
-  //             <Form.Label>Email address</Form.Label>
-  //             <Form.Control
-  //               type="email"
-  //               placeholder="Enter email"
-  //               value={email}
-  //               onChange={(e) => setEmail(e.target.value)}
-  //             />
-  //           </Form.Group>
-  //           <Form.Group className="mb-4" controlId="formBasicPassword">
-  //             <Form.Label>Password</Form.Label>
-  //             <Form.Control
-  //               type="password"
-  //               placeholder="Password"
-  //               value={password}
-  //               onChange={(e) => setPassword(e.target.value)}
-  //             />
-  //           </Form.Group>
-  //           <div className="d-grid">
-  //             <Button variant="primary" type="submit">
-  //               {isLogin ? "Login" : "Register"}
-  //             </Button>
-  //           </div>
-  //         </Form>
-  //         <div className="d-grid mt-3">
-  //           <Button
-  //             className="google-signin-btn"
-  //             onClick={handleGoogleSignIn}
-  //             variant="outline-dark"
-  //           >
-  //             Sign in with Google
-  //           </Button>
-  //         </div>
-  //         <div className="text-center mt-4">
-  //           <Button
-  //             variant="link"
-  //             onClick={() => setIsLogin(!isLogin)}
-  //           >
-  //             {isLogin ? (
-  //               <b>Need an account?<br />Click here to register!</b>
-  //             ) : (
-  //               <b>Already have an account?<br />Click here to login!</b>
-  //             )}
-  //           </Button>
-  //         </div>
-  //       </Col>
-  //     </Row>
-  //   </Container>
-  // );
+  if (userLoading) {
+    return <Loader />;
+  }
+
+  if (currentUser) {
+    return (
+      <Container>
+        <Row className="mt-4">
+          <Col>
+            <h5>
+              <b>
+                {currentUser.displayName ? currentUser.displayName : "A user"}
+              </b>{" "}
+              is already logged in
+            </h5>
+            <HomeButtons size={"lg"} />
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 
   return (
-    <Container className="mt-4 d-flex justify-content-center">
+    <Container className="custom-container mt-4 d-flex justify-content-center">
       <Row>
         <Col>
           <h2 className="mb-4">{isLogin ? "Login" : "Register"}</h2>
           <Form onSubmit={handleSubmit}>
             {!isLogin && (
-              <Form.Group className="mb-3" controlId="formBasicName">
+              <Form.Group className="mb-3">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   className="form-controls"
@@ -252,7 +201,7 @@ const LoginRegisterPage = () => {
                 </Form.Control.Feedback>
               </Form.Group>
             )}
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group className="mb-3">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 className="form-controls"
@@ -266,7 +215,7 @@ const LoginRegisterPage = () => {
                 <b>{emailError}</b>
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group className="mb-4" controlId="formBasicPassword">
+            <Form.Group className="mb-4">
               <Form.Label>Password</Form.Label>
               <Container className="password-container">
                 <Form.Control
@@ -277,17 +226,23 @@ const LoginRegisterPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   isInvalid={!!passwordError}
                 />
-                <Button
-                  variant="none"
-                  onClick={togglePasswordVisibility}
-                  className="show-hide-button"
+                <OverlayTrigger
+                  placement="right"
+                  delay={{ show: 250, hide: 200 }}
+                  overlay={showPasswordTooltip}
                 >
-                  {showPassword ? (
-                    <FaRegEyeSlash color="gray" />
-                  ) : (
-                    <FaRegEye color="gray" />
-                  )}
-                </Button>
+                  <Button
+                    variant="none"
+                    onClick={togglePasswordVisibility}
+                    className="show-hide-button"
+                  >
+                    {showPassword ? (
+                      <FaRegEyeSlash color="dimgray" />
+                    ) : (
+                      <FaRegEye color="dimgray" />
+                    )}
+                  </Button>
+                </OverlayTrigger>
               </Container>
               <Form.Control.Feedback
                 type="invalid"
@@ -297,7 +252,7 @@ const LoginRegisterPage = () => {
               </Form.Control.Feedback>
             </Form.Group>
             {!isLogin && (
-              <Form.Group className="mb-4" controlId="formRepeatPassword">
+              <Form.Group className="mb-4">
                 <Form.Label>Repeat password</Form.Label>
                 <Container className="password-container">
                   <Form.Control
@@ -308,17 +263,23 @@ const LoginRegisterPage = () => {
                     onChange={(e) => setRepeatPassword(e.target.value)}
                     isInvalid={!!repeatPasswordError}
                   />
-                  <Button
-                    variant="none"
-                    onClick={toggleRepeatPasswordVisibility}
-                    className="show-hide-button"
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 200 }}
+                    overlay={showRepeatPasswordTooltip}
                   >
-                    {showRepeatPassword ? (
-                      <FaRegEyeSlash color="gray" />
-                    ) : (
-                      <FaRegEye color="gray" />
-                    )}
-                  </Button>
+                    <Button
+                      variant="none"
+                      onClick={toggleRepeatPasswordVisibility}
+                      className="show-hide-button"
+                    >
+                      {showRepeatPassword ? (
+                        <FaRegEyeSlash color="dimgray" />
+                      ) : (
+                        <FaRegEye color="dimgray" />
+                      )}
+                    </Button>
+                  </OverlayTrigger>
                 </Container>
                 <Form.Control.Feedback
                   type="invalid"

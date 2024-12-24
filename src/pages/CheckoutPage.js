@@ -8,6 +8,7 @@ import { useValidationContext } from "../contexts/ValidationContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CartProductCard from "../components/cart/CartProductCard";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const CheckoutPage = () => {
   const { currentUser, userLoading } = useAuthContext();
@@ -175,9 +176,9 @@ const CheckoutPage = () => {
     };
 
     completeOrder(orderDetails, confirm)
-      .then((order) => {
+      .then((orderId) => {
         toast.success("Order completed successfully!");
-        navigate(`/ordersummary/${order.orderNumber}`);
+        navigate(`/order-summary/${orderId}`);
       })
       .catch((error) => {
         updateErrorMessage(error);
@@ -193,22 +194,16 @@ const CheckoutPage = () => {
       <Container>
         <Row className="mt-4">
           <Col>
-            <p>Please log in to start shopping</p>
+            <h5>Please log in to complete an order</h5>
             <Button
               variant="success"
               size="lg"
-              className="m-4"
+              className="custom-button mt-3"
               onClick={() => navigate("/login")}
             >
               Login
             </Button>
-            <br />
-            <Button className="m-2" onClick={() => navigate(-1)}>
-              Go back
-            </Button>
-            <Button className="m-2" onClick={() => navigate("/")}>
-              Home
-            </Button>
+            <HomeButtons size={"md"} />
           </Col>
         </Row>
       </Container>
@@ -222,22 +217,16 @@ const CheckoutPage = () => {
       </Row>
       {cart.length === 0 ? (
         <>
-          <h5>You have not added any products to purchase</h5>
+          <h5>You have not added any products to purchase!</h5>
           <Button
             variant="success"
             size="lg"
-            className="m-4"
+            className="custom-button mt-3"
             onClick={() => navigate("/categories")}
           >
             Start shopping
           </Button>
-          <br />
-          <Button className="m-2" onClick={() => navigate(-1)}>
-            Go back
-          </Button>
-          <Button className="m-2" onClick={() => navigate("/")}>
-            Home
-          </Button>
+          <HomeButtons size={"md"} />
         </>
       ) : (
         <>
@@ -268,7 +257,7 @@ const CheckoutPage = () => {
                     <Row>
                       <Col md={6}>
                         <p>
-                          <b>Personal details:</b>
+                          <b>Contact Information:</b>
                         </p>
                         <Form.Group
                           className="mb-3 text-start custom-form-group"
@@ -323,7 +312,7 @@ const CheckoutPage = () => {
 
                       <Col md={6}>
                         <p>
-                          <b>Address details:</b>
+                          <b>Address Information:</b>
                         </p>
                         <Form.Group
                           className="mb-3 text-start custom-form-group"

@@ -17,7 +17,7 @@ export const ProductProvider = ({ children }) => {
       const prductsCollection = await getDocs(productsRef);
       const sortedProducts = prductsCollection.docs
         .map((doc) => {
-          const productData = { ...doc.data(), id: doc.id };
+          const productData = { id: doc.id, ...doc.data() };
 
           return productData;
         })

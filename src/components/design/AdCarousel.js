@@ -11,12 +11,12 @@ const AdCarousel = () => {
   return (
     <Carousel interval={4000} pause="hover" indicators={true}>
       {ads.map((ad, index) => (
-        <Carousel.Item key={index}>
+        <Carousel.Item key={index} className="ad-carousel-item">
           <img
-            className="d-block w-100"
+            // className="d-block w-100"
             src={ad}
             alt={`${ad}`}
-            style={{ height: "390px", objectFit: "cover" }}
+            // style={{ height: "390px", objectFit: "cover" }}
           />
         </Carousel.Item>
       ))}

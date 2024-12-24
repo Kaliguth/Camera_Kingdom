@@ -1,6 +1,6 @@
 // Context for input validation and formatting methods
 import React, { createContext, useContext } from "react";
-import { couponsRef } from "../firebase/firestore";
+import { usersRef, couponsRef } from "../firebase/firestore";
 import { getDocs } from "firebase/firestore";
 
 const ValidationContext = createContext();
@@ -26,6 +26,48 @@ export const ValidationProvider = ({ children }) => {
   const validateName = (name) => {
     // Can't be empty
     return name.trim().length > 0;
+  };
+
+  // const displayNameTaken = (name) => {
+  //   let taken = false;
+
+  //   users.forEach((doc) => {
+  //     const userData = doc.data();
+
+  //     if (userData.displayName.toLowerCase() === name.toLowerCase()) {
+  //       taken = true;
+  //     }
+  //   });
+
+  //   return taken;
+  // };
+
+  // Function to check if the display name is taken
+  const displayNameTaken = (name) => {
+    return getDocs(usersRef)
+      .then((users) => {
+        let taken = false;
+
+        users.forEach((doc) => {
+          const userData = doc.data();
+          if (userData.displayName.toLowerCase() === name.toLowerCase()) {
+            taken = true;
+          }
+        });
+
+        return taken;
+      })
+      .catch((error) => {
+        console.log("Error checking display name: ", error);
+        throw new Error("Failed to check display name");
+      });
+    // const foundNameRef = doc(usersRef, name);
+    // return getDoc(foundNameRef)
+    //   .then((foundNameDoc) => foundNameDoc.exists())
+    //   .catch((error) => {
+    //     console.log("Error fetching document: ", error);
+    //     throw new Error("Failed to check display name");
+    //   });
   };
 
   // Phone number validation
@@ -136,6 +178,7 @@ export const ValidationProvider = ({ children }) => {
     validateEmail,
     validatePassword,
     validateName,
+    displayNameTaken,
     validatePhoneNumber,
     validateCreditCardNumber,
     validateExpirationDate,

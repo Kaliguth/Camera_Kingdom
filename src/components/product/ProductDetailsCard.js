@@ -21,7 +21,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import LoginToLikeAlert from "../alerts/LoginToLikeAlert";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 import ProductImagesSwiper from "../design/ProductImagesSwiper";
-import noImage from "../../assets/noImage.png";
+import noImage from "../../assets/no-image.png";
 
 const ProductDetailsCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();

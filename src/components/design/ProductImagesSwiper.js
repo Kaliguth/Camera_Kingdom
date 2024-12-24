@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
-import noImage from "../../assets/noImage.png";
+import noImage from "../../assets/no-image.png";
 
 const ProductImagesSwiper = ({ product, size }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);

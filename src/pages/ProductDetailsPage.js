@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 import Loader from "../components/utility/Loader";
@@ -11,6 +7,7 @@ import ProductDetailsCard from "../components/product/ProductDetailsCard";
 import ProductReviewsCard from "../components/product/ProductReviewsCard";
 import ProductInfoCard from "../components/product/ProductInfoCard";
 import ProductsSwiper from "../components/design/ProductsSwiper";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -63,6 +60,7 @@ const ProductDetails = () => {
           <ProductReviewsCard product={product} />
         </Col>
       </Row>
+      <HomeButtons size={"md"} />
     </Container>
   );
 };

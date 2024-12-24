@@ -5,6 +5,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { useWishlistContext } from "../contexts/WishlistContext";
 import { useNavigate } from "react-router-dom";
 import WishlistProductCard from "../components/wishlist/WishlistProductCard";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const WishlistPage = () => {
   const { currentUser, userLoading } = useAuthContext();
@@ -27,22 +28,23 @@ const WishlistPage = () => {
       <Container>
         <Row className="mt-4">
           <Col>
-            <p>Please log in to view your wishlist</p>
+            <h5>Please log in to view your wishlist</h5>
             <Button
               variant="success"
               size="lg"
-              className="m-4"
+              className="custom-button mt-3"
               onClick={() => navigate("/login")}
             >
               Login
             </Button>
-            <br />
+            {/* <br />
             <Button className="m-2" onClick={() => navigate(-1)}>
               Go back
             </Button>
             <Button className="m-2" onClick={() => navigate("/")}>
               Home
-            </Button>
+            </Button> */}
+            <HomeButtons size={"md"} />
           </Col>
         </Row>
       </Container>
@@ -50,28 +52,29 @@ const WishlistPage = () => {
   }
 
   return (
-    <Container className="custom-container mt-4 mb-5">
+    <Container className="custom-container">
       <Row className="m-4">
         <h2>Wishlist</h2>
       </Row>
       {wishlist.length === 0 ? (
         <>
-          <h5>Your wishlist is empty</h5>
+          <h5>Your wishlist is empty!</h5>
           <Button
             variant="success"
             size="lg"
-            className="m-4"
+            className="custom-button mt-3"
             onClick={() => navigate("/categories")}
           >
             Start shopping
           </Button>
-          <br />
+          {/* <br />
           <Button className="m-2" onClick={() => navigate(-1)}>
             Go back
           </Button>
           <Button className="m-2" onClick={() => navigate("/")}>
             Home
-          </Button>
+          </Button> */}
+          <HomeButtons size={"md"} />
         </>
       ) : (
         <>
@@ -101,7 +104,7 @@ const WishlistPage = () => {
             </Col>
           </Row>
 
-          <Row className="d-flex justify-content-center m-5">
+          <Row className="d-flex justify-content-center m-4">
             <Col md={4}>
               <Row className="cart-buttons-container">
                 <Col className="d-flex justify-content-center">

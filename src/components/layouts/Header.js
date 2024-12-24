@@ -5,6 +5,7 @@ import { Navbar, Nav, Dropdown, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { PiListStar } from "react-icons/pi";
 import { BsCart2 } from "react-icons/bs";
+import { toast } from "react-toastify";
 import logo from "../../assets/logo_small.png";
 import userImage from "../../assets/user-nobgnew.png";
 
@@ -27,18 +28,12 @@ const Header = () => {
         navigate("/");
       })
       .catch((error) => {
-        alert(
-          "An error occured while attempting to log out. Please contact support"
-        );
-        console.error("Logout failed:", error);
+        toast.error(error.message);
       });
   };
 
   return (
-    <Navbar
-      expand="sm"
-      className="header"
-    >
+    <Navbar expand="lg" className="header hide-on-print">
       <Navbar.Brand>
         <LinkContainer to="/" className="header-logo-container">
           <Image src={logo} roundedCircle width={100} height={100} />
@@ -57,12 +52,12 @@ const Header = () => {
               <h5>Categories</h5>
             </Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/contactus">
+          <LinkContainer to="/contact-us">
             <Nav.Link className="me-3">
               <h5>Contact Us</h5>
             </Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/aboutus">
+          <LinkContainer to="/about-us">
             <Nav.Link className="me-3">
               <h5>About Us</h5>
             </Nav.Link>
@@ -101,21 +96,27 @@ const Header = () => {
               <Dropdown align="end">
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   <h6 className="d-inline">{userData.displayName} </h6>
-                  {userData.photoURL ? (
-                    <Image
-                      src={userData.photoURL}
-                      roundedCircle
-                      width={30}
-                      height={30}
-                    />
-                  ) : (
-                    <Image
-                      src={userImage}
-                      roundedCircle
-                      width={35}
-                      height={35}
-                    />
-                  )}
+                  {
+                    // userData.photoURL && (
+                      <Image
+                        src={userData.photoURL || userImage}
+                        roundedCircle
+                        width={30}
+                        height={30}
+                        onError={(e) => {
+                          e.target.src = userImage;
+                        }}
+                      />
+                    // )
+                    //  : (
+                    //   <Image
+                    //     src={userImage}
+                    //     roundedCircle
+                    //     width={35}
+                    //     height={35}
+                    //   />
+                    // )
+                  }
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
@@ -126,7 +127,7 @@ const Header = () => {
                     <Dropdown.Item>Orders</Dropdown.Item>
                   </LinkContainer>
                   {userData.isAdmin && (
-                    <LinkContainer to="/manager">
+                    <LinkContainer to="/admin-dashboard">
                       <Dropdown.Item className="admin-dashboard-text">
                         Admin Dashboard
                       </Dropdown.Item>

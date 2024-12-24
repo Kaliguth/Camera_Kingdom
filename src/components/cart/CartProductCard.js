@@ -15,7 +15,7 @@ import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import QuantityInput from "../utility/QuantityInput";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
-import noImage from "../../assets/noImage.png";
+import noImage from "../../assets/no-image.png";
 
 const CartProductCard = ({ product }) => {
   const { removeFromCart, changeQuantity } = useCartContext();

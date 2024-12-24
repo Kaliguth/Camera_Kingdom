@@ -6,6 +6,7 @@ import { useValidationContext } from "../contexts/ValidationContext";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/utility/Loader";
 import CartProductCard from "../components/cart/CartProductCard";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
@@ -43,22 +44,16 @@ const CartPage = () => {
       <Container>
         <Row className="mt-4">
           <Col>
-            <p>Please log in to view your cart</p>
+            <h5>Please log in to view your cart</h5>
             <Button
               variant="success"
               size="lg"
-              className="m-4"
+              className="custom-button mt-3"
               onClick={() => navigate("/login")}
             >
               Login
             </Button>
-            <br />
-            <Button className="m-2" onClick={() => navigate(-1)}>
-              Go back
-            </Button>
-            <Button className="m-2" onClick={() => navigate("/")}>
-              Home
-            </Button>
+            <HomeButtons size={"md"} />
           </Col>
         </Row>
       </Container>
@@ -72,22 +67,16 @@ const CartPage = () => {
       </Row>
       {cart.length === 0 ? (
         <>
-          <h5>Your cart is empty</h5>
+          <h5>Your cart is empty!</h5>
           <Button
             variant="success"
             size="lg"
-            className="m-4"
+            className="custom-button mt-3"
             onClick={() => navigate("/categories")}
           >
             Start shopping
           </Button>
-          <br />
-          <Button className="m-2" onClick={() => navigate(-1)}>
-            Go back
-          </Button>
-          <Button className="m-2" onClick={() => navigate("/")}>
-            Home
-          </Button>
+          <HomeButtons size={"md"} />
         </>
       ) : (
         <>

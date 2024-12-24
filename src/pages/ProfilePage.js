@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 import { useAuthContext } from "../contexts/AuthContext";
-import user from "../assets/user-nobgnew.png";
+import userImage from "../assets/user-nobgnew.png";
+import HomeButtons from "../components/utility/HomeButtons";
 
 const ProfilePage = () => {
-  const { currentUser, update } = useAuthContext();
+  const { currentUser, userData, update } = useAuthContext();
   //   const [user, setUser] = useState(null);
   const [displayName, setDisplayName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
@@ -42,7 +43,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <Container className="mt-4">
+    <Container className="custom-container mt-4">
       <h2 className="mb-3">Profile</h2>
       <Row>
         <Col md={6}>
@@ -82,13 +83,24 @@ const ProfilePage = () => {
         </Col>
         <Col>
           <h4 className="mb-5">Profile Picture</h4>
-          {currentUser.photoURL ? (
-            <Image src={currentUser.photoURL} className="profile-picture" />
-          ) : (
-            <Image src={user} className="profile-picture" />
-          )}
+          {
+            // userData.photoURL && (
+              <Image
+                src={userData.photoURL || userImage}
+                alt={`${userData.displayName}'s Profile picture`}
+                className="profile-picture"
+                onError={(e) => {
+                  e.target.src = userImage;
+                }}
+              />
+            // )
+            // : (
+            //   <Image src={userImage} className="profile-picture" />
+            // )
+          }
         </Col>
       </Row>
+      <HomeButtons size={"md"} />
     </Container>
   );
 };

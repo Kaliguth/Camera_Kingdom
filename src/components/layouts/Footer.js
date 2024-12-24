@@ -29,9 +29,8 @@ const Footer = () => {
     <>
       {showScrollTop && (
         <Button
-          className="scroll-to-top"
+          className="scroll-to-top hide-on-print"
           onClick={handleScrollToTop}
-          aria-label="Scroll to top"
         >
           <FaArrowUp size={20} />
         </Button>

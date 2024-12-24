@@ -1,16 +1,16 @@
 import React from "react";
 import { Card, Row, Col } from "react-bootstrap";
-import { logoMap } from "../../assets/LogoMap";
 
 const ProductInfoCard = ({ product }) => {
-  const logo = logoMap[product.brand] || null;
   const productSpecs = product.specs || [];
 
   return (
     <Card>
       <Row className="text-center m-3">
         <h6>
-          <u>{productSpecs[0]?.name}</u>
+          <u>
+            <b>{productSpecs[0]?.name}</b>
+          </u>
         </h6>
         {productSpecs[0]?.text.map((text, index) => {
           return <p key={index}>{text}</p>;
@@ -26,7 +26,9 @@ const ProductInfoCard = ({ product }) => {
                 return (
                   <Row key={spec.name}>
                     <h6>
-                      <u>{spec.name}</u>
+                      <u>
+                        <b>{spec.name}</b>
+                      </u>
                     </h6>
                     {spec?.text.map((text, index) => {
                       return <p key={index}>{text}</p>;
@@ -36,6 +38,8 @@ const ProductInfoCard = ({ product }) => {
                 );
               }
             }
+
+            return null;
           })}
         </Col>
 
@@ -46,11 +50,7 @@ const ProductInfoCard = ({ product }) => {
           lg="auto"
           className="d-flex justify-content-center"
         >
-          <span
-            style={{
-              borderLeft: "2px solid #ccc",
-            }}
-          ></span>
+          <span className="custom-divider" />
         </Col>
 
         <Col>
@@ -60,20 +60,20 @@ const ProductInfoCard = ({ product }) => {
                 return (
                   <Row key={spec.name}>
                     <h6>
-                      <u>{spec.name}</u>
+                      <u>
+                        <b>{spec.name}</b>
+                      </u>
                     </h6>
                     {spec?.text.map((text, index) => {
-                      return text === "break" ? (
-                        <p key={index} />
-                      ) : (
-                        <p key={index}>{text}</p>
-                      );
+                      return <p key={index}>{text}</p>;
                     })}
                     {index !== productSpecs.length - 1 && <hr />}
                   </Row>
                 );
               }
             }
+
+            return null;
           })}
         </Col>
       </Row>

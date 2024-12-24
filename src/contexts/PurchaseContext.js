@@ -3,7 +3,7 @@ import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
 import { ordersRef } from "../firebase/firestore";
-import { getDocs, addDoc, updateDoc, getDoc } from "firebase/firestore";
+import { getDocs, addDoc, updateDoc, getDoc, doc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
@@ -232,9 +232,15 @@ export const PurchaseProvider = ({ children }) => {
       );
     }
 
+    // Order document ID variable needed to return for summary page
+    let orderId;
+
     // Add the order to the orders collection in Firestore
     return addDoc(ordersRef, newOrder)
-      .then(() => {
+      .then((docRef) => {
+        // Update the order ID variable with the new document's ID
+        orderId = docRef.id;
+
         // Incrememnt next order number
         setNextOrderNumber((prevOrderNumber) => prevOrderNumber + 1);
 
@@ -243,32 +249,35 @@ export const PurchaseProvider = ({ children }) => {
       })
       .then(() => {
         // Empty the user's cart in the app and firebase
-        return updateDoc(userDocRef, { cart: [] })
-          .then(() => {
-            // Clear products from the cart state and local storage userData cart
-            // Also add new order to local storage orders
-            const currentOrders = userData.orders;
-            const updatedOrders = [...currentOrders, newOrder];
-            const updatedUserData = {
-              ...userData,
-              cart: [],
-              orders: updatedOrders,
-            };
-            updateUserData(updatedUserData);
-            setCart([]);
+        return (
+          updateDoc(userDocRef, { cart: [] })
+            .then(() => {
+              // Clear products from the cart state and local storage userData cart
+              // Also add new order to local storage orders
+              const currentOrders = userData.orders;
+              const updatedOrders = [...currentOrders, newOrder];
+              const updatedUserData = {
+                ...userData,
+                cart: [],
+                orders: updatedOrders,
+              };
+              updateUserData(updatedUserData);
+              setCart([]);
 
-            // Add the new order to the user's orders array
-            return updateDoc(userDocRef, {
-              orders: updatedOrders,
-            });
-          })
-          .then(() => newOrder)
-          .catch((error) => {
-            console.log("Error completing order - document updates: ", error);
-            throw new Error(
-              "Failed to complete your order. Please try again or contact support"
-            );
-          });
+              // Add the new order to the user's orders array
+              return updateDoc(userDocRef, {
+                orders: updatedOrders,
+              });
+            })
+            // Return the new order document ID for summary
+            .then(() => orderId)
+            .catch((error) => {
+              console.log("Error completing order - document updates: ", error);
+              throw new Error(
+                "Failed to complete your order. Please try again or contact support"
+              );
+            })
+        );
       })
       .catch((error) => {
         console.log("Error completing order - product stocks: ", error);
