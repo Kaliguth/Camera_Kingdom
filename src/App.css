@@ -54,6 +54,11 @@ body {
   border-left: 2px solid #ccc;
 }
 
+.thick-hr {
+  height: 5px;
+  background-color: black;
+}
+
 /* Header */
 .header {
   background-color: #e3e7ec;

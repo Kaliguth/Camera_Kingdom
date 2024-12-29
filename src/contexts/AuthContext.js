@@ -65,8 +65,11 @@ export const AuthProvider = ({ children }) => {
         setUserDocRef(docRef);
         const data = userDoc.data();
         // console.log(userDoc.data());
-        setUserData(data);
-        localStorage.setItem("userData", JSON.stringify(data));
+
+        // setUserData(data);
+        // localStorage.setItem("userData", JSON.stringify(data));
+        updateUserData(data);
+
         // console.log("data: ", data);
         // console.log("user data: ", userData);
       } else {

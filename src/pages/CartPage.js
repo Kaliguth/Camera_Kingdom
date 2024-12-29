@@ -90,7 +90,7 @@ const CartPage = () => {
                   </h6> */}
                 </Card.Header>
                 <Card.Body>
-                  <Row>
+                  {/* <Row>
                     <Col xs={4} md={4}>
                       <small className="text-muted">Product</small>
                     </Col>
@@ -112,7 +112,7 @@ const CartPage = () => {
                         Actions
                       </small>
                     </Col>
-                  </Row>
+                  </Row> */}
                   {cart.map((product) => (
                     <CartProductCard key={product.id} product={product} />
                   ))}

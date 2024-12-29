@@ -74,7 +74,7 @@ const ProductReviewsCard = ({ product }) => {
   };
 
   return (
-    <Card>
+    <Card className="product-details-card">
       <Row>
         <Col md={11} className="text-start m-3">
           <h4>Customer Reviews</h4>

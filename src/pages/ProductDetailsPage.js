@@ -38,13 +38,13 @@ const ProductDetails = () => {
   return (
     <Container className="custom-container mt-4 mb-4">
       <ProductDetailsCard product={product} />
-      <hr />
+      <hr className="thick-hr" />
 
       <Row>
         <h4 className="text-center">Product Information</h4>
         <ProductInfoCard product={product} />
       </Row>
-      <hr />
+      <hr className="thick-hr" />
 
       <Row>
         <h4 className="text-center">Related products</h4>
@@ -53,7 +53,7 @@ const ProductDetails = () => {
         ))} */}
         <ProductsSwiper products={relatedProducts} />
       </Row>
-      <hr />
+      <hr className="thick-hr" />
 
       <Row>
         <Col>

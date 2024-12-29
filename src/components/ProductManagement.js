@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase/firestore";
-import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { Table, Button, Form } from "react-bootstrap";
 
 const ProductManagement = () => {
@@ -11,7 +18,7 @@ const ProductManagement = () => {
     image1: "",
     model: "",
     price: "",
-    type: ""
+    type: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [currentProductId, setCurrentProductId] = useState(null);
@@ -19,7 +26,9 @@ const ProductManagement = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const productCollection = await getDocs(collection(db, "products"));
-      setProducts(productCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setProducts(
+        productCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+      );
     };
     fetchProducts();
   }, []);
@@ -30,23 +39,39 @@ const ProductManagement = () => {
 
   const handleAddProduct = async () => {
     try {
-      if (!newProduct.brand || !newProduct.category || !newProduct.image1 || !newProduct.model || !newProduct.price || !newProduct.type) {
+      if (
+        !newProduct.brand ||
+        !newProduct.category ||
+        !newProduct.image1 ||
+        !newProduct.model ||
+        !newProduct.price ||
+        !newProduct.type
+      ) {
         alert("Please fill all the fields.");
         return;
       }
 
       const productToAdd = {
-        brand: newProduct.brand.charAt(0).toUpperCase() + newProduct.brand.slice(1),
+        brand:
+          newProduct.brand.charAt(0).toUpperCase() + newProduct.brand.slice(1),
         category: newProduct.category.toLowerCase(),
         image1: newProduct.image1,
         model: newProduct.model,
         price: parseFloat(newProduct.price),
-        type: newProduct.type.charAt(0).toUpperCase() + newProduct.type.slice(1)
+        type:
+          newProduct.type.charAt(0).toUpperCase() + newProduct.type.slice(1),
       };
 
       await addDoc(collection(db, "products"), productToAdd);
       setProducts([...products, productToAdd]);
-      setNewProduct({ brand: "", category: "", image1: "", model: "", price: "", type: "" });
+      setNewProduct({
+        brand: "",
+        category: "",
+        image1: "",
+        model: "",
+        price: "",
+        type: "",
+      });
       alert("Product added successfully!");
     } catch (error) {
       console.error("Error adding product: ", error);
@@ -62,7 +87,7 @@ const ProductManagement = () => {
       image1: product.image1,
       model: product.model,
       price: product.price,
-      type: product.type
+      type: product.type,
     });
   };
 
@@ -70,19 +95,30 @@ const ProductManagement = () => {
     try {
       const productRef = doc(db, "products", currentProductId);
       await updateDoc(productRef, {
-        brand: newProduct.brand.charAt(0).toUpperCase() + newProduct.brand.slice(1),
+        brand:
+          newProduct.brand.charAt(0).toUpperCase() + newProduct.brand.slice(1),
         category: newProduct.category.toLowerCase(),
         image1: newProduct.image1,
         model: newProduct.model,
         price: parseFloat(newProduct.price),
-        type: newProduct.type.charAt(0).toUpperCase() + newProduct.type.slice(1)
+        type:
+          newProduct.type.charAt(0).toUpperCase() + newProduct.type.slice(1),
       });
 
       const updatedProducts = products.map((product) =>
-        product.id === currentProductId ? { ...product, ...newProduct } : product
+        product.id === currentProductId
+          ? { ...product, ...newProduct }
+          : product
       );
       setProducts(updatedProducts);
-      setNewProduct({ brand: "", category: "", image1: "", model: "", price: "", type: "" });
+      setNewProduct({
+        brand: "",
+        category: "",
+        image1: "",
+        model: "",
+        price: "",
+        type: "",
+      });
       setIsEditing(false);
       setCurrentProductId(null);
       alert("Product updated successfully!");
@@ -171,7 +207,10 @@ const ProductManagement = () => {
           />
         </Form.Group>
 
-        <Button className="mt-3" onClick={isEditing ? handleUpdateProduct : handleAddProduct}>
+        <Button
+          className="mt-3"
+          onClick={isEditing ? handleUpdateProduct : handleAddProduct}
+        >
           {isEditing ? "Update Product" : "Add Product"}
         </Button>
       </Form>
@@ -196,16 +235,30 @@ const ProductManagement = () => {
               <td>{product.price}</td>
               <td>{product.category}</td>
               <td>
-                <img 
-                  src={product.image1} 
-                  alt={product.name} 
-                  style={{ width: "100px", height: "auto", display: "block", margin: "0 auto" }} 
+                <img
+                  src={product.image1}
+                  alt={product.name}
+                  style={{
+                    width: "100px",
+                    height: "auto",
+                    display: "block",
+                    margin: "0 auto",
+                  }}
                 />
               </td>
               <td>{product.type}</td>
               <td>
-                <Button variant="warning" onClick={() => handleEditProduct(product)}>Edit</Button>
-                <Button variant="danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>
+                <Button
+                  variant="warning"
+                  onClick={() => handleEditProduct(product)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  className="ms-2"
+                  onClick={() => handleDeleteProduct(product.id)}
+                >
                   Delete
                 </Button>
               </td>

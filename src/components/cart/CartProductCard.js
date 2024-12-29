@@ -86,7 +86,7 @@ const CartProductCard = ({ product }) => {
           md={3}
           className="d-flex flex-column justify-content-center"
         >
-          {/* <small className="text-muted">Product</small> */}
+          <small className="text-muted mb-3">Product</small>
           <Link to={`/product/${product.id}`} className="black-link-text">
             <h6>
               {product.brand} {product.model}
@@ -101,7 +101,7 @@ const CartProductCard = ({ product }) => {
           md={2}
           className="d-flex flex-column justify-content-center"
         >
-          {/* <small className="text-muted">Quantity</small> */}
+          <small className="text-muted mb-2">Quantity</small>
           <QuantityInput
             defaultValue={product.quantity}
             min={1}
@@ -117,7 +117,7 @@ const CartProductCard = ({ product }) => {
           md={2}
           className="d-flex flex-column justify-content-center"
         >
-          {/* <small className="text-muted">Unit Price</small> */}
+          <small className="text-muted mb-3">Unit Price</small>
           <h6>{formatPrice(product.price)}</h6>
           <span />
         </Col>
@@ -128,7 +128,7 @@ const CartProductCard = ({ product }) => {
           md={2}
           className="d-flex flex-column justify-content-center"
         >
-          {/* <small className="text-muted">Total</small> */}
+          <small className="text-muted mb-3">Total</small>
           <h6>{formatPrice(product.price * product.quantity)}</h6>
           <span />
         </Col>

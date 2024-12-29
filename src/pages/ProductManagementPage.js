@@ -2,18 +2,12 @@ import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
-import { useUserManagementContext } from "../contexts/UserManagementContext";
-import { toast } from "react-toastify";
-import UpdateUserRoleAlert from "../components/alerts/UpdateUserRoleAlert";
-import DeleteUserAlert from "../components/alerts/DeleteUserAlert";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
-import userImage from "../assets/user-nobgnew.png";
 
 const ProductManagementPage = () => {
   const { currentUser, userData, userLoading } = useAuthContext();
-  const { users, updateUserRole, deleteUser } = useUserManagementContext();
   const navigate = useNavigate();
 
   if (userLoading) {

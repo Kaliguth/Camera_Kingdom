@@ -2,26 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useUserManagementContext } from "../contexts/UserManagementContext";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Image,
-  Form,
-} from "react-bootstrap";
-import { toast } from "react-toastify";
-import UpdateUserRoleAlert from "../components/alerts/UpdateUserRoleAlert";
-import DeleteUserAlert from "../components/alerts/DeleteUserAlert";
+import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
+import UsersTable from "../components/user/UsersTable";
 import HomeButtons from "../components/utility/HomeButtons";
-import userImage from "../assets/user-nobgnew.png";
 
 const UserManagementPage = () => {
   const { currentUser, userData } = useAuthContext();
-  const { users, usersLoading, updateUserRole, deleteUser } = useUserManagementContext();
+  const { users, usersLoading } = useUserManagementContext();
   const navigate = useNavigate();
 
   // Search and sort states
@@ -63,55 +52,11 @@ const UserManagementPage = () => {
       }
     });
 
-  // Update user role handle (admin or user)
-  const handleUpdateUserRole = (user) => {
-    UpdateUserRoleAlert(user, currentUser)
-      .then((isConfirmed) => {
-        if (isConfirmed) {
-          return updateUserRole(user.id);
-        } else {
-          throw new Error("canceled");
-        }
-      })
-      .then(() => {
-        toast.info(
-          `${user.displayName} is now ${user.isAdmin ? "a user" : "an admin"}`
-        );
-
-        // Navigate to home page if the currently logged in user was changed to a user
-        if (user.id === currentUser.uid) {
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        if (error.message === "canceled") {
-          console.log("Role change canceled by the user");
-        } else {
-          toast.error(error.message);
-        }
-      });
-  };
-
-  // Delete user handle
-  const handleDeleteUser = (user) => {
-    DeleteUserAlert(user, currentUser)
-      .then((isConfirmed) => {
-        if (isConfirmed) {
-          return deleteUser(user.id);
-        } else {
-          throw new Error("canceled");
-        }
-      })
-      .then(() => {
-        toast.success(`${user.displayName} has been successfully deleted`);
-      })
-      .catch((error) => {
-        if (error.message === "canceled") {
-          console.log("User deletion canceled by the user");
-        } else {
-          toast.error(error.message);
-        }
-      });
+  // Clear filters handle
+  const handleResetFilters = () => {
+    setSearchInput("");
+    setSortOrder("A-Z");
+    setFilterRole("All");
   };
 
   if (usersLoading) {
@@ -209,14 +154,29 @@ const UserManagementPage = () => {
           </Form.Select>
         </Col>
       </Row>
+      <Row className="mb-3">
+        <Col>
+          <Button
+            className="custom-button mt-0 mb-3"
+            variant="primary"
+            size="sm"
+            onClick={() => handleResetFilters()}
+          >
+            Reset Filters
+          </Button>
+        </Col>
+      </Row>
 
-      <Row className="justify-content-center g-5">
+      <h6>(Scroll for more users)</h6>
+      <UsersTable users={filteredUsers} />
+
+      {/* <Row className="justify-content-center g-5">
         {filteredUsers.map((user) => (
           <Col lg={6} md={6} sm={10} xs={10} key={user.id}>
             <Card className="order-container" style={{ minHeight: "320px" }}>
               <Row>
                 <Card.Title>
-                  <u>{user.displayName || "No Name"}</u>
+                  <u>{user.displayName || "No-Name"}</u>
                 </Card.Title>
               </Row>
               <Card.Body>
@@ -286,7 +246,7 @@ const UserManagementPage = () => {
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row> */}
       <HomeButtons size={"md"} />
     </Container>
   );

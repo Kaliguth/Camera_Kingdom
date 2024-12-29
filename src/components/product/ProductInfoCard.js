@@ -5,7 +5,7 @@ const ProductInfoCard = ({ product }) => {
   const productSpecs = product.specs || [];
 
   return (
-    <Card>
+    <Card className="product-details-card">
       <Row className="text-center m-3">
         <h6>
           <u>
