@@ -87,7 +87,7 @@ const AdminDashboard = () => {
       </Row>
       <Row className="justify-content-center">
         <Col md={6} lg={5} sm={"auto"} xs={"auto"}>
-          <Card className="order-container">
+          <Card className="custom-card">
             <Card.Title>Welcome, {currentUser?.displayName}!</Card.Title>
             <h6>Choose a platform:</h6>
             <Card.Body>

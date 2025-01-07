@@ -82,43 +82,43 @@ const CheckoutPage = () => {
     const errorMessage = error.message.toLowerCase();
     if (errorMessage.includes("your name")) {
       setNameError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 560);
     } else if (errorMessage.includes("phone")) {
       setPhoneError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 580);
     } else if (errorMessage.includes("email")) {
       setEmailError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 600);
     } else if (errorMessage.includes("street")) {
       setStreetError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 560);
     } else if (errorMessage.includes("house")) {
       setHouseError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 580);
     } else if (errorMessage.includes("city")) {
       setCityError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 600);
     } else if (errorMessage.includes("delivery")) {
       setDeliveryError(error.message);
-      window.scrollTo(0, 480);
+      window.scrollTo(0, 620);
     } else if (errorMessage.includes("cardholder")) {
       setCardholderError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 1900);
     } else if (errorMessage.includes("card number")) {
       setCardNumberError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 1900);
     } else if (errorMessage.includes("expiration")) {
       setExpirationError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 1900);
     } else if (errorMessage.includes("cvc")) {
       setCvcError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 1900);
     } else if (errorMessage.includes("coupon")) {
       setCouponError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 1900);
     } else if (errorMessage.includes("confirm")) {
       setConfirmError(error.message);
-      window.scrollTo(0, 1100);
+      window.scrollTo(0, 2500);
     } else {
       toast.error(error.message);
     }
@@ -413,7 +413,7 @@ const CheckoutPage = () => {
           </Row>
 
           <Row className="mt-5">
-            <Col md={8}>
+            <Col md={8} className="mb-5">
               <Card className="order-container">
                 <Card.Header>
                   <h5 className="m-3">Payment details</h5>

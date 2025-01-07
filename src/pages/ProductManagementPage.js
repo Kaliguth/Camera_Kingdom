@@ -67,7 +67,7 @@ const ProductManagementPage = () => {
           <Card className="order-container">
             <Card.Title>What would you like to do?</Card.Title>
             <Card.Body>
-              <Link to="/admin-dashboard/users">
+              <Link to="/admin-dashboard/products/new-product">
                 <Button variant="success" size="md" className="m-2">
                   Add New Product
                 </Button>
@@ -83,7 +83,12 @@ const ProductManagementPage = () => {
         </Col>
       </Row>
 
-      <Outlet/>
+      <Outlet />
+      <Link to={"/admin-dashboard"}>
+        <Button className="custom-button mt-4" variant="warning" size={"md"}>
+          Back to Admin Dashboard
+        </Button>
+      </Link>
       <HomeButtons size={"md"} />
     </Container>
   );

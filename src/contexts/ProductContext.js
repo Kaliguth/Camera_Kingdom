@@ -1,14 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { productsRef } from "../firebase/firestore";
-import { doc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [productsLoading, setProductsLoading] = useState(true);
   const [allProducts, setAllProducts] = useState([]);
-  // const [selectedProductLoading, setSelectedProductLoading] = useState(true);
-  // const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -29,15 +27,6 @@ export const ProductProvider = ({ children }) => {
           return a.model.localeCompare(b.model);
         });
 
-      // // Update each document to set likes as an empty array
-      // await Promise.all(
-      //   sortedProducts.map((product) =>
-      //     updateDoc(doc(productsRef, product.id), {
-      //       likes: [],
-      //     })
-      //   )
-      // );
-
       setAllProducts(sortedProducts);
       setProductsLoading(false);
     };
@@ -53,22 +42,6 @@ export const ProductProvider = ({ children }) => {
   };
 
   const getProduct = (id) => {
-    // const productRef = getProductDocRef(id);
-
-    // return getDoc(productRef)
-    //   .then((doc) => {
-    //     if (doc.exists()) {
-    //       const productData = { id: doc.id, ...doc.data() };
-    //       return productData;
-    //     } else {
-    //       console.error("Product document not found");
-    //       return null;
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching product document:", error);
-    //     return null;
-    //   });
     const product = allProducts.find((product) => product.id === id) || null;
 
     return product;
@@ -277,6 +250,86 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  const deleteProduct = (product) => {
+    const productRef = getProductDocRef(product.id);
+
+    return deleteDoc(productRef)
+      .then(() => {
+        setAllProducts((prevProducts) =>
+          prevProducts.filter(
+            (currentProduct) => currentProduct.id !== product.id
+          )
+        );
+      })
+      .catch((error) => {
+        console.log("Error deleting product: ", error);
+        throw new Error("Failed to delete the product. Please try again.");
+      });
+  };
+
+  const addNewProduct = (product) => {
+    // Validations:
+    // Throws error if brand is empty
+    if (!product.brand || product.brand.trim() === "") {
+      return Promise.reject(new Error("Brand cannot be empty"));
+    }
+    // Throws error if model is empty
+    if (!product.model || product.model.trim() === "") {
+      return Promise.reject(new Error("Model cannot be empty"));
+    }
+    // Throws error if type is empty
+    if (!product.type || product.type.trim() === "") {
+      return Promise.reject(new Error("Type cannot be empty"));
+    }
+    // Throws error if price is 0 or below
+    if (product.price <= 0) {
+      return Promise.reject(new Error("Cannot set price to 0"));
+    }
+    // Throws error if description is empty
+    if (!product.description || product.description.trim() === "") {
+      return Promise.reject(new Error("Description cannot be empty"));
+    }
+    // Throws error if there are no images
+    if (product.images.length === 0) {
+      return Promise.reject(new Error("Products must have at least one image"));
+    }
+    // Throws error if product overview is empty (first index of specs)
+    if (product.specs[0].text[0].trim() === "") {
+      return Promise.reject(new Error("Product overview cannot be empty"));
+    }
+    // Loop to go over the rest of the specs (if exist)
+    for (let i = 1; i < product.specs.length; i++) {
+      const spec = product.specs[i];
+      // Throw error if any spec name is empty
+      if (spec.name.trim() === "") {
+        return Promise.reject(new Error("Spec names cannot be empty"));
+      }
+      // Throw error if any spec detail is empty
+      for (let detail of spec.text) {
+        if (detail.trim() === "") {
+          return Promise.reject(new Error("Spec details cannot be empty"));
+        }
+      }
+    }
+
+    // Add the new product to Firestore
+    return addDoc(productsRef, product)
+      .then((productRef) => {
+        // Get the new product's document ID
+        const productId = productRef.id;
+
+        // Update allProducts list with the new product
+        setAllProducts((prevProducts) => [
+          ...prevProducts,
+          { ...product, id: productId },
+        ]);
+      })
+      .catch((error) => {
+        console.log("Error adding new product: ", error);
+        throw new Error("Failed to add the product. Please try again.");
+      });
+  };
+
   const globalVal = {
     productsLoading,
     allProducts,
@@ -288,6 +341,8 @@ export const ProductProvider = ({ children }) => {
     getFeaturedProducts,
     updateProductsStock,
     updateProductLikes,
+    deleteProduct,
+    addNewProduct,
   };
 
   return (

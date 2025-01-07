@@ -26,7 +26,8 @@ import ProductDetailsPage from "./pages/ProductDetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserManagementPage from "./pages/UserManagementPage";
 import ProductManagementPage from "./pages/ProductManagementPage";
-import ProductManagement from "./components/ProductManagement";
+import EditProductsPage from "./pages/EditProductsPage";
+import ProductEditPage from "./pages/ProductEditPage";
 import OrderManagement from "./components/OrderManagement";
 import Error404Page from "./pages/Error404Page";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,7 +37,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import EditProductsPage from "./pages/EditProductsPage";
+import NewProductPage from "./pages/NewProductPage";
 
 // Layout Component to contain all layour components
 const Layout = () => (
@@ -96,10 +97,9 @@ function App() {
                 path="/admin-dashboard/products"
                 element={<ProductManagementPage />}
               >
-                <Route
-                  path="edit"
-                  element={<EditProductsPage />}
-                />
+                <Route path="edit" element={<EditProductsPage />} />
+                <Route path="edit/:id" element={<ProductEditPage />} />
+                <Route path="new-product" element={<NewProductPage />} />
               </Route>
               <Route
                 path="/admin-dashboard/orders"

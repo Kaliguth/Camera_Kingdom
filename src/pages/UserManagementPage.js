@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useUserManagementContext } from "../contexts/UserManagementContext";
-import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Image,
+  Form,
+  Card,
+} from "react-bootstrap";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import UsersTable from "../components/user/UsersTable";
@@ -111,66 +119,74 @@ const UserManagementPage = () => {
         <h2>User Management</h2>
       </Row>
 
-      <Row className="justify-content-center mb-3">
-        <Col lg={6} md={6} sm={10} xs={10} className="mb-3">
-          <h6>
-            <b>Search:</b>
-          </h6>
-          <Form.Control
-            className="form-controls"
-            type="text"
-            placeholder="Search by name or email"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-        </Col>
-        <Col lg={2} md={6} sm={5} xs={5}>
-          <h6>
-            <b>Sort by:</b>
-          </h6>
-          <Form.Select
-            className="form-controls"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <option value="A-Z">Name: A-Z</option>
-            <option value="Z-A">Name: Z-A</option>
-            <option value="orders-asc">Orders: Ascending</option>
-            <option value="orders-desc">Orders: Descending</option>
-          </Form.Select>
-        </Col>
-        <Col lg={2} md={6} sm={5} xs={5} className="mb-3">
-          <h6>
-            <b>Filter:</b>
-          </h6>
-          <Form.Select
-            className="form-controls"
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-          >
-            <option value="All">All Roles</option>
-            <option value="Admins">Admins</option>
-            <option value="Users">Users</option>
-          </Form.Select>
-        </Col>
-      </Row>
-      <Row className="mb-3">
-        <Col>
-          <Button
-            className="custom-button mt-0 mb-3"
-            variant="primary"
-            size="sm"
-            onClick={() => handleResetFilters()}
-          >
-            Reset Filters
-          </Button>
-        </Col>
-      </Row>
+      <Card className="custom-card">
+        <Card.Header>
+          <h3>
+            <u>Users</u>
+          </h3>
+        </Card.Header>
 
-      <h6>(Scroll for more users)</h6>
-      <UsersTable users={filteredUsers} />
+        <Card.Body>
+          <Row className="justify-content-center mb-3">
+            <Col lg={6} md={6} sm={10} xs={10} className="mb-3">
+              <h6>
+                <b>Search:</b>
+              </h6>
+              <Form.Control
+                className="form-controls"
+                type="text"
+                placeholder="Search by name or email"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </Col>
+            <Col lg={2} md={6} sm={5} xs={5}>
+              <h6>
+                <b>Sort by:</b>
+              </h6>
+              <Form.Select
+                className="form-controls text-center"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="A-Z">Name: A-Z</option>
+                <option value="Z-A">Name: Z-A</option>
+                <option value="orders-asc">Orders: Ascending</option>
+                <option value="orders-desc">Orders: Descending</option>
+              </Form.Select>
+            </Col>
+            <Col lg={2} md={6} sm={5} xs={5} className="mb-3">
+              <h6>
+                <b>Filter:</b>
+              </h6>
+              <Form.Select
+                className="form-controls text-center"
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
+              >
+                <option value="All">All Roles</option>
+                <option value="Admins">Admins</option>
+                <option value="Users">Users</option>
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Button
+                className="custom-button mt-0 mb-3"
+                variant="primary"
+                size="sm"
+                onClick={() => handleResetFilters()}
+              >
+                Reset Filters
+              </Button>
+            </Col>
+          </Row>
 
-      {/* <Row className="justify-content-center g-5">
+          <h6>(Scroll for more users)</h6>
+          <UsersTable users={filteredUsers} />
+
+          {/* <Row className="justify-content-center g-5">
         {filteredUsers.map((user) => (
           <Col lg={6} md={6} sm={10} xs={10} key={user.id}>
             <Card className="order-container" style={{ minHeight: "320px" }}>
@@ -247,6 +263,13 @@ const UserManagementPage = () => {
           </Col>
         ))}
       </Row> */}
+        </Card.Body>
+      </Card>
+      <Link to={"/admin-dashboard"}>
+        <Button className="custom-button mt-4" variant="warning" size={"md"}>
+          Back to Admin Dashboard
+        </Button>
+      </Link>
       <HomeButtons size={"md"} />
     </Container>
   );
