@@ -12,6 +12,7 @@ import {
   ListGroup,
   Tooltip,
   OverlayTrigger,
+  Container,
 } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import { useNavigate } from "react-router-dom";
@@ -253,7 +254,7 @@ const ProductDetailsCard = ({ product }) => {
           <small>{product.description}</small>
           <hr />
 
-          <div className="mt-2">
+          <Container className="mt-2">
             {!product.stock || product.stock <= 0 ? (
               <div className="out-of-stock-container">
                 <span>OUT OF STOCK</span>
@@ -263,8 +264,8 @@ const ProductDetailsCard = ({ product }) => {
                 <span>ONLY {product.stock} LEFT IN STOCK!</span>
               </div>
             ) : null}
-          </div>
-          <div className="mb-3">
+          </Container>
+          <Container className="mb-3">
             <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
             <Button
               variant="success"
@@ -293,7 +294,7 @@ const ProductDetailsCard = ({ product }) => {
             >
               {isInWishlist ? "Remove from wishlist" : "Add to Wishlist"}
             </Button>
-          </div>
+          </Container>
         </Col>
       </Row>
     </Card>

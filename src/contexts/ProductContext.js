@@ -159,12 +159,12 @@ export const ProductProvider = ({ children }) => {
 
   const getRelatedProducts = (product) => {
     const relatedProducts = [];
-    const usedIndexes = [];
+    let usedIndexes = [];
 
     // Generate random indexes until we have 15 unique items or run out of products
     while (
       relatedProducts.length < 15 &&
-      relatedProducts.length < allProducts.length
+      usedIndexes.length < allProducts.length
     ) {
       const randomIndex = Math.floor(Math.random() * allProducts.length);
 
@@ -174,20 +174,39 @@ export const ProductProvider = ({ children }) => {
 
         const currentProduct = allProducts[randomIndex];
 
-        if (currentProduct !== product) {
-          if (
-            currentProduct.type === product.type ||
-            currentProduct.brand === product.brand
-          ) {
-            relatedProducts.push(allProducts[randomIndex]);
-          }
+        // Add the product if it is not the original product and has similar type or brand
+        if (
+          currentProduct !== product &&
+          (currentProduct.type === product.type ||
+            currentProduct.brand === product.brand)
+        ) {
+          relatedProducts.push(currentProduct);
         }
       }
+    }
 
-      // If all products were iterated over - stop generating
-      // (There can be less than 15 related products)
-      if (usedIndexes.length === allProducts.length) {
-        break;
+    // Clear usedIndexes to iterate over all products again
+    usedIndexes = [];
+
+    // Add random products if relatedProducts still has less than 15 products in it
+    while (
+      relatedProducts.length < 15 &&
+      usedIndexes.length < allProducts.length
+    ) {
+      const randomIndex = Math.floor(Math.random() * allProducts.length);
+
+      if (!usedIndexes.includes(randomIndex)) {
+        usedIndexes.push(randomIndex);
+
+        const randomProduct = allProducts[randomIndex];
+
+        // Add the product if it not the original product
+        if (
+          !relatedProducts.includes(randomProduct) &&
+          randomProduct !== product
+        ) {
+          relatedProducts.push(randomProduct);
+        }
       }
     }
 
@@ -380,9 +399,7 @@ export const ProductProvider = ({ children }) => {
       .then(() => {
         setAllProducts((prevProducts) =>
           prevProducts.map((currentProduct) =>
-            currentProduct.id === product.id
-              ? product
-              : currentProduct
+            currentProduct.id === product.id ? product : currentProduct
           )
         );
       })
