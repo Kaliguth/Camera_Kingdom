@@ -283,7 +283,7 @@ export const ProductProvider = ({ children }) => {
     }
     // Throws error if price is 0 or below
     if (product.price <= 0) {
-      return Promise.reject(new Error("Cannot set price to 0"));
+      return Promise.reject(new Error("Price cannot be set as 0"));
     }
     // Throws error if description is empty
     if (!product.description || product.description.trim() === "") {
@@ -330,6 +330,70 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  const updateProductProperties = (product) => {
+    // Validations:
+    // Throws error if brand is empty
+    if (!product.brand || product.brand.trim() === "") {
+      return Promise.reject(new Error("Brand cannot be empty"));
+    }
+    // Throws error if model is empty
+    if (!product.model || product.model.trim() === "") {
+      return Promise.reject(new Error("Model cannot be empty"));
+    }
+    // Throws error if type is empty
+    if (!product.type || product.type.trim() === "") {
+      return Promise.reject(new Error("Type cannot be empty"));
+    }
+    // Throws error if price is 0 or below
+    if (product.price <= 0) {
+      return Promise.reject(new Error("Price cannot be set as 0"));
+    }
+    // Throws error if description is empty
+    if (!product.description || product.description.trim() === "") {
+      return Promise.reject(new Error("Description cannot be empty"));
+    }
+    // Throws error if there are no images
+    if (product.images.length === 0) {
+      return Promise.reject(new Error("Products must have at least one image"));
+    }
+    // Throws error if product overview is empty (first index of specs)
+    if (product.specs[0].text[0].trim() === "") {
+      return Promise.reject(new Error("Product overview cannot be empty"));
+    }
+    // Loop to go over the rest of the specs (if exist)
+    for (let i = 1; i < product.specs.length; i++) {
+      const spec = product.specs[i];
+      // Throw error if any spec name is empty
+      if (spec.name.trim() === "") {
+        return Promise.reject(new Error("Spec names cannot be empty"));
+      }
+      // Throw error if any spec detail is empty
+      for (let detail of spec.text) {
+        if (detail.trim() === "") {
+          return Promise.reject(new Error("Spec details cannot be empty"));
+        }
+      }
+    }
+
+    const productRef = getProductDocRef(product.id);
+    return updateDoc(productRef, product)
+      .then(() => {
+        setAllProducts((prevProducts) =>
+          prevProducts.map((currentProduct) =>
+            currentProduct.id === product.id
+              ? product
+              : currentProduct
+          )
+        );
+      })
+      .catch((error) => {
+        console.log("Error updating product: ", error);
+        throw new Error(
+          "Failed to update the product. Please try again or contact support."
+        );
+      });
+  };
+
   const globalVal = {
     productsLoading,
     allProducts,
@@ -343,6 +407,7 @@ export const ProductProvider = ({ children }) => {
     updateProductLikes,
     deleteProduct,
     addNewProduct,
+    updateProductProperties,
   };
 
   return (

@@ -30,7 +30,7 @@ const ProductDetailsCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist } = useWishlistContext();
   const { formatPrice, smallSquareLogoStyle } = useValidationContext();
   const [isHovered, setIsHovered] = useState(false); // Wishlist icon hover state
-  const logo = logoMap[product.brand] || null;
+  const logo = logoMap[product.brand] || noImage;
   const navigate = useNavigate();
 
   const isInWishlist = userData?.wishlist?.find(
@@ -189,8 +189,9 @@ const ProductDetailsCard = ({ product }) => {
       <Row>
         <Col md={6} className="product-images-container">
           <Card.Img
-            src={logo}
             className="small-product-brand-logo position-absolute top-0 start-0 ms-2 mt-2"
+            src={logo}
+            alt={`${product.model}`}
             style={smallSquareLogoStyle(product.brand)}
             onError={(e) => {
               e.target.src = noImage;

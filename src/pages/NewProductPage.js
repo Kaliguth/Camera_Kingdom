@@ -3,6 +3,7 @@ import { useProductContext } from "../contexts/ProductContext";
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import noImage from "../assets/no-image.png";
 
 const NewProductPage = () => {
   const { addNewProduct } = useProductContext();
@@ -39,10 +40,10 @@ const NewProductPage = () => {
   const [imagesError, setImagesError] = useState("");
   const [overviewError, setOverviewError] = useState("");
   const [specNameError, setSpecNameError] = useState("");
-  const [specTextError, setSpecTextError] = useState("");
+  const [specDetailError, setSpecDetailError] = useState("");
 
   // Method to reset the errors
-  // Used every time a create product is clicked
+  // Used every time create product is clicked
   const resetErrors = () => {
     setBrandError("");
     setModelError("");
@@ -52,70 +53,83 @@ const NewProductPage = () => {
     setImagesError("");
     setOverviewError("");
     setSpecNameError("");
-    setSpecTextError("");
+    setSpecDetailError("");
   };
 
   // Method to set the needed error text
   const updateErrorMessage = (error) => {
     const errorMessage = error.message.toLowerCase();
+    let scrollPosition;
+
     if (errorMessage.includes("brand")) {
       setBrandError(error.message);
-      window.scrollTo(0, 520);
+      scrollPosition = 520;
     } else if (errorMessage.includes("model")) {
       setModelError(error.message);
-      window.scrollTo(0, 560);
+      scrollPosition = 560;
     } else if (errorMessage.includes("type")) {
       setTypeError(error.message);
-      window.scrollTo(0, 600);
+      scrollPosition = 600;
     } else if (errorMessage.includes("price")) {
       setPriceError(error.message);
-      window.scrollTo(0, 620);
+      scrollPosition = 620;
     } else if (errorMessage.includes("description")) {
       setDescError(error.message);
-      window.scrollTo(0, 780);
+      scrollPosition = 780;
     } else if (errorMessage.includes("image")) {
       setImagesError(error.message);
-      window.scrollTo(0, 800);
+      scrollPosition = 800;
     } else if (errorMessage.includes("overview")) {
       setOverviewError(error.message);
-      window.scrollTo(0, 1160);
+      scrollPosition = 1160;
     } else if (errorMessage.includes("names")) {
       setSpecNameError(error.message);
-      window.scrollTo(0, 1360);
+      scrollPosition = 1360;
     } else if (errorMessage.includes("details")) {
-      setSpecTextError(error.message);
-      window.scrollTo(0, 1360);
+      setSpecDetailError(error.message);
+      scrollPosition = 1360;
     } else {
       toast.error(error.message);
     }
+
+    // Scroll to error position after a short delay
+    if (scrollPosition !== undefined) {
+      setTimeout(() => {
+        window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+      }, 200);
+    }
   };
 
-  // Aspect change handles
+  // Property change handles
   const handleImageChange = (index, value) => {
     const updatedImages = [...images];
     updatedImages[index] = value;
+
     setImages(updatedImages);
   };
 
   const handleSpecNameChange = (index, value) => {
     const updatedSpecs = [...specs];
     updatedSpecs[index].name = value;
+
     setSpecs(updatedSpecs);
   };
 
-  const handleSpecTextChange = (specIndex, textIndex, value) => {
+  const handleSpecDetailChange = (specIndex, textIndex, value) => {
     const updatedSpecs = [...specs];
     updatedSpecs[specIndex].text[textIndex] = value;
+
     setSpecs(updatedSpecs);
   };
 
-  // Add and remove aspect handles
+  // Add and remove property handles
   const handleAddImage = () => setImages([...images, ""]);
 
   const handleRemoveImage = (indexToRemove) => {
     const updatedImages = images.filter(
       (_, currentIndex) => currentIndex !== indexToRemove
     );
+
     setImages(updatedImages);
   };
 
@@ -125,30 +139,34 @@ const NewProductPage = () => {
     const updatedSpecs = specs.filter(
       (_, currentIndex) => currentIndex !== indexToRemove
     );
+
+    // Reset spec errors when length reaches 1
     if (updatedSpecs.length === 1) resetErrors();
     setSpecs(updatedSpecs);
   };
 
-  const handleAddSpecText = (specIndex) => {
+  const handleAddSpecDetail = (specIndex) => {
     const updatedSpecs = [...specs];
     updatedSpecs[specIndex].text.push("");
+
     setSpecs(updatedSpecs);
   };
 
-  const handleRemoveSpecText = (specIndex, textIndex) => {
+  const handleRemoveSpecDetail = (specIndex, textIndex) => {
     const updatedSpecs = [...specs];
     updatedSpecs[specIndex].text = updatedSpecs[specIndex].text.filter(
       (_, currentIndex) => currentIndex !== textIndex
     );
+
     setSpecs(updatedSpecs);
   };
 
-  // Form submit handle
+  // Form submit handle (creating new product)
   const handleCreateProduct = (e) => {
     e.preventDefault();
     resetErrors();
 
-    // Filtering images from empty aspects
+    // Filtering images from empty inputs
     const filteredImages = images.filter((image) => image.trim() !== "");
     // Capitalizing brand, model and type
     const capitalizedBrand = brand.charAt(0).toUpperCase() + brand.slice(1);
@@ -171,9 +189,16 @@ const NewProductPage = () => {
 
     addNewProduct(newProduct)
       .then(() => {
-        toast.success(`${newProduct.brand} ${newProduct.model} added successfully`);
+        toast.success(
+          `${newProduct.brand} ${newProduct.model} added successfully`
+        );
+
         clearFields();
-        window.scrollTo(0, 0);
+
+        // Scroll to top after a short delay
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
       })
       .catch((error) => {
         updateErrorMessage(error);
@@ -334,8 +359,21 @@ const NewProductPage = () => {
               <Col lg={10} md={10} sm={10} xs={10}>
                 <Form.Group>
                   <Form.Label>Images:</Form.Label>
+                  <Form.Text>
+                    <p className="mb-0">(Square shaped images only)</p>
+                  </Form.Text>
+                  {imagesError && (
+                    <Container className="text-danger">
+                      <p className="mb-0">
+                        <b>{imagesError}</b>
+                      </p>
+                    </Container>
+                  )}
                   {images.map((image, index) => (
-                    <Container key={index} className="mb-2">
+                    <Container
+                      key={index}
+                      className="d-flex align-items-center mb-2"
+                    >
                       <Form.Control
                         className="form-controls"
                         type="url"
@@ -346,11 +384,14 @@ const NewProductPage = () => {
                         }
                         isInvalid={!!imagesError}
                       />
-                      {index === 0 ? (
-                        <Form.Control.Feedback type="invalid">
-                          <b>{imagesError}</b>
-                        </Form.Control.Feedback>
-                      ) : (
+                      <Card.Img
+                        src={image}
+                        className="small-product-image ms-2 me-2"
+                        onError={(e) => {
+                          e.target.src = noImage;
+                        }}
+                      />
+                      {index !== 0 && (
                         <Button
                           className="mt-2"
                           variant="danger"
@@ -394,7 +435,9 @@ const NewProductPage = () => {
                     as="textarea"
                     rows={5}
                     value={specs[0].text[0]}
-                    onChange={(e) => handleSpecTextChange(0, 0, e.target.value)}
+                    onChange={(e) =>
+                      handleSpecDetailChange(0, 0, e.target.value)
+                    }
                     isInvalid={!!overviewError}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -413,16 +456,16 @@ const NewProductPage = () => {
                       <u>Specifications</u>
                     </b>
                   </Form.Label>
-                  {(specNameError || specTextError) && (
+                  {(specNameError || specDetailError) && (
                     <Container className="text-danger mb-3">
                       {specNameError && (
                         <p>
                           <b>{specNameError}</b>
                         </p>
                       )}
-                      {specTextError && (
+                      {specDetailError && (
                         <p>
-                          <b>{specTextError}</b>
+                          <b>{specDetailError}</b>
                         </p>
                       )}
                     </Container>
@@ -438,9 +481,10 @@ const NewProductPage = () => {
                       {specIndex !== 0 && (
                         <>
                           <Row className="justify-content-center mb-3">
-                            {specIndex !== 0 && (
-                              <Form.Label>Spec Name:</Form.Label>
-                            )}
+                            <Form.Label>
+                              <u>Spec {specIndex}</u>
+                            </Form.Label>
+                            <Form.Label>Name:</Form.Label>
                             <Col
                               lg={"auto"}
                               md={"auto"}
@@ -450,7 +494,6 @@ const NewProductPage = () => {
                               <Form.Control
                                 className="form-controls"
                                 type="text"
-                                placeholder={`Spec ${specIndex}`}
                                 value={spec.name}
                                 onChange={(e) =>
                                   handleSpecNameChange(
@@ -479,15 +522,13 @@ const NewProductPage = () => {
                             </Col>
                           </Row>
 
-                          <Form.Label className="mt-2">
-                            Spec Details:
-                          </Form.Label>
+                          <Form.Label className="mt-2">Details:</Form.Label>
                           <Form.Text>
-                            <p>(Each detail will be displayed in a new line)</p>
+                            <p>(Each detail is displayed in a new line)</p>
                           </Form.Text>
-                          {spec.text.map((text, textIndex) => (
+                          {spec.text.map((detail, detailIndex) => (
                             <Row
-                              key={textIndex}
+                              key={detailIndex}
                               className="justify-content-center mb-2"
                             >
                               <Col
@@ -496,47 +537,39 @@ const NewProductPage = () => {
                                 sm={"auto"}
                                 xs={"auto"}
                               >
-                                <Container key={textIndex} className="mb-2">
+                                <Container key={detailIndex} className="mb-2">
                                   <Form.Control
                                     className="form-controls"
                                     type="text"
-                                    placeholder={`Detail ${textIndex + 1}`}
-                                    value={text}
+                                    placeholder={`Detail ${detailIndex + 1}`}
+                                    value={detail}
                                     onChange={(e) =>
-                                      handleSpecTextChange(
+                                      handleSpecDetailChange(
                                         specIndex,
-                                        textIndex,
+                                        detailIndex,
                                         e.target.value
                                       )
                                     }
                                     isInvalid={
-                                      specs[specIndex].text[textIndex] === "" &&
-                                      !!specTextError
+                                      specs[specIndex].text[detailIndex] ===
+                                        "" && !!specDetailError
                                     }
                                   />
-                                  {/* {textIndex === 0 ? (
-                                    <Form.Control.Feedback type="invalid">
-                                      <b>{specTextError}</b>
-                                    </Form.Control.Feedback>
-                                  ) : ( */}
-                                  {
-                                    textIndex !== 0 && (
-                                      <Button
-                                        className="mt-2"
-                                        variant="danger"
-                                        size="sm"
-                                        onClick={() => {
-                                          handleRemoveSpecText(
-                                            specIndex,
-                                            textIndex
-                                          );
-                                        }}
-                                      >
-                                        Remove Detail
-                                      </Button>
-                                    )
-                                    //   )}
-                                  }
+                                  {detailIndex !== 0 && (
+                                    <Button
+                                      className="mt-2"
+                                      variant="danger"
+                                      size="sm"
+                                      onClick={() => {
+                                        handleRemoveSpecDetail(
+                                          specIndex,
+                                          detailIndex
+                                        );
+                                      }}
+                                    >
+                                      Remove Detail
+                                    </Button>
+                                  )}
                                 </Container>
                               </Col>
                             </Row>
@@ -544,7 +577,7 @@ const NewProductPage = () => {
                           <Button
                             variant="success"
                             size="sm"
-                            onClick={() => handleAddSpecText(specIndex)}
+                            onClick={() => handleAddSpecDetail(specIndex)}
                           >
                             Add Detail
                           </Button>

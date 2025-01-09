@@ -6,6 +6,7 @@ import ProductsTable from "../components/product/ProductsTable";
 
 const EditProductsPage = () => {
   const { allProducts } = useProductContext();
+  console.log(allProducts)
 
   // Search and sort states
   const [searchInput, setSearchInput] = useState("");
@@ -20,7 +21,8 @@ const EditProductsPage = () => {
         product.brand?.toLowerCase().includes(input) ||
         product.model?.toLowerCase().includes(input) ||
         product.type?.toLowerCase().includes(input) ||
-        product.price.toString().includes(input)
+        product.price.toString().includes(input) ||
+        product.id.toLowerCase().includes(input)
       );
     })
     .filter((product) => {
@@ -83,7 +85,7 @@ const EditProductsPage = () => {
               <Form.Control
                 className="form-controls"
                 type="text"
-                placeholder="Search by brand, model, type or price"
+                placeholder="Search by ID, brand, model, type or price"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />

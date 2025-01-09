@@ -2,6 +2,7 @@
 import React, { createContext, useContext } from "react";
 import { usersRef, couponsRef } from "../firebase/firestore";
 import { getDocs } from "firebase/firestore";
+import { logoMap } from "../assets/LogoMap";
 
 const ValidationContext = createContext();
 
@@ -153,7 +154,8 @@ export const ValidationProvider = ({ children }) => {
       brand === "Leica" ||
       brand === "Zeiss" ||
       brand === "DJI" ||
-      brand === "Insta360"
+      brand === "Insta360" ||
+      logoMap[brand] === undefined
         ? { width: "40px", height: "35px" }
         : {};
 
@@ -167,7 +169,8 @@ export const ValidationProvider = ({ children }) => {
       brand === "Leica" ||
       brand === "Zeiss" ||
       brand === "DJI" ||
-      brand === "Insta360"
+      brand === "Insta360" ||
+      logoMap[brand] === undefined
         ? { width: "70px", height: "70px" }
         : {};
 

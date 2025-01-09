@@ -80,47 +80,56 @@ const CheckoutPage = () => {
   // Method to set the needed error text
   const updateErrorMessage = (error) => {
     const errorMessage = error.message.toLowerCase();
+    let scrollPosition;
+
     if (errorMessage.includes("your name")) {
       setNameError(error.message);
-      window.scrollTo(0, 560);
+      scrollPosition = 560;
     } else if (errorMessage.includes("phone")) {
       setPhoneError(error.message);
-      window.scrollTo(0, 580);
+      scrollPosition = 580;
     } else if (errorMessage.includes("email")) {
       setEmailError(error.message);
-      window.scrollTo(0, 600);
+      scrollPosition = 600;
     } else if (errorMessage.includes("street")) {
       setStreetError(error.message);
-      window.scrollTo(0, 560);
+      scrollPosition = 560;
     } else if (errorMessage.includes("house")) {
       setHouseError(error.message);
-      window.scrollTo(0, 580);
+      scrollPosition = 580;
     } else if (errorMessage.includes("city")) {
       setCityError(error.message);
-      window.scrollTo(0, 600);
+      scrollPosition = 600;
     } else if (errorMessage.includes("delivery")) {
       setDeliveryError(error.message);
-      window.scrollTo(0, 620);
+      scrollPosition = 620;
     } else if (errorMessage.includes("cardholder")) {
       setCardholderError(error.message);
-      window.scrollTo(0, 1900);
+      scrollPosition = 1900;
     } else if (errorMessage.includes("card number")) {
       setCardNumberError(error.message);
-      window.scrollTo(0, 1900);
+      scrollPosition = 1900;
     } else if (errorMessage.includes("expiration")) {
       setExpirationError(error.message);
-      window.scrollTo(0, 1900);
+      scrollPosition = 1900;
     } else if (errorMessage.includes("cvc")) {
       setCvcError(error.message);
-      window.scrollTo(0, 1900);
+      scrollPosition = 1900;
     } else if (errorMessage.includes("coupon")) {
       setCouponError(error.message);
-      window.scrollTo(0, 1900);
+      scrollPosition = 1900;
     } else if (errorMessage.includes("confirm")) {
       setConfirmError(error.message);
-      window.scrollTo(0, 2500);
+      scrollPosition = 2500;
     } else {
       toast.error(error.message);
+    }
+
+    // Scroll to error position after a short delay
+    if (scrollPosition !== undefined) {
+      setTimeout(() => {
+        window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+      }, 200);
     }
   };
 

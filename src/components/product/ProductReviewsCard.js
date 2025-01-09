@@ -103,7 +103,8 @@ const ProductReviewsCard = ({ product }) => {
                     <small className="text-muted ms-3">
                       {new Date(review.date).toLocaleDateString()}
                     </small>
-                    {currentUser?.displayName === review.user.displayName && (
+                    {(currentUser?.displayName === review.user.displayName ||
+                      userData?.isAdmin) && (
                       <FaTrash
                         className="text-danger ms-3"
                         onClick={() => handleDeleteReview(index)}

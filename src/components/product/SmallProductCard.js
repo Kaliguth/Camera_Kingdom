@@ -6,25 +6,30 @@ import { logoMap } from "../../assets/LogoMap";
 import noImage from "../../assets/no-image.png";
 
 const SmallProductCard = ({ product }) => {
-  const logo = logoMap[product.brand] || null;
+  const logo = logoMap[product.brand] || noImage;
   const { formatPrice, smallSquareLogoStyle } = useValidationContext();
 
   return (
     <Card className="small-product-card">
       <Link to={`/product/${product.id}`} className="black-link-text">
         <Card.Img
+          className="small-product-image img-fluid"
           variant="top"
           src={product.images[0]}
-          className="small-product-image img-fluid"
+          alt={`${product.model}`}
           onError={(e) => {
             e.target.src = noImage;
           }}
         />
         <Card.Img
+          className="small-product-brand-logo"
           variant="top"
           src={logo}
-          className="small-product-brand-logo"
+          alt={`${product.model} logo`}
           style={smallSquareLogoStyle(product.brand)}
+          onError={(e) => {
+            e.target.src = noImage;
+          }}
         />
       </Link>
       <Card.Body>
