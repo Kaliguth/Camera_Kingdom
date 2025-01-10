@@ -34,7 +34,7 @@ const CheckoutPage = () => {
   const [streetName, setStreetName] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
   const [city, setCity] = useState("");
-  const [deliveryOption, setDeliveryOption] = useState("none");
+  const [deliveryOption, setDeliveryOption] = useState("None");
   const [deliveryInfo, setDeliveryInfo] = useState("");
   // Coupon
   const [couponCode, setCouponCode] = useState("");
@@ -386,13 +386,13 @@ const CheckoutPage = () => {
                         onChange={(e) => setDeliveryOption(e.target.value)}
                         isInvalid={!!deliveryError}
                       >
-                        <option value="none">
+                        <option value="None">
                           Please choose a delivery option
                         </option>
-                        <option value="standard">
+                        <option value="Standard">
                           Standard delivery (7-14 business days) - ₪ 0
                         </option>
-                        <option value="express">
+                        <option value="Express">
                           Express delivery (3-5 business days - Free for orders
                           over ₪ 500)
                           {orderTotalPrice() > 500 ? " - ₪ 0" : " - ₪ 60"}

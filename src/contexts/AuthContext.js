@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
         // setUserData(data);
         // localStorage.setItem("userData", JSON.stringify(data));
-        updateUserData(data);
+        updateUserData({ ...data, uid: userDoc.id });
 
         // console.log("data: ", data);
         // console.log("user data: ", userData);
@@ -85,12 +85,6 @@ export const AuthProvider = ({ children }) => {
     return () => removeAuthListener();
   }, []);
 
-  // Method to update the userData state and local storage object after making changes (cart, orders, wishlist, etc...)
-  const updateUserData = (newData) => {
-    setUserData(newData);
-    localStorage.setItem("userData", JSON.stringify(newData));
-  };
-
   // Method to get a user's data by UID
   const getUserByUid = (uid) => {
     return getDoc(doc(usersRef, uid))
@@ -104,6 +98,16 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         console.log("Error fetching user data: ", error);
       });
+  };
+
+  // Method to update the userData state and local storage object after making changes (cart, orders, wishlist, last sign-in time etc...)
+  const updateUserData = (newData) => {
+    setUserData((prevData) => {
+      const updatedData = { ...prevData, ...newData };
+      localStorage.setItem("userData", JSON.stringify(updatedData));
+
+      return updatedData;
+    });
   };
 
   // Method to update the user's last sign-in time
@@ -124,9 +128,14 @@ export const AuthProvider = ({ children }) => {
     // Update the lastSignInTime field with the current date and time string
     return updateDoc(userDocRef, {
       lastSignInTime: currentDateTimeString,
-    }).catch((error) => {
-      console.log("Failed to update user's last sign-in time: ", error);
-    });
+    })
+      .then(() => {
+        // Update the local userData with new sign-in time
+        updateUserData({ ...userData, lastSignInTime: currentDateTimeString });
+      })
+      .catch((error) => {
+        console.log("Failed to update user's last sign-in time: ", error);
+      });
   };
 
   // Method to create a new user document

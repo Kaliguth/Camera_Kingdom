@@ -24,7 +24,7 @@ const UserManagementPage = () => {
   // Search and sort states
   const [searchInput, setSearchInput] = useState("");
   const [sortOrder, setSortOrder] = useState("A-Z");
-  const [filterRole, setFilterRole] = useState("All");
+  const [filterRole, setFilterRole] = useState("all");
 
   // Method to filter and sort users depending on above states
   const filteredUsers = users
@@ -32,14 +32,15 @@ const UserManagementPage = () => {
       const input = searchInput.toLowerCase();
 
       return (
+        user.id?.toLowerCase().includes(input) ||
         user.displayName?.toLowerCase().includes(input) ||
         user.email?.toLowerCase().includes(input)
       );
     })
     .filter((user) => {
-      if (filterRole === "All") return user;
-      if (filterRole === "Admins") return user.isAdmin;
-      if (filterRole === "Users") return !user.isAdmin;
+      if (filterRole === "all") return user;
+      if (filterRole === "admins") return user.isAdmin;
+      if (filterRole === "users") return !user.isAdmin;
 
       return null;
     })
@@ -64,7 +65,7 @@ const UserManagementPage = () => {
   const handleResetFilters = () => {
     setSearchInput("");
     setSortOrder("A-Z");
-    setFilterRole("All");
+    setFilterRole("all");
   };
 
   if (usersLoading) {
@@ -135,7 +136,7 @@ const UserManagementPage = () => {
               <Form.Control
                 className="form-controls"
                 type="text"
-                placeholder="Search by name or email"
+                placeholder="Search by user ID, name or email"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
@@ -164,9 +165,9 @@ const UserManagementPage = () => {
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value)}
               >
-                <option value="All">All Roles</option>
-                <option value="Admins">Admins</option>
-                <option value="Users">Users</option>
+                <option value="all">All Roles</option>
+                <option value="admins">Admins</option>
+                <option value="users">Users</option>
               </Form.Select>
             </Col>
           </Row>
@@ -185,84 +186,6 @@ const UserManagementPage = () => {
 
           <h6>(Scroll for more users)</h6>
           <UsersTable users={filteredUsers} />
-
-          {/* <Row className="justify-content-center g-5">
-        {filteredUsers.map((user) => (
-          <Col lg={6} md={6} sm={10} xs={10} key={user.id}>
-            <Card className="order-container" style={{ minHeight: "320px" }}>
-              <Row>
-                <Card.Title>
-                  <u>{user.displayName || "No-Name"}</u>
-                </Card.Title>
-              </Row>
-              <Card.Body>
-                <Row className="align-items-center mt-2">
-                  <Col lg={4} md={4} sm={5} xs={4}>
-                    {
-                      <Image
-                        src={user.photoURL || userImage}
-                        alt={`${user.displayName}'s Profile picture`}
-                        className="mb-3"
-                        roundedCircle
-                        width={80}
-                        height={80}
-                        onError={(e) => {
-                          e.target.src = userImage;
-                        }}
-                      />
-                    }
-                  </Col>
-                  <Col lg={8} md={8} sm={7} xs={8}>
-                    <Card.Text className="mb-3">
-                      <b>E-mail:</b> {user.email}
-                    </Card.Text>
-                    <Card.Text>
-                      <b>Role:</b> {user.isAdmin ? "Admin" : "User"}
-                    </Card.Text>
-                    {user.email !== "ckadmin@camerakingdom.com" && (
-                      <Card.Text>
-                        <b>Number of Orders:</b> {user.orders.length}
-                      </Card.Text>
-                    )}
-                    <Card.Text>
-                      <b>Last sign-in:</b>{" "}
-                      {user.lastSignInTime || "Unavailable"}
-                    </Card.Text>
-                  </Col>
-                </Row>
-              </Card.Body>
-              {user.email !== "ckadmin@camerakingdom.com" ? (
-                <Row>
-                  <Col>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="custom-button mb-0"
-                      onClick={() => handleUpdateUserRole(user)}
-                    >
-                      {user.isAdmin
-                        ? "Remove Admin Permissions"
-                        : "Give Admin Permissions"}
-                    </Button>
-                    <Button
-                      className="custom-button mb-0"
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDeleteUser(user)}
-                    >
-                      Delete User
-                    </Button>
-                  </Col>
-                </Row>
-              ) : (
-                <h5 className="mt-2 pt-3">
-                  <b>This user cannot be modified</b>
-                </h5>
-              )}
-            </Card>
-          </Col>
-        ))}
-      </Row> */}
         </Card.Body>
       </Card>
       <Link to={"/admin-dashboard"}>

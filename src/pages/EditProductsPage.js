@@ -17,12 +17,13 @@ const EditProductsPage = () => {
   const filteredProducts = allProducts
     .filter((product) => {
       const input = searchInput.toLowerCase();
+
       return (
+        product.id.toLowerCase().includes(input) ||
         product.brand?.toLowerCase().includes(input) ||
         product.model?.toLowerCase().includes(input) ||
         product.type?.toLowerCase().includes(input) ||
-        product.price.toString().includes(input) ||
-        product.id.toLowerCase().includes(input)
+        product.price.toString().includes(input)
       );
     })
     .filter((product) => {
@@ -53,10 +54,9 @@ const EditProductsPage = () => {
         return priceB - priceA;
       } else if (sortOrder === "stock-asc") {
         return stockA - stockB;
-      } else if (sortOrder === "stock-desc") {
+      } else {
         return stockB - stockA;
       }
-      return 0;
     });
 
   // Clear filters handle

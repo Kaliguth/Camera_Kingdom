@@ -26,9 +26,10 @@ import ProductDetailsPage from "./pages/ProductDetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserManagementPage from "./pages/UserManagementPage";
 import ProductManagementPage from "./pages/ProductManagementPage";
+import NewProductPage from "./pages/NewProductPage";
 import EditProductsPage from "./pages/EditProductsPage";
 import ProductEditPage from "./pages/ProductEditPage";
-import OrderManagement from "./components/OrderManagement";
+import OrderManagementPage from "./pages/OrderManagementPage";
 import Error404Page from "./pages/Error404Page";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
@@ -37,7 +38,6 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import NewProductPage from "./pages/NewProductPage";
 
 // Layout Component to contain all layour components
 const Layout = () => (
@@ -103,7 +103,7 @@ function App() {
               </Route>
               <Route
                 path="/admin-dashboard/orders"
-                element={<OrderManagement />}
+                element={<OrderManagementPage />}
               />
               <Route path="*" element={<Error404Page />} />
             </Route>

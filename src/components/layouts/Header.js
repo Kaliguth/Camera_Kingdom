@@ -34,7 +34,15 @@ const Header = () => {
 
   return (
     <Navbar expand="lg" className="header hide-on-print">
-      <Navbar.Brand>
+      <Navbar.Brand
+        onAuxClick={(e) => {
+          // Allow middle mouse button click to open in new tab like Link tag offers
+          // (Using Link tag disables css border support of image's roundedCircle property)
+          if (e.button === 1) {
+            window.open("/", "_blank");
+          }
+        }}
+      >
         <LinkContainer to="/" className="header-logo-container">
           <Image src={logo} roundedCircle width={100} height={100} />
         </LinkContainer>
@@ -98,15 +106,15 @@ const Header = () => {
                   <h6 className="d-inline">{userData.displayName} </h6>
                   {
                     // userData.photoURL && (
-                      <Image
-                        src={userData.photoURL || userImage}
-                        roundedCircle
-                        width={30}
-                        height={30}
-                        onError={(e) => {
-                          e.target.src = userImage;
-                        }}
-                      />
+                    <Image
+                      src={userData.photoURL || userImage}
+                      roundedCircle
+                      width={30}
+                      height={30}
+                      onError={(e) => {
+                        e.target.src = userImage;
+                      }}
+                    />
                     // )
                     //  : (
                     //   <Image

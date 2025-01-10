@@ -7,6 +7,7 @@ import { WishlistProvider } from "./WishlistContext";
 import { CartProvider } from "./CartContext";
 import { PurchaseProvider } from "./PurchaseContext";
 import { UserManagementProvider } from "./UserManagementContext";
+import { OrderManagementProvider } from "./OrderManagementContext";
 
 const AllProviders = ({ children }) => {
   return (
@@ -16,7 +17,9 @@ const AllProviders = ({ children }) => {
           <WishlistProvider>
             <CartProvider>
               <PurchaseProvider>
-                <UserManagementProvider>{children}</UserManagementProvider>
+                <UserManagementProvider>
+                  <OrderManagementProvider>{children}</OrderManagementProvider>
+                </UserManagementProvider>
               </PurchaseProvider>
             </CartProvider>
           </WishlistProvider>

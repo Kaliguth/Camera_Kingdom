@@ -77,7 +77,7 @@ export const PurchaseProvider = ({ children }) => {
   const discountedPrice = (totalPrice, discount) => {
     const finalPrice = totalPrice * (1 - discount / 100);
 
-    return finalPrice;
+    return parseFloat(finalPrice.toFixed(2));
   };
 
   // Method to get order data by order number
@@ -107,6 +107,7 @@ export const PurchaseProvider = ({ children }) => {
     // Create the new order document
     const order = {
       orderNumber: nextOrderNumber,
+      status: "Pending",
       purchase: {
         products: cart,
         coupon: paymentDetails.coupon?.code || null,
@@ -175,7 +176,7 @@ export const PurchaseProvider = ({ children }) => {
     if (!shippingDetails.city || shippingDetails.city === "") {
       return Promise.reject(new Error("Please fill in the city"));
     }
-    if (shippingDetails.deliveryOption === "none") {
+    if (shippingDetails.deliveryOption === "None") {
       return Promise.reject(new Error("Please choose a delivery option"));
     }
 
