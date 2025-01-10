@@ -91,6 +91,21 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("userData", JSON.stringify(newData));
   };
 
+  // Method to get a user's data by UID
+  const getUserByUid = (uid) => {
+    return getDoc(doc(usersRef, uid))
+      .then((userDoc) => {
+        if (userDoc.exists()) {
+          return userDoc.data();
+        } else {
+          throw new Error("User not found");
+        }
+      })
+      .catch((error) => {
+        console.log("Error fetching user data: ", error);
+      });
+  };
+
   // Method to update the user's last sign-in time
   const updateLastSignInTime = (user) => {
     // Current date and time string
@@ -113,22 +128,6 @@ export const AuthProvider = ({ children }) => {
       console.log("Failed to update user's last sign-in time: ", error);
     });
   };
-
-  // // Method to get a user's last sign in time
-  // const getUserLastSignInTime = (userId) => {
-  //   return auth
-  //     .getUser(userId)
-  //     .then((user) => {
-  //       const metadata = user.metadata;
-  //       return metadata.lastSignInTime
-  //         ? new Date(metadata.lastSignInTime).getTime()
-  //         : "Last sign-in time not available";
-  //     })
-  //     .catch((error) => {
-  //       console.log("Failed to get user's last sign-in time: ", error);
-  //       return "Error retrieving last sign-in time";
-  //     });
-  // };
 
   // Method to create a new user document
   const createUserDocument = async (user) => {
@@ -381,7 +380,7 @@ export const AuthProvider = ({ children }) => {
     userData,
     userDocRef,
     updateUserData,
-    // getUserLastSignInTime,
+    getUserByUid,
     login,
     googleLogin,
     register,

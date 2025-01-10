@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { useProductContext } from "../../contexts/ProductContext";
 import {
   Button,
   Card,
@@ -8,16 +9,18 @@ import {
   ListGroup,
   Image,
   Form,
+  Container,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useProductContext } from "../../contexts/ProductContext";
-import userImage from "../../assets/user-nobgnew.png";
 import { FaTrash } from "react-icons/fa";
+import RemoveReviewAlert from "../alerts/RemoveReviewAlert";
+import userImage from "../../assets/user-nobgnew.png";
 
 const ProductReviewsCard = ({ product }) => {
   const { addReview, removeReview } = useProductContext();
-  const { currentUser, userData } = useAuthContext();
+  const { currentUser, userData, getUserByUid } = useAuthContext();
+  const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
 
   // Error texts
@@ -37,13 +40,73 @@ const ProductReviewsCard = ({ product }) => {
     }
   };
 
+  // useEffect to fetch reviews and add user data to each one (as promise all to ensure asynchronization)
+  useEffect(() => {
+    if (product.reviews && product.reviews.length > 0) {
+      // Go over all reviews and get each review's user data by saved uid
+      Promise.all(
+        product.reviews.map((review, index) =>
+          getUserByUid(review.userId)
+            .then((userData) => ({
+              ...review,
+              userData,
+            }))
+            .catch((error) => {
+              // Logging which review index failed to fetch user data
+              console.log(
+                `Error fetching user data for review ${index + 1}: `,
+                error
+              );
+
+              // Failsafe user data on error (getUserByUid error is logged in console)
+              return {
+                ...review,
+                userData: { displayName: "Anonymous", photoURL: userImage },
+              };
+            })
+        )
+      )
+        .then((updatedReviews) => {
+          // Set reviews state with the updated reviews (that now include user data)
+          setReviews(updatedReviews);
+        })
+        .catch((error) => {
+          console.log("Error fetching user data for reviews: ", error);
+        });
+    } else {
+      // If no reviews exist
+      setReviews([]);
+    }
+  }, [product.reviews, getUserByUid]);
+
+  const handleRemoveReview = (review, reviewIndex) => {
+    RemoveReviewAlert(review, userData)
+      .then((isConfirmed) => {
+        if (isConfirmed) {
+          return removeReview(product.id, reviewIndex);
+        } else {
+          throw new Error("canceled");
+        }
+      })
+      .then(() => {
+        toast.success("Review removed");
+      })
+      .catch((error) => {
+        if (error.message === "canceled") {
+          console.log("Review deletion canceled by the user");
+        } else {
+          toast.error(error.message);
+        }
+      });
+  };
+
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     resetError();
 
     const reviewToAdd = {
       message: newReview,
-      user: userData,
+      userId: currentUser.uid,
       date: new Date().toDateString(),
     };
 
@@ -57,39 +120,23 @@ const ProductReviewsCard = ({ product }) => {
       });
   };
 
-  const handleDeleteReview = (reviewIndex) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete your review?"
-    );
-
-    if (confirmDelete) {
-      removeReview(product.id, reviewIndex)
-        .then(() => {
-          alert("Review deleted");
-        })
-        .catch((error) => {
-          alert(error);
-        });
-    }
-  };
-
   return (
     <Card className="product-details-card">
       <Row>
         <Col md={11} className="text-start m-3">
           <h4>Customer Reviews</h4>
           <ListGroup variant="flush">
-            {product.reviews?.length === 0 ? (
+            {reviews?.length === 0 ? (
               <p className="mt-2">No reviews submitted</p>
             ) : (
-              product.reviews?.map((review, index) => (
-                <div key={index}>
+              reviews?.map((review, index) => (
+                <Container className="custom-container" key={index}>
                   <ListGroup.Item>
                     <p>"{review.message}"</p>
                     <Image
                       className="me-3"
-                      src={review.user.photoURL || userImage}
-                      alt={`${review.user.displayName}'s Profile picture`}
+                      src={review.userData.photoURL || userImage}
+                      alt={`${review.userData.displayName}'s Profile picture`}
                       roundedCircle
                       width={35}
                       height={35}
@@ -98,21 +145,21 @@ const ProductReviewsCard = ({ product }) => {
                       }}
                     />
                     <small>
-                      <b>{review.user.displayName || "Anonymous"}</b>
+                      <b>{review.userData.displayName || "Anonymous"}</b>
                     </small>
                     <small className="text-muted ms-3">
                       {new Date(review.date).toLocaleDateString()}
                     </small>
-                    {(currentUser?.displayName === review.user.displayName ||
+                    {(userData?.displayName === review.userData.displayName ||
                       userData?.isAdmin) && (
                       <FaTrash
                         className="text-danger ms-3"
-                        onClick={() => handleDeleteReview(index)}
+                        onClick={() => handleRemoveReview(review, index)}
                         style={{ cursor: "pointer" }}
                       />
                     )}
                   </ListGroup.Item>
-                </div>
+                </Container>
               ))
             )}
           </ListGroup>

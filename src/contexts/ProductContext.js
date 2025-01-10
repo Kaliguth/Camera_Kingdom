@@ -118,7 +118,7 @@ export const ProductProvider = ({ children }) => {
         console.log("Error removing review: ", error);
         return Promise.reject(
           new Error(
-            "Failed to remove your review. Please try again or contact support"
+            "Failed to remove the review. Please try again or contact support"
           )
         );
       });
