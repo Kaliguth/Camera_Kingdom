@@ -10,7 +10,7 @@ import ProductsSwiper from "../components/design/ProductsSwiper";
 import HomeButtons from "../components/utility/HomeButtons";
 
 const ProductDetails = () => {
-  const { id } = useParams();
+  const { productId } = useParams();
   const { getProduct, getRelatedProducts } = useProductContext();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -18,7 +18,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProductAndRelated = async () => {
       // Fetch the product
-      const fetchedProduct = await getProduct(id);
+      const fetchedProduct = await getProduct(productId);
       setProduct(fetchedProduct);
 
       if (fetchedProduct) {
@@ -29,7 +29,7 @@ const ProductDetails = () => {
     };
 
     fetchProductAndRelated();
-  }, [id, getProduct, getRelatedProducts]);
+  }, [productId, getProduct, getRelatedProducts]);
 
   if (!product) {
     return <Loader />;

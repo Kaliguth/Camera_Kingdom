@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useOrderManagementContext } from "../contexts/OrderManagementContext";
 import {
@@ -8,83 +8,18 @@ import {
   Card,
   Button,
   Image,
-  Form,
 } from "react-bootstrap";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
-import OrdersTable from "../components/order/OrdersTable";
 import HomeButtons from "../components/utility/HomeButtons";
 
 const OrderManagementPage = () => {
-  const { currentUser, userData, userLoading } = useAuthContext();
-  const { orders } = useOrderManagementContext();
+  const { currentUser, userData } = useAuthContext();
+  const { ordersLoading } = useOrderManagementContext();
   const navigate = useNavigate();
 
-  // Search and sort states
-  const [searchInput, setSearchInput] = useState("");
-  const [sortOrder, setSortOrder] = useState("order-asc");
-  const [filterStatus, setFilterStatus] = useState("all");
-
-  // Method to filter and sort users depending on above states
-  const filteredOrders = orders
-    .filter((order) => {
-      const input = searchInput.toLowerCase();
-
-      return (
-        order.id?.toLowerCase().includes(input) ||
-        order.orderNumber?.toString().includes(input) ||
-        order.customer.fullName?.toLowerCase().includes(input)
-      );
-    })
-    .filter((order) => {
-      if (filterStatus === "all") return order;
-      if (filterStatus === "pending") return order.status === "Pending";
-      if (filterStatus === "confirmed") return order.status === "Confirmed";
-      if (filterStatus === "processing") return order.status === "Processing";
-      if (filterStatus === "shipped") return order.status === "Shipped";
-      if (filterStatus === "completed") return order.status === "Completed";
-      if (filterStatus === "refunded") return order.status === "Refunded";
-
-      return null;
-    })
-    .sort((a, b) => {
-      const numberA = a.orderNumber || 0;
-      const numberB = b.orderNumber || 0;
-      const nameA = a.customer.fullName || "";
-      const nameB = b.customer.fullName || "";
-      const productsA = a.purchase.products.length || 0;
-      const productsB = b.purchase.products.length || 0;
-      const priceA = a.purchase.discountedPrice || 0;
-      const priceB = b.purchase.discountedPrice || 0;
-
-      if (sortOrder === "order-asc") {
-        return numberA < numberB ? -1 : 1;
-      } else if (sortOrder === "order-desc") {
-        return numberA > numberB ? -1 : 1;
-      } else if (sortOrder === "customer A-Z") {
-        return nameA > nameB ? -1 : 1;
-      } else if (sortOrder === "customer Z-A") {
-        return nameA < nameB ? -1 : 1;
-      } else if (sortOrder === "products-asc") {
-        return productsA < productsB ? -1 : 1;
-      } else if (sortOrder === "products-desc") {
-        return productsA > productsB ? -1 : 1;
-      } else if (sortOrder === "price-asc") {
-        return priceA < priceB ? -1 : 1;
-      } else {
-        return priceA > priceB ? -1 : 1;
-      }
-    });
-
-  // Clear filters handle
-  const handleResetFilters = () => {
-    setSearchInput("");
-    setSortOrder("A-Z");
-    setFilterStatus("all");
-  };
-
-  if (userLoading) {
+  if (ordersLoading) {
     return <Loader />;
   }
 
@@ -132,93 +67,33 @@ const OrderManagementPage = () => {
 
   return (
     <Container className="custom-container mt-4">
-      <Row className="m-4">
+      <Row className="m-4 hide-on-print">
         <h2>Order Management</h2>
       </Row>
 
-      <Card className="custom-card">
-        <Card.Header>
-          <h3>
-            <u>Orders</u>
-          </h3>
-        </Card.Header>
-
-        <Card.Body>
-          <Row className="justify-content-center mb-3">
-            <Col lg={6} md={6} sm={10} xs={10} className="mb-3">
-              <h6>
-                <b>Search:</b>
-              </h6>
-              <Form.Control
-                className="form-controls"
-                type="text"
-                placeholder="Search by order ID, number or customer name"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
-            </Col>
-            <Col lg={3} md={7} sm={8} xs={8} className="mb-3">
-              <h6>
-                <b>Sort by:</b>
-              </h6>
-              <Form.Select
-                className="form-controls text-center"
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value)}
-              >
-                <option value="order-asc">Order Number: Ascending</option>
-                <option value="order-desc">Order Number: Descending</option>
-                <option value="customer A-Z">Customer Name: A-Z</option>
-                <option value="customer Z-A">Customer Name: Z-A</option>
-                <option value="products-asc">
-                  Number of Products: Ascending
-                </option>
-                <option value="products-desc">
-                  Number of Products: Descending
-                </option>
-                <option value="price-asc">Price: Ascending</option>
-                <option value="price-desc">Price: Descending</option>
-              </Form.Select>
-            </Col>
-            <Col lg={2} md={6} sm={5} xs={5} className="mb-3">
-              <h6>
-                <b>Filter:</b>
-              </h6>
-              <Form.Select
-                className="form-controls text-center"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                <option value="all">All Orders</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="completed">Completed</option>
-                <option value="refunded">Refunded</option>
-              </Form.Select>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Button
-                className="custom-button mt-0 mb-3"
-                variant="primary"
-                size="sm"
-                onClick={() => handleResetFilters()}
-              >
-                Reset Filters
-              </Button>
-            </Col>
-          </Row>
-
-          <h6>(Scroll for more orders)</h6>
-          <OrdersTable orders={filteredOrders} />
-        </Card.Body>
-      </Card>
+      <Row className="justify-content-center hide-on-print">
+        <Col md={6} lg={5} sm={"auto"} xs={"auto"}>
+          <Card className="order-container">
+            <Card.Title>What would you like to do?</Card.Title>
+            <Card.Body>
+              <Link to="/admin-dashboard/orders/view">
+                <Button variant="primary" size="md" className="m-2">
+                  View/Edit Orders
+                </Button>
+              </Link>
+              <br />
+              <Link to="/admin-dashboard/orders/confirm">
+                <Button variant="success" size="md" className="m-2">
+                  Confirm Orders
+                </Button>
+              </Link>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       <Outlet />
-      <Link to={"/admin-dashboard"}>
+      <Link to={"/admin-dashboard"} className="hide-on-print">
         <Button className="custom-button mt-4" variant="warning" size={"md"}>
           Back to Admin Dashboard
         </Button>

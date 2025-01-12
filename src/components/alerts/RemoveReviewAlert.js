@@ -3,10 +3,10 @@ import Swal from "sweetalert2";
 const RemoveReviewAlert = (review, userData) => {
   return Swal.fire({
     title: "Are you sure?",
-    text:
+    html:
       userData.displayName === review.userData.displayName
         ? "Do you want to remove your review?"
-        : `Do you want to remove ${review.userData.displayName}'s review?`,
+        : `Do you want to remove <b>${review.userData.displayName}</b>'s review?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Confirm",

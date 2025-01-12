@@ -8,7 +8,7 @@ import noImage from "../assets/no-image.png";
 import EditProductAlert from "../components/alerts/EditProductAlert";
 
 const ProductEditPage = () => {
-  const { id } = useParams();
+  const { productId } = useParams();
   const { getProduct, updateProductProperties } = useProductContext();
   const [product, setProduct] = useState(null);
 
@@ -83,14 +83,14 @@ const ProductEditPage = () => {
 
   // useEffect to fetch the product to edit by id in params
   useEffect(() => {
-    const fetchProductAndRelated = async () => {
+    const fetchProduct = async () => {
       // Fetch the product
-      const fetchedProduct = await getProduct(id);
+      const fetchedProduct = await getProduct(productId);
       setProduct(fetchedProduct);
     };
 
-    fetchProductAndRelated();
-  }, [id, getProduct]);
+    fetchProduct();
+  }, [productId, getProduct]);
 
   // Property change handles
   const handleInputChange = (e) => {
@@ -233,7 +233,6 @@ const ProductEditPage = () => {
       price: convertedPrice,
     };
 
-    console.log(updatedProduct);
     EditProductAlert(product.model)
       .then((isConfirmed) => {
         if (isConfirmed) {

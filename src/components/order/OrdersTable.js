@@ -1,62 +1,56 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../contexts/AuthContext";
-import { useUserManagementContext } from "../../contexts/UserManagementContext";
-import { Table, Button, Container, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useOrderManagementContext } from "../../contexts/OrderManagementContext";
+import { Table, Button, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
-import UpdateUserRoleAlert from "../alerts/UpdateUserRoleAlert";
-import DeleteUserAlert from "../alerts/DeleteUserAlert";
+import DeleteOrderAlert from "../alerts/DeleteOrderAlert";
+import ConfirmOrderAlert from "../alerts/ConfirmOrderAlert";
 
-const OrdersTable = ({ orders }) => {
-  const { currentUser } = useAuthContext();
-  const { updateUserRole, deleteUser } = useUserManagementContext();
-  const navigate = useNavigate();
+const OrdersTable = ({ orders, action }) => {
+  const { deleteOrder, confirmOrder } = useOrderManagementContext();
 
-  // Update user role handle (admin or user)
-  const handleUpdateUserRole = (user) => {
-    UpdateUserRoleAlert(user, currentUser)
+  // Delete order handle
+  const handleDeleteOrder = (order) => {
+    DeleteOrderAlert(order)
       .then((isConfirmed) => {
         if (isConfirmed) {
-          return updateUserRole(user.id);
+          return deleteOrder(order.id);
         } else {
           throw new Error("canceled");
         }
       })
       .then(() => {
-        toast.info(
-          `${user.displayName} is now ${user.isAdmin ? "a user" : "an admin"}`
+        toast.success(
+          `Order number ${order.orderNumber} has been successfully deleted`
         );
-
-        // Navigate to home page if the currently logged in user was changed to a user
-        if (user.id === currentUser.uid) {
-          navigate("/");
-        }
       })
       .catch((error) => {
         if (error.message === "canceled") {
-          console.log("Role change canceled by the user");
+          console.log("Order deletion canceled by the user");
         } else {
           toast.error(error.message);
         }
       });
   };
 
-  // Delete user handle
-  const handleDeleteUser = (user) => {
-    DeleteUserAlert(user, currentUser)
+  // Confirm order handle
+  const handleConfirmOrder = (order) => {
+    ConfirmOrderAlert(order)
       .then((isConfirmed) => {
         if (isConfirmed) {
-          return deleteUser(user.id);
+          return confirmOrder(order.id);
         } else {
           throw new Error("canceled");
         }
       })
       .then(() => {
-        toast.success(`${user.displayName} has been successfully deleted`);
+        toast.success(
+          `Order number ${order.orderNumber} has been successfully confirmed`
+        );
       })
       .catch((error) => {
         if (error.message === "canceled") {
-          console.log("User deletion canceled by the user");
+          console.log("Order confirmation canceled by the user");
         } else {
           toast.error(error.message);
         }
@@ -96,15 +90,39 @@ const OrdersTable = ({ orders }) => {
               <td>
                 {
                   <Container className="d-flex justify-content-center gap-2">
-                    <Button variant="primary" size="sm">
-                      View
-                    </Button>
-                    <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="danger" size="sm">
-                      Delete
-                    </Button>
+                    {action === "view" ? (
+                      <>
+                        <Link to={`/admin-dashboard/orders/view/${order.id}`}>
+                          <Button variant="primary" size="sm">
+                            View
+                          </Button>
+                        </Link>
+                        <Link
+                          to={`/admin-dashboard/orders/edit/${order.id}`}
+                        >
+                          <Button variant="warning" size="sm">
+                            Edit
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteOrder(order)}
+                        >
+                          Delete
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleConfirmOrder(order)}
+                        >
+                          Confirm Order
+                        </Button>
+                      </>
+                    )}
                   </Container>
                 }
               </td>
@@ -126,8 +144,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -151,8 +169,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -176,8 +194,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -201,8 +219,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -226,8 +244,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -251,8 +269,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -276,8 +294,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -301,8 +319,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -326,8 +344,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>
@@ -351,8 +369,8 @@ const OrdersTable = ({ orders }) => {
                     View
                   </Button>
                   <Button variant="warning" size="sm">
-                      Edit
-                    </Button>
+                    Edit
+                  </Button>
                   <Button variant="danger" size="sm">
                     Delete
                   </Button>

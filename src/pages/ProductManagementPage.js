@@ -1,4 +1,5 @@
 import React from "react";
+import { useProductContext } from "../contexts/ProductContext";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
@@ -8,9 +9,10 @@ import HomeButtons from "../components/utility/HomeButtons";
 
 const ProductManagementPage = () => {
   const { currentUser, userData, userLoading } = useAuthContext();
+  const { productsLoading } = useProductContext();
   const navigate = useNavigate();
 
-  if (userLoading) {
+  if (userLoading || productsLoading) {
     return <Loader />;
   }
 

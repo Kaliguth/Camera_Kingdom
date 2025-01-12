@@ -6,7 +6,7 @@ const HomeButtons = ({ size }) => {
   const navigate = useNavigate();
 
   return (
-    <Row className="mt-4">
+    <Row className="mt-4 hide-on-print">
       <Col>
         <Button
           className="custom-button"

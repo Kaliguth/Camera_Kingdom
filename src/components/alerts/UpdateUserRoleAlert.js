@@ -6,14 +6,14 @@ const UpdateUserRoleAlert = (user, currentUser) => {
   return Swal.fire({
     title:
       user.id === currentUser.uid ? "This is your own user!" : "Are you sure?",
-    text:
+    html:
       user.id === currentUser.uid
-        ? "Are you sure you want to remove admin permissions? (This will send you back to the home page)"
+        ? "Are you sure you want to remove your admin permissions?<br><b>You will be sent back to the home page</b>"
         : `Do you want to ${
             user.isAdmin
               ? "remove admin permissions from "
               : "give admin permissions to "
-          } ${user.displayName}?`,
+          } <b>${user.displayName}</b>?`,
     icon: user.id === currentUser.uid ? "warning" : "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",

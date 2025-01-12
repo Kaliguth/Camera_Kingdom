@@ -1,10 +1,17 @@
 import Swal from "sweetalert2";
 
-const RemoveProductAlert = (productName) => {
+const DeleteOrderAlert = (order) => {
   return Swal.fire({
     title: "Are you sure?",
-    html: `Do you want to remove <b>${productName}</b>?`,
-    icon: "warning",
+    html: `
+    ${order.status !== "Completed" && order.status !== "Refunded" 
+      ? "<b>NOTICE THIS ORDER IS NOT COMPLETED OR REFUNDED!</b><br>" 
+      : ""}
+    Do you want to remove order number <b>${order.orderNumber}</b>?`,
+    icon:
+      order.status !== "Completed" || order.status !== "Refunded"
+        ? "warning"
+        : "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",
     cancelButtonText: "Cancel",
@@ -22,4 +29,4 @@ const RemoveProductAlert = (productName) => {
     });
 };
 
-export default RemoveProductAlert;
+export default DeleteOrderAlert;

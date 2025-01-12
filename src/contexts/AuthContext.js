@@ -266,24 +266,25 @@ export const AuthProvider = ({ children }) => {
   // Registration method
   const register = (name, email, password, repeatPassword) => {
     // Validations:
-    // Throws error if display name is empty or taken
+    // Throws error if display name is empty
     if (!validateName(name)) {
       return Promise.reject(new Error("Display name cannot be empty"));
     }
     return displayNameTaken(name)
       .then((displayNameTaken) => {
+        // Throws error if display name is taken
         if (displayNameTaken) {
           return Promise.reject(new Error("Display name is already taken"));
         }
-        // Throws error if empty email field or invalid email format
-        if (!email || email === "") {
+        // Throws error if empty email or invalid email format
+        if (!email || email.trim() === "") {
           return Promise.reject(new Error("Please fill in your email"));
         }
         if (!validateEmail(email)) {
           return Promise.reject(new Error("Invalid email format"));
         }
         // Throws error if empty or invalid password format
-        if (!password || password === "") {
+        if (!password || password.trim() === "") {
           return Promise.reject(new Error("Please fill in the password"));
         }
         if (!validatePassword(password)) {
@@ -294,10 +295,10 @@ export const AuthProvider = ({ children }) => {
           );
         }
         // Throws error if empty or invalid repeat password
-        if (repeatPassword === "") {
+        if (repeatPassword.trim() === "") {
           return Promise.reject(new Error("Please repeat your password"));
         }
-        if (password !== repeatPassword) {
+        if (password.trim() !== repeatPassword.trim()) {
           return Promise.reject(new Error("Passwords do not match"));
         }
 

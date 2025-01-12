@@ -7,7 +7,7 @@ const UserManagementContext = createContext();
 
 export const UserManagementProvider = ({ children }) => {
   const { currentUser, updateUserData } = useAuthContext();
-  const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export const UserManagementProvider = ({ children }) => {
       setUsersLoading(true);
       try {
         const usersCollection = await getDocs(usersRef);
-        setUsers(
+        setAllUsers(
           usersCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
         );
       } catch (error) {
@@ -31,7 +31,7 @@ export const UserManagementProvider = ({ children }) => {
   // Method to update the admin status of a user with given ID
   const updateUserRole = (userId) => {
     // Find the user to be updated
-    const userToUpdate = users.find((user) => user.id === userId);
+    const userToUpdate = allUsers.find((user) => user.id === userId);
 
     // Attemp update only if user is found
     if (userToUpdate) {
@@ -45,7 +45,7 @@ export const UserManagementProvider = ({ children }) => {
       updateDoc(userRef, { isAdmin: updatedUser.isAdmin })
         .then(() => {
           // Update the users array with the new updated user
-          setUsers((prevUsers) =>
+          setAllUsers((prevUsers) =>
             prevUsers.map((user) => (user.id === userId ? updatedUser : user))
           );
 
@@ -67,21 +67,21 @@ export const UserManagementProvider = ({ children }) => {
   };
 
   // Method to delete a user with given ID
-  const deleteUser = (userId) => {
+  const deleteUser = (userIdToDelete) => {
     // Find the user to be deleted
-    const userToDelete = users.find((user) => user.id === userId);
+    const userToDelete = allUsers.find((user) => user.id === userIdToDelete);
 
     // Attemp deletion only if user is found
     if (userToDelete) {
       // Get the user's doc reference
-      const userDocRef = doc(usersRef, userId);
+      const userDocRef = doc(usersRef, userIdToDelete);
 
       // Delete the user's doc
       deleteDoc(userDocRef)
         .then(() => {
           // Update the users array after deleting the user
-          setUsers((prevUsers) =>
-            prevUsers.filter((user) => user.id !== userId)
+          setAllUsers((prevUsers) =>
+            prevUsers.filter((user) => user.id !== userIdToDelete)
           );
         })
         .catch((error) => {
@@ -96,7 +96,7 @@ export const UserManagementProvider = ({ children }) => {
   };
 
   const globalVal = {
-    users,
+    allUsers,
     usersLoading,
     updateUserRole,
     deleteUser,

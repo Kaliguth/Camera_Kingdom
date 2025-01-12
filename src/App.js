@@ -22,6 +22,7 @@ import LoginRegisterPage from "./pages/LoginRegisterPage";
 import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserManagementPage from "./pages/UserManagementPage";
@@ -30,6 +31,9 @@ import NewProductPage from "./pages/NewProductPage";
 import EditProductsPage from "./pages/EditProductsPage";
 import ProductEditPage from "./pages/ProductEditPage";
 import OrderManagementPage from "./pages/OrderManagementPage";
+import AllOrdersPage from "./pages/AllOrdersPage";
+import OrderEditPage from "./pages/OrderEditPage";
+import ConfirmOrdersPage from "./pages/ConfirmOrdersPage";
 import Error404Page from "./pages/Error404Page";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
@@ -87,7 +91,11 @@ function App() {
               <Route path="wishlist" element={<WishlistPage />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="orders" element={<OrdersPage />} />
-              <Route path="product/:id" element={<ProductDetailsPage />} />
+              <Route path="order/:orderId" element={<OrderDetailsPage />} />
+              <Route
+                path="product/:productId"
+                element={<ProductDetailsPage />}
+              />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route
                 path="/admin-dashboard/users"
@@ -98,13 +106,18 @@ function App() {
                 element={<ProductManagementPage />}
               >
                 <Route path="edit" element={<EditProductsPage />} />
-                <Route path="edit/:id" element={<ProductEditPage />} />
+                <Route path="edit/:productId" element={<ProductEditPage />} />
                 <Route path="new-product" element={<NewProductPage />} />
               </Route>
               <Route
                 path="/admin-dashboard/orders"
                 element={<OrderManagementPage />}
-              />
+              >
+                <Route path="view" element={<AllOrdersPage />} />
+                <Route path="view/:orderId" element={<OrderDetailsPage />} />
+                <Route path="edit/:orderId" element={<OrderEditPage />} />
+                <Route path="confirm" element={<ConfirmOrdersPage />} />
+              </Route>
               <Route path="*" element={<Error404Page />} />
             </Route>
           </Routes>

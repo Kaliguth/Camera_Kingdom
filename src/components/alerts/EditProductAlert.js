@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 const EditProductAlert = (productName) => {
   return Swal.fire({
     title: "Are you sure?",
-    text: `Do you want to save these changes to ${productName}?`,
+    html: `Do you want to save these changes to <b>${productName}</b>?`,
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",

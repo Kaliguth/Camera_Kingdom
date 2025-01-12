@@ -18,7 +18,7 @@ import HomeButtons from "../components/utility/HomeButtons";
 
 const UserManagementPage = () => {
   const { currentUser, userData } = useAuthContext();
-  const { users, usersLoading } = useUserManagementContext();
+  const { allUsers, usersLoading } = useUserManagementContext();
   const navigate = useNavigate();
 
   // Search and sort states
@@ -27,7 +27,7 @@ const UserManagementPage = () => {
   const [filterRole, setFilterRole] = useState("all");
 
   // Method to filter and sort users depending on above states
-  const filteredUsers = users
+  const filteredUsers = allUsers
     .filter((user) => {
       const input = searchInput.toLowerCase();
 

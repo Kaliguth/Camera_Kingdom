@@ -6,7 +6,6 @@ import ProductsTable from "../components/product/ProductsTable";
 
 const EditProductsPage = () => {
   const { allProducts } = useProductContext();
-  console.log(allProducts)
 
   // Search and sort states
   const [searchInput, setSearchInput] = useState("");
@@ -69,6 +68,7 @@ const EditProductsPage = () => {
   return (
     <Container className="custom-container">
       <hr className="thick-hr m-5" />
+
       <Card className="custom-card">
         <Card.Header>
           <h3>
@@ -143,71 +143,6 @@ const EditProductsPage = () => {
 
           <h6>(Scroll for more products)</h6>
           <ProductsTable products={filteredProducts} />
-
-          {/* <Row className="g-5 mt-2">
-        {allProducts.map((product) => (
-          <Col key={product.id} xs={12} sm={6} md={4} lg={3}>
-            <Card className="edit-product-card">
-              <ProductImagesSwiper product={product} size={"small"} />
-              <Card.Img
-                src={logoMap[product.brand] || null}
-                className="product-brand-logo"
-                style={largeSquareLogoStyle(product.brand)}
-                onError={(e) => {
-                  e.target.src = noImage;
-                }}
-              />
-
-              <Card.Body>
-                <Card.Title className="mb-3">
-                  <b>
-                    {product.brand} <br /> {product.model}
-                  </b>
-                </Card.Title>
-                <Card.Text>
-                  <b>Price:</b> {formatPrice(product.price)}
-                </Card.Text>
-                <Card.Text>
-                  <b>Category:</b>{" "}
-                  {product.category.charAt(0).toUpperCase() +
-                    product.category.slice(1).toLowerCase()}
-                </Card.Text>
-                <Card.Text>
-                  <b>Type:</b> {product.type}
-                </Card.Text>
-                <Card.Text>
-                  <b>Stock:</b> {product.stock}
-                </Card.Text>
-              </Card.Body>
-              <Row>
-                <Col>
-                  <Link to={`/product/${product.id}`}>
-                    <Button
-                      variant="primary"
-                      size="md"
-                      className="custom-button"
-                    >
-                      Product Page
-                    </Button>
-                  </Link>
-                </Col>
-              </Row>
-              <Row className="mt-3">
-                <Col>
-                  <Button variant="warning" size="md" className="custom-button">
-                    Edit
-                  </Button>
-                </Col>
-                <Col>
-                  <Button variant="danger" size="md" className="custom-button">
-                    Delete
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        ))}
-      </Row> */}
         </Card.Body>
       </Card>
 

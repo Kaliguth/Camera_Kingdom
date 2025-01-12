@@ -3,7 +3,7 @@ import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
 import { ordersRef } from "../firebase/firestore";
-import { getDocs, addDoc, updateDoc, getDoc, doc } from "firebase/firestore";
+import { getDocs, addDoc, updateDoc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
 
 const PurchaseContext = createContext();
@@ -80,24 +80,6 @@ export const PurchaseProvider = ({ children }) => {
     return parseFloat(finalPrice.toFixed(2));
   };
 
-  // Method to get order data by order number
-  const getOrder = (orderNumber) => {
-    const orderDocRef = doc(ordersRef, orderNumber);
-
-    return getDoc(orderDocRef)
-      .then((orderDoc) => {
-        if (orderDoc.exists()) {
-          return orderDoc.data();
-        } else {
-          return null;
-        }
-      })
-      .catch((error) => {
-        console.log("Error fetching order: ", error);
-        return null;
-      });
-  };
-
   // Method to create a new order document
   const createOrderDocument = (shippingDetails, paymentDetails) => {
     // Get the order's total price
@@ -111,7 +93,9 @@ export const PurchaseProvider = ({ children }) => {
       purchase: {
         products: cart,
         coupon: paymentDetails.coupon?.code || null,
-        discount: `${paymentDetails.coupon?.discount}%` || null,
+        discount: paymentDetails.coupon
+          ? `${paymentDetails.coupon.discount}%`
+          : null,
         shippingPrice: shippingPrice(shippingDetails.deliveryOption),
         productsPrice: cartTotalPrice(),
         totalPrice: orderTotalPrice,

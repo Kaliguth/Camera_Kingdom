@@ -25,7 +25,7 @@ const DeleteUserAlert = (user, currentUser) => {
   // Show a confirmation alert window for the user
   return Swal.fire({
     title: "Are you sure?",
-    text: `Do you want to remove ${user.displayName}'s user?`,
+    html: `Do you want to remove user <b>${user.displayName}</b>?`,
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",

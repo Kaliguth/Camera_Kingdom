@@ -1,6 +1,6 @@
 // Context for input validation and formatting methods
 import React, { createContext, useContext } from "react";
-import { usersRef, couponsRef } from "../firebase/firestore";
+import { usersRef, couponsRef, ordersRef } from "../firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import { logoMap } from "../assets/LogoMap";
 
@@ -29,21 +29,7 @@ export const ValidationProvider = ({ children }) => {
     return name.trim().length > 0;
   };
 
-  // const displayNameTaken = (name) => {
-  //   let taken = false;
-
-  //   users.forEach((doc) => {
-  //     const userData = doc.data();
-
-  //     if (userData.displayName.toLowerCase() === name.toLowerCase()) {
-  //       taken = true;
-  //     }
-  //   });
-
-  //   return taken;
-  // };
-
-  // Function to check if the display name is taken
+  // Method to check if the display name is taken
   const displayNameTaken = (name) => {
     return getDocs(usersRef)
       .then((users) => {
@@ -62,13 +48,29 @@ export const ValidationProvider = ({ children }) => {
         console.log("Error checking display name: ", error);
         throw new Error("Failed to check display name");
       });
-    // const foundNameRef = doc(usersRef, name);
-    // return getDoc(foundNameRef)
-    //   .then((foundNameDoc) => foundNameDoc.exists())
-    //   .catch((error) => {
-    //     console.log("Error fetching document: ", error);
-    //     throw new Error("Failed to check display name");
-    //   });
+  };
+
+  // Method to check if order number is taken
+  // Also uses order id of the order the user is requesting to change
+  const orderNumberTaken = (number, orderId) => {
+    return getDocs(ordersRef)
+      .then((orders) => {
+        let taken = false;
+
+        orders.forEach((doc) => {
+          const currentId = doc.id;
+          const orderData = doc.data();
+          if (currentId !== orderId && orderData.orderNumber === number) {
+            taken = true;
+          }
+        });
+
+        return taken;
+      })
+      .catch((error) => {
+        console.log("Error checking order number: ", error);
+        throw new Error("Failed to check order number");
+      });
   };
 
   // Phone number validation
@@ -182,6 +184,7 @@ export const ValidationProvider = ({ children }) => {
     validatePassword,
     validateName,
     displayNameTaken,
+    orderNumberTaken,
     validatePhoneNumber,
     validateCreditCardNumber,
     validateExpirationDate,
