@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 
-const ConfirmOrderAlert = (order) => {
+const CancelOrderAlert = (order) => {
   return Swal.fire({
     title: "Are you sure?",
-    html: `Do you want to confirm order number <b>${order.orderNumber}</b>?`,
+    html: `Do you want to cancel order number <b>${order.orderNumber}</b>?<br><br><b>REST ASSURED THE PAYMENT HAS NOT YET BEEN FINALIZED</b>`,
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",
@@ -22,4 +22,4 @@ const ConfirmOrderAlert = (order) => {
     });
 };
 
-export default ConfirmOrderAlert;
+export default CancelOrderAlert;

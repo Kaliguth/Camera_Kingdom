@@ -21,8 +21,15 @@ const OrderSummaryPage = () => {
       setOrderLoading(true);
 
       // Fetch the order
-      const fetchedOrder = await getOrder(orderId);
-      setOrder(fetchedOrder);
+      getOrder(orderId)
+        .then((fetchedOrder) => {
+          // console.log(fetchedOrder)
+          setOrder(fetchedOrder);
+        })
+        .catch((error) => {
+          console.log("Error fetching order: ", error);
+          setOrder(null);
+        });
     };
 
     fetchOrder();
@@ -60,6 +67,7 @@ const OrderSummaryPage = () => {
         <Row className="mt-4">
           <Col>
             <h5>Failed to load your order's summary</h5>
+            <h6>You may view the order's details in My Orders page</h6>
             <Button className="custom-button" onClick={() => navigate("/")}>
               Home
             </Button>

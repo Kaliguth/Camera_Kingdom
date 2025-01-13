@@ -1,25 +1,26 @@
 import React from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
-import { useOrderManagementContext } from "../contexts/OrderManagementContext";
+import { useMessagesManagementContext } from "../contexts/MessagesManagementContext";
 import {
   Container,
   Row,
   Col,
-  Card,
   Button,
   Image,
+  Card,
+  Badge,
 } from "react-bootstrap";
-import { Link, Outlet, useNavigate } from "react-router-dom";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
-const OrderManagementPage = () => {
+const MessagesPage = () => {
   const { currentUser, userData } = useAuthContext();
-  const { ordersLoading } = useOrderManagementContext();
+  const { messagesLoading, unreadMessages } = useMessagesManagementContext();
   const navigate = useNavigate();
 
-  if (ordersLoading) {
+  if (messagesLoading) {
     return <Loader />;
   }
 
@@ -67,30 +68,35 @@ const OrderManagementPage = () => {
 
   return (
     <Container className="custom-container mt-4">
-      <Row className="m-4 hide-on-print">
-        <h2>Order Management</h2>
+      <Row className="m-4">
+        <h2>Messages</h2>
       </Row>
 
-      <Row className="justify-content-center hide-on-print">
+      <Row className="justify-content-center">
         <Col md={6} lg={5} sm={"auto"} xs={"auto"}>
           <Card className="order-container">
             <Card.Title>What would you like to do?</Card.Title>
             <Card.Body>
-              <Link to="/admin-dashboard/orders/view">
+              <Link to="/admin-dashboard/messages/unread">
                 <Button variant="primary" size="md" className="m-2">
-                  View/Edit Orders
+                  Unread Messages
+                  {unreadMessages !== 0 && (
+                    <Badge bg="danger" className="ms-2">
+                      {unreadMessages}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
               <br />
-              <Link to="/admin-dashboard/orders/confirm">
+              <Link to="/admin-dashboard/messages/viewed">
                 <Button variant="success" size="md" className="m-2">
-                  Confirm Orders
+                  Viewed Messages
                 </Button>
               </Link>
               <br />
-              <Link to="/admin-dashboard/orders/refund">
+              <Link to="/admin-dashboard/messages/answered">
                 <Button variant="warning" size="md" className="m-2">
-                  Refund Orders
+                  Answered Messages
                 </Button>
               </Link>
             </Card.Body>
@@ -99,7 +105,7 @@ const OrderManagementPage = () => {
       </Row>
 
       <Outlet />
-      <Link to={"/admin-dashboard"} className="hide-on-print">
+      <Link to={"/admin-dashboard"}>
         <Button className="custom-button mt-4" variant="warning" size={"md"}>
           Back to Admin Dashboard
         </Button>
@@ -109,4 +115,4 @@ const OrderManagementPage = () => {
   );
 };
 
-export default OrderManagementPage;
+export default MessagesPage;

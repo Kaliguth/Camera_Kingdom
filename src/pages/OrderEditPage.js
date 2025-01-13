@@ -1,33 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useProductContext } from "../contexts/ProductContext";
 import { useOrderManagementContext } from "../contexts/OrderManagementContext";
 import { useValidationContext } from "../contexts/ValidationContext";
 import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../components/utility/Loader";
-import noImage from "../assets/no-image.png";
-import EditProductAlert from "../components/alerts/EditProductAlert";
+import EditOrderAlert from "../components/alerts/EditOrderAlert";
 import OrderProductCard from "../components/order/OrderProductCard";
 
 const OrderEditPage = () => {
   const { orderId } = useParams();
-  const { getOrder } = useOrderManagementContext();
+  const { getOrder, updateOrderDetails } = useOrderManagementContext();
   const { formatPrice } = useValidationContext();
   const [order, setOrder] = useState(null);
-  const [tempOrderNumber, setTempOrderNumber] = useState(0);
+  const [tempOrderNumber, setTempOrderNumber] = useState(0); // Temporary order number to reflect which order is editted
 
   // Error texts
-  const [brandError, setBrandError] = useState("");
-  const [modelError, setModelError] = useState("");
-  const [typeError, setTypeError] = useState("");
-  const [priceError, setPriceError] = useState("");
-  const [descError, setDescError] = useState("");
-  const [imagesError, setImagesError] = useState("");
-  const [overviewError, setOverviewError] = useState("");
-  const [specNameError, setSpecNameError] = useState("");
-  const [specDetailError, setSpecDetailError] = useState("");
-
   const [orderNumberError, setOrderNumberError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
@@ -39,16 +27,6 @@ const OrderEditPage = () => {
   // Method to reset the errors
   // Used every time save changes is clicked
   const resetErrors = () => {
-    setBrandError("");
-    setModelError("");
-    setTypeError("");
-    setPriceError("");
-    setDescError("");
-    setImagesError("");
-    setOverviewError("");
-    setSpecNameError("");
-    setSpecDetailError("");
-
     setOrderNumberError("");
     setEmailError("");
     setNameError("");
@@ -109,11 +87,6 @@ const OrderEditPage = () => {
   }, [orderId, getOrder]);
 
   // Property change handles
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setOrder({ ...order, [name]: value });
-  };
-
   const handleStatusAndNumberChange = (e) => {
     const { name, value } = e.target;
     setOrder({ ...order, [name]: value });
@@ -168,61 +141,72 @@ const OrderEditPage = () => {
     });
   };
 
-  // Form submit handle (updating the product)
+  // Form submit handle (updating the order)
   const handleSaveChanges = (e) => {
     e.preventDefault();
     resetErrors();
 
-    // // Filtering images from empty inputs
-    // const filteredImages = product.images.filter(
-    //   (image) => image.trim() !== ""
-    // );
-    // // Capitalizing brand, model and type
-    // const capitalizedBrand =
-    //   product.brand.charAt(0).toUpperCase() + product.brand.slice(1);
-    // const capitalizedModel =
-    //   product.model.charAt(0).toUpperCase() + product.model.slice(1);
-    // const capitalizedType =
-    //   product.type.charAt(0).toUpperCase() + product.type.slice(1);
+    // Capitalizing name, street and city
+    const capitalizedName =
+      order.customer.fullName.charAt(0).toUpperCase() +
+      order.customer.fullName.slice(1);
+    const capitalizedStreet =
+      order.shipping.streetName.charAt(0).toUpperCase() +
+      order.shipping.streetName.slice(1);
+    const capitalizedCity =
+      order.shipping.city.charAt(0).toUpperCase() +
+      order.shipping.city.slice(1);
 
-    // // Converting price to a number
-    // const convertedPrice = Number(product.price);
+    // Converting order number to a number
+    const convertedOrderNumber = Number(order.orderNumber);
 
-    // // Temporary updated product object
-    // const updatedProduct = {
-    //   ...product,
-    //   images: filteredImages,
-    //   brand: capitalizedBrand,
-    //   model: capitalizedModel,
-    //   type: capitalizedType,
-    //   price: convertedPrice,
-    // };
+    // Temporary updated order object
+    const updatedOrder = {
+      ...order,
+      status: order.status,
+      orderNumber: convertedOrderNumber,
+      customer: {
+        ...order.customer,
+        email: order.customer.email,
+        fullName: capitalizedName,
+        phoneNumber: order.customer.phoneNumber,
+      },
+      shipping: {
+        ...order.shipping,
+        streetName: capitalizedStreet,
+        houseNumber: order.shipping.houseNumber,
+        city: capitalizedCity,
+      },
+    };
 
-    // EditProductAlert(product.model)
-    //   .then((isConfirmed) => {
-    //     if (isConfirmed) {
-    //       return updateProductProperties(updatedProduct);
-    //     } else {
-    //       throw new Error("canceled");
-    //     }
-    //   })
-    //   .then(() => {
-    //     toast.success(`Changes to ${product.model} saved successfully`);
+    EditOrderAlert(tempOrderNumber)
+      .then((isConfirmed) => {
+        if (isConfirmed) {
+          return updateOrderDetails(updatedOrder);
+        } else {
+          throw new Error("canceled");
+        }
+      })
+      .then(() => {
+        toast.success(
+          `Changes to order number ${tempOrderNumber} saved successfully`
+        );
 
-    //     // Update the product state only after update is complete
-    //     setProduct(updatedProduct);
-    //     // Scroll to top after a short delay
-    //     setTimeout(() => {
-    //       window.scrollTo(0, 0);
-    //     }, 100);
-    //   })
-    //   .catch((error) => {
-    //     if (error.message === "canceled") {
-    //       console.log("Product edit canceled by the user");
-    //     } else {
-    //       updateErrorMessage(error);
-    //     }
-    //   });
+        // Update the order state only after update is complete
+        setOrder(updatedOrder);
+
+        // Scroll to top after a short delay
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
+      })
+      .catch((error) => {
+        if (error.message === "canceled") {
+          console.log("Order edit canceled by the user");
+        } else {
+          updateErrorMessage(error);
+        }
+      });
   };
 
   if (!order) {
@@ -279,6 +263,7 @@ const OrderEditPage = () => {
                     <option value="Processing">Processing</option>
                     <option value="Shipped">Shipped</option>
                     <option value="Completed">Completed</option>
+                    <option value="Canceled">Canceled</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
@@ -293,7 +278,11 @@ const OrderEditPage = () => {
                     value={order.orderNumber}
                     onWheel={(e) => e.target.blur()} // Disable value change by mousewheel
                     onChange={handleStatusAndNumberChange}
+                    isInvalid={!!orderNumberError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{orderNumberError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -323,7 +312,11 @@ const OrderEditPage = () => {
                     type="email"
                     value={order.customer.email}
                     onChange={handleEmailChange}
+                    isInvalid={!!emailError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{emailError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -335,7 +328,11 @@ const OrderEditPage = () => {
                     type="text"
                     value={order.customer.fullName}
                     onChange={handleFullNameChange}
+                    isInvalid={!!nameError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{nameError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -351,7 +348,11 @@ const OrderEditPage = () => {
                     value={order.customer.phoneNumber}
                     onWheel={(e) => e.target.blur()} // Disable value change by mousewheel
                     onChange={handlePhoneNumberChange}
+                    isInvalid={!!phoneError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{phoneError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -378,7 +379,11 @@ const OrderEditPage = () => {
                     type="text"
                     value={order.shipping.streetName}
                     onChange={handleStreetChange}
+                    isInvalid={!!streetError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{streetError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -390,7 +395,11 @@ const OrderEditPage = () => {
                     type="text"
                     value={order.shipping.houseNumber}
                     onChange={handleHouseNumberChange}
+                    isInvalid={!!houseError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{houseError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -402,7 +411,11 @@ const OrderEditPage = () => {
                     type="text"
                     value={order.shipping.city}
                     onChange={handleCityChange}
+                    isInvalid={!!cityError}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    <b>{cityError}</b>
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -436,13 +449,6 @@ const OrderEditPage = () => {
               <Card className="order-container w-75 mt-2 mb-4">
                 {order.purchase.products.map((product) => (
                   <Container key={product.id}>
-                    {/* <Button
-                      variant="danger"
-                      size="sm"
-                      // onClick={() => handleRemoveProduct(product.id)}
-                    >
-                      Remove {product.model}
-                    </Button> */}
                     <OrderProductCard product={product} />
                   </Container>
                 ))}

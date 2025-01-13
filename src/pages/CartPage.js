@@ -85,34 +85,8 @@ const CartPage = () => {
               <Card className="order-container">
                 <Card.Header className="mb-3">
                   <h5 className="m-3">Products</h5>
-                  {/* <h6 className="mb-3">
-                    (There are {cartProductsNumber()} items in your cart)
-                  </h6> */}
                 </Card.Header>
                 <Card.Body>
-                  {/* <Row>
-                    <Col xs={4} md={4}>
-                      <small className="text-muted">Product</small>
-                    </Col>
-                    <Col xs={3} md={3}>
-                      <small className="text-muted ms-5 ps-4">Quantity</small>
-                    </Col>
-                    <Col xs={2} md={2}>
-                      <small className="text-muted" style={{ marginLeft: -33 }}>
-                        Unit price
-                      </small>
-                    </Col>
-                    <Col xs={2} md={2}>
-                      <small className="text-muted" style={{ marginLeft: -45 }}>
-                        Total price
-                      </small>
-                    </Col>
-                    <Col xs={1} md={1}>
-                      <small className="text-muted" style={{ marginLeft: -50 }}>
-                        Actions
-                      </small>
-                    </Col>
-                  </Row> */}
                   {cart.map((product) => (
                     <CartProductCard key={product.id} product={product} />
                   ))}
@@ -169,38 +143,6 @@ const CartPage = () => {
               </Row>
             </Col>
           </Row>
-
-          {/* <Card className="cart-card mt-5 mb-3 w-25 ms-auto">
-              <Card.Body className="p-2 mt-3">
-                <Row>
-                  <Col className="d-flex">
-                    <p className="small text-muted ms-4 me-5">Order total:</p>
-                    <h6>
-                      <b>₪ {cartTotalPrice()}</b>
-                    </h6>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-
-          <Row className="cart-buttons-container">
-            <Col className="d-flex justify-content-end">
-              <Button
-                variant="secondary"
-                onClick={handleContinueShopping}
-                className="cart-buttons btn-lg me-3"
-              >
-                Continue shopping
-              </Button>
-              <Button
-                variant="primary"
-                className="cart-buttons btn-lg"
-                onClick={handleCheckout}
-              >
-                Go to checkout
-              </Button>
-            </Col>
-          </Row> */}
         </>
       )}
     </Container>

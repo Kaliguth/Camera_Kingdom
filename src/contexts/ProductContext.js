@@ -34,15 +34,18 @@ export const ProductProvider = ({ children }) => {
     getAllProducts();
   }, []);
 
-  // Get a product document reference (for document changes)
+  // Method to get a product document reference by id (for document changes)
   const getProductDocRef = (id) => {
     const productRef = doc(productsRef, id);
 
     return productRef;
   };
 
-  const getProduct = (id) => {
-    const product = allProducts.find((product) => product.id === id) || null;
+  // Method to get a product object by ID directly from allProducts array
+  const getProduct = (productId) => {
+    const product = allProducts.find(
+      (currentProduct) => currentProduct.id === productId
+    );
 
     return product;
   };
@@ -139,7 +142,7 @@ export const ProductProvider = ({ children }) => {
       if (!usedIndexes.includes(randomIndex)) {
         if (
           allProducts[randomIndex].likes.length >= 3 ||
-          allProducts[randomIndex].reviews.length >= 2
+          allProducts[randomIndex].reviews.length >= 1
         ) {
           featuredProducts.push(allProducts[randomIndex]);
         }
@@ -214,30 +217,50 @@ export const ProductProvider = ({ children }) => {
   };
 
   // Method to update stocks of products inside a cart when a purchase is made
-  const updateProductsStock = (cart) => {
+  const updateProductsStock = (products, action) => {
     // Creating array of all stock updates
-    const stockUpdates = cart.map((item) => {
-      // Getting each product's doc ref and calculating the new stock
+    const stockUpdates = products.map((item) => {
+      // Getting stock to update, product doc ref to update and calculating the new stock
       // (Users cannot input a quantity larger than the product's stock so there will never be negative stock)
+      const productToUpdate = getProduct(item.id);
+      const productStock = productToUpdate.stock;
       const productRef = getProductDocRef(item.id);
-      const newStock = item.stock - item.quantity;
 
-      // Update the product's stock
-      return updateDoc(productRef, { stock: newStock })
-        .then(() => {
-          // Update local products list with the new product's stock
-          setAllProducts((prevProducts) =>
-            prevProducts.map((product) =>
-              product.id === item.id ? { ...product, stock: newStock } : product
-            )
-          );
-        })
-        .catch((error) => {
-          console.log("Error updating product stocks: ", error);
-          throw new Error(
-            "An unexpected error occured. Please try again or contact support."
-          );
-        });
+      // Only update product's stock if the product to update was found
+      if (productToUpdate) {
+        let newStock;
+        if (action === "purchase") {
+          newStock = productStock - item.quantity;
+        } else {
+          newStock = productStock + item.quantity;
+        }
+
+        // Update the product's doc stock
+        return updateDoc(productRef, { stock: newStock })
+          .then(() => {
+            // Update local products list with the new product's stock
+            setAllProducts((prevProducts) =>
+              prevProducts.map((product) =>
+                product.id === item.id
+                  ? { ...product, stock: newStock }
+                  : product
+              )
+            );
+          })
+          .catch((error) => {
+            console.log("Error updating product stocks: ", error);
+            throw new Error(
+              "Invalid product stocks. Please try again or contact support."
+            );
+          });
+      } else {
+        // Log information about products that were not found
+        console.log(
+          `Product with ID ${item.id} was not found. Skipping it's stock update.`
+        );
+        
+        return null;
+      }
     });
 
     // Return a Promise that completes when all updates are done
@@ -405,9 +428,7 @@ export const ProductProvider = ({ children }) => {
       })
       .catch((error) => {
         console.log("Error updating product: ", error);
-        throw new Error(
-          "Failed to update the product. Please try again or contact support."
-        );
+        throw new Error("Failed to update the product. Please try again.");
       });
   };
 

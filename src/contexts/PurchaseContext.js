@@ -2,9 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "./AuthContext";
 import { useCartContext } from "./CartContext";
 import { useValidationContext } from "./ValidationContext";
-import { ordersRef } from "../firebase/firestore";
-import { getDocs, addDoc, updateDoc } from "firebase/firestore";
 import { useProductContext } from "./ProductContext";
+import { useOrderManagementContext } from "./OrderManagementContext";
+import { ordersRef } from "../firebase/firestore";
+import { getDocs, addDoc, updateDoc, setDoc } from "firebase/firestore";
 
 const PurchaseContext = createContext();
 
@@ -21,8 +22,8 @@ export const PurchaseProvider = ({ children }) => {
     validateExpirationDate,
     validateCvc,
   } = useValidationContext();
-  // State to determine next order number
-  const [nextOrderNumber, setNextOrderNumber] = useState(0);
+  const { updateAllOrders } = useOrderManagementContext();
+  const [nextOrderNumber, setNextOrderNumber] = useState(0); // State to determine next order number
 
   // useEffect to fetch the orders collection size for next order number
   useEffect(() => {
@@ -135,6 +136,7 @@ export const PurchaseProvider = ({ children }) => {
     const shippingDetails = orderDetails.shipping;
     const paymentDetails = orderDetails.payment;
 
+    // Validations:
     // Shipping details error handling
     if (!validateName(shippingDetails.fullName)) {
       return Promise.reject(new Error("Please fill in your name"));
@@ -205,7 +207,7 @@ export const PurchaseProvider = ({ children }) => {
     }
 
     // Create a new order document
-    const newOrder = createOrderDocument(shippingDetails, paymentDetails);
+    let newOrder = createOrderDocument(shippingDetails, paymentDetails);
 
     // Check if order number generation failed
     if (newOrder.orderNumber === -1) {
@@ -217,25 +219,24 @@ export const PurchaseProvider = ({ children }) => {
       );
     }
 
-    // Order document ID variable needed to return for summary page
-    let orderId;
-
     // Add the order to the orders collection in Firestore
-    return addDoc(ordersRef, newOrder)
-      .then((docRef) => {
-        // Update the order ID variable with the new document's ID
-        orderId = docRef.id;
+    return addDoc(ordersRef, newOrder).then((docRef) => {
+      // Save the doc ID to return it for summary page
+      const orderId = docRef.id;
 
-        // Incrememnt next order number
-        setNextOrderNumber((prevOrderNumber) => prevOrderNumber + 1);
+      // Update the newly added doc with ID field
+      newOrder = { ...newOrder, id: orderId };
+      return setDoc(docRef, newOrder)
+        .then(() => {
+          // Incrememnt next order number (for cases when another order is placed immediately after)
+          setNextOrderNumber((prevOrderNumber) => prevOrderNumber + 1);
 
-        // Update stock for each product in the cart
-        return updateProductsStock(cart);
-      })
-      .then(() => {
-        // Empty the user's cart in the app and firebase
-        return (
-          updateDoc(userDocRef, { cart: [] })
+          // Update stock for each product in the cart
+          return updateProductsStock(cart, "purchase");
+        })
+        .then(() => {
+          // Empty the user's cart in the app and firebase
+          return updateDoc(userDocRef, { cart: [] })
             .then(() => {
               // Clear products from the cart state and local storage userData cart
               // Also add new order to local storage orders
@@ -254,22 +255,27 @@ export const PurchaseProvider = ({ children }) => {
                 orders: updatedOrders,
               });
             })
-            // Return the new order document ID for summary
-            .then(() => orderId)
+            .then(() => {
+              // Add the order to allOrders array after the order has been successfully placed
+              updateAllOrders(newOrder);
+
+              // Return the new order document ID for the summary page
+              return orderId;
+            })
             .catch((error) => {
               console.log("Error completing order - document updates: ", error);
               throw new Error(
                 "Failed to complete your order. Please try again or contact support"
               );
-            })
-        );
-      })
-      .catch((error) => {
-        console.log("Error completing order - product stocks: ", error);
-        throw new Error(
-          "Failed to complete your order. Please try again or contact support"
-        );
-      });
+            });
+        })
+        .catch((error) => {
+          console.log("Error completing order - product stocks: ", error);
+          throw new Error(
+            "Failed to complete your order. Please try again or contact support"
+          );
+        });
+    });
   };
 
   const globalVal = {

@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 
-const ConfirmOrderAlert = (order) => {
+const UpdateProfileAlert = () => {
   return Swal.fire({
     title: "Are you sure?",
-    html: `Do you want to confirm order number <b>${order.orderNumber}</b>?`,
+    text: "Do you want to update your profile picture and display name?",
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Confirm",
@@ -22,4 +22,4 @@ const ConfirmOrderAlert = (order) => {
     });
 };
 
-export default ConfirmOrderAlert;
+export default UpdateProfileAlert;

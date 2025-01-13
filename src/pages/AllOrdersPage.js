@@ -84,7 +84,7 @@ const AllOrdersPage = () => {
       <Card className="custom-card">
         <Card.Header>
           <h3>
-            <u>Orders</u>
+            <u>View/Edit Orders</u>
           </h3>
         </Card.Header>
 

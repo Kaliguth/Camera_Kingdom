@@ -110,22 +110,8 @@ const LoginRegisterPage = () => {
       // Register
       register(name, email, password, repeatPassword)
         .then((userCredentials) => {
-          // // Validate repeat password input:
-          // // If repeat password is empty
-          // if (repeatPassword === "") {
-          //   setRepeatPasswordError("Please repeat your password");
-          //   return;
-          // }
-          // // Check if passwords match
-          // if (password !== repeatPassword) {
-          //   setRepeatPasswordError("Passwords do not match");
-          //   return;
-          // }
           logout()
             .then(() => {
-              // Force refresh to return to login page
-              // window.location.reload();
-              // navigate("/");
               clearFields();
               setIsLogin(true);
             })
@@ -180,9 +166,9 @@ const LoginRegisterPage = () => {
   }
 
   return (
-    <Container className="custom-container mt-4 d-flex justify-content-center">
-      <Row>
-        <Col>
+    <Container className="custom-container mt-4">
+      <Row className="justify-content-center">
+        <Col lg={"auto"} md={"auto"} sm={"auto"} xs={"auto"}>
           <h2 className="mb-4">{isLogin ? "Login" : "Register"}</h2>
           <Form onSubmit={handleSubmit}>
             {!isLogin && (
@@ -221,7 +207,7 @@ const LoginRegisterPage = () => {
                 <Form.Control
                   className="form-controls"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter a password"
+                  placeholder={isLogin ? "Enter your password" : "Enter a password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   isInvalid={!!passwordError}

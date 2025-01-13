@@ -6,10 +6,8 @@
 }
 
 body {
-  /* background: linear-gradient(120deg, #000000, #e74d4d); */
   background-color: #c7d3e0;
   background-image: url("https://www.transparenttextures.com/patterns/white-diamond.png");
-  /* background-image: url("https://www.transparenttextures.com/patterns/diagmonds-light.png"); */
   background-repeat: repeat;
   background-size: auto;
   background-blend-mode: multiply;
@@ -62,6 +60,38 @@ body {
   border-left: 2px solid #ccc;
 }
 
+/* Custom message details modal */
+.custom-message-modal {
+  text-align: center;
+}
+
+.custom-message-modal-header {
+  background-color: #007bff;
+  color: white;
+  border-bottom: 3px solid #012449;
+}
+
+.custom-message-modal-body {
+  background-color: ghostwhite;
+  padding: 20px;
+}
+
+.custom-message-modal-footer {
+  background-color: #e3e7ec;
+  border-top: 2px solid #818181;
+}
+
+.custom-message-modal-footer .btn-secondary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.custom-message-modal-footer .btn-secondary:hover {
+  background-color: #0056b3;
+}
+
 .thick-hr {
   height: 5px;
   background-color: black;
@@ -110,24 +140,6 @@ body {
   object-fit: contain;
   border-bottom: solid 4px black;
 }
-
-/* Featured products carousel */
-/* .featured-carousel {
-  max-width: 500px;
-  max-height: 350px;
-  margin: 0 auto;
-  background-color: ghostwhite;
-  border: 1px solid gray;
-  border-radius: 10px;
-  padding-top: 20px;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: black;
-  border-radius: 50%;
-  padding: 10px;
-} */
 
 /* Forms */
 .custom-form-group {
@@ -273,9 +285,6 @@ body {
   width: 100%;
   height: 100%;
   max-width: 350px;
-  /* min-height: 530px;
-  max-height: 530px; */
-  /* margin-bottom: 50px; */
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -376,9 +385,6 @@ body {
 }
 
 .product-buttons {
-  /* align-self: center;
-  max-width: 150px;
-  margin-bottom: 10px; */
   max-width: 200px;
 }
 
@@ -423,12 +429,6 @@ body {
   }
 }
 
-/* .swiper {
-  width: 80%;
-  height: 500px;
-  margin: auto;
-} */
-
 .image-swiper-large {
   width: 80%;
   height: 60%;
@@ -443,7 +443,6 @@ body {
 }
 
 .image-swiper-large .swiper-slide img {
-  /* display: block; */
   width: 60%;
   height: 100%;
   object-fit: contain;
@@ -463,7 +462,6 @@ body {
 }
 
 .image-swiper-small .swiper-slide img {
-  /* display: block; */
   width: 60%;
   height: 100%;
   object-fit: contain;
@@ -492,33 +490,10 @@ body {
   border: solid 1px black;
 }
 
-/* .image-thumbnails-swiper-small {
-  height: 10%;
-  box-sizing: border-box;
-  margin-left: 10px;
-}
-
-.image-thumbnails-swiper-small .swiper-slide {
-  width: 25%;
-  height: 100%;
-}
-
-.image-thumbnails-swiper-small .swiper-slide img {
-  width: 80%;
-  height: 100%;
-  opacity: 0.4;
-  object-fit: contain;
-}
-
-.image-thumbnails-swiper-small .swiper-slide-thumb-active img {
-  opacity: 1;
-  border: solid 1px black;
-} */
-
 /* Profile */
 .profile-picture {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   border: 3px solid #000000;
   border-radius: 100%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -536,14 +511,6 @@ body {
 .cart-quantity-buttons {
   max-width: 30px;
 }
-
-/* .quantity-input-container {
-  width: 150px;
-}
-
-.quantity-input-container input {
-  text-align: center;
-} */
 
 .cart-buttons-container {
   margin-top: 25px;
@@ -578,71 +545,4 @@ body {
 
 .scroll-to-top:hover {
   opacity: 1;
-}
-
-/* Expermintal */
-.product-card1 {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.product-card1:hover {
-  transform: scale(1.05);
-}
-
-.product-brand-logo1 {
-  max-width: 150px;
-  height: auto;
-  margin: 10px 0;
-}
-
-.product-buttons1 {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-/* Price Styling */
-.product-price {
-  color: #28a745;
-  font-weight: bold;
-  font-size: 1.2em;
-  margin-bottom: 10px;
-}
-
-.product-price::before {
-  content: "₪";
-  margin-right: 5px;
-}
-
-.product-discount {
-  text-decoration: line-through;
-  color: #dc3545;
-  font-weight: normal;
-  font-size: 1.2em;
-  margin-right: 10px;
-}
-
-.product-final-price {
-  color: #28a745;
-  font-weight: bold;
-  font-size: 1.6em;
-}
-
-/* Company Logos */
-.company-logo {
-  width: 50px;
-  height: auto;
-  margin: 0 5px;
-}
-
-.company-logos {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
 }

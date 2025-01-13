@@ -1,10 +1,10 @@
 import Swal from "sweetalert2";
 
-const ConfirmOrderAlert = (order) => {
+const ChangePasswordAlert = () => {
   return Swal.fire({
     title: "Are you sure?",
-    html: `Do you want to confirm order number <b>${order.orderNumber}</b>?`,
-    icon: "question",
+    text: "Do you want to change your password?",
+    icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Confirm",
     cancelButtonText: "Cancel",
@@ -22,4 +22,4 @@ const ConfirmOrderAlert = (order) => {
     });
 };
 
-export default ConfirmOrderAlert;
+export default ChangePasswordAlert;

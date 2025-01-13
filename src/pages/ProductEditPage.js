@@ -246,6 +246,7 @@ const ProductEditPage = () => {
 
         // Update the product state only after update is complete
         setProduct(updatedProduct);
+        
         // Scroll to top after a short delay
         setTimeout(() => {
           window.scrollTo(0, 0);

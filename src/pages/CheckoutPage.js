@@ -736,23 +736,6 @@ const CheckoutPage = () => {
                 </Card.Body>
               </Card>
 
-              {/* Action Buttons */}
-              {/* <div className="mt-4">
-            <Button
-              variant="secondary"
-              onClick={handleContinueShopping}
-              className="w-100 mb-3"
-            >
-              Continue Shopping
-            </Button>
-            <Button
-              variant="primary"
-              className="w-100"
-              // onClick={handleCheckout}
-            >
-              Complete Order
-            </Button>
-          </div> */}
               <Row className="cart-buttons-container">
                 <Col className="d-flex justify-content-center">
                   <Button
@@ -774,37 +757,6 @@ const CheckoutPage = () => {
                 </Col>
               </Row>
             </Col>
-            {/* <Card className="cart-card mt-5 mb-3 w-25 ms-auto">
-          <Card.Body className="p-2 mt-3">
-            <Row>
-              <Col className="d-flex">
-                <p className="small text-muted ms-4 me-5">Order total:</p>
-                <h6>
-                  <b>₪ {orderTotal}</b>
-                </h6>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-
-        <Row className="cart-buttons-container">
-          <Col className="d-flex justify-content-end">
-            <Button
-              variant="secondary"
-              onClick={handleContinueShopping}
-              className="cart-buttons btn-lg me-3"
-            >
-              Continue shopping
-            </Button>
-            <Button
-              variant="primary"
-              className="cart-buttons btn-lg"
-              // onClick={handleCheckout}
-            >
-              Complete order
-            </Button>
-          </Col>
-        </Row> */}
           </Row>
         </>
       )}

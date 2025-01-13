@@ -34,6 +34,11 @@ import OrderManagementPage from "./pages/OrderManagementPage";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import OrderEditPage from "./pages/OrderEditPage";
 import ConfirmOrdersPage from "./pages/ConfirmOrdersPage";
+import RefundOrdersPage from "./pages/RefundOrdersPage";
+import MessagesPage from "./pages/MessagesPage";
+import UnreadMessagesPage from "./pages/UnreadMessagesPage";
+import ViewedMessagesPage from "./pages/ViewedMessagesPage";
+import AnsweredMessagesPage from "./pages/AnsweredMessagesPage";
 import Error404Page from "./pages/Error404Page";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
@@ -79,7 +84,10 @@ function App() {
                 path="categories/:category"
                 element={<CategoryProductsPage />}
               />
-              <Route path="contact-us" element={<ContactUsPage />} />
+              <Route
+                path="contact-us/:initialSubject"
+                element={<ContactUsPage />}
+              />
               <Route path="about-us" element={<AboutUsPage />} />
               <Route path="cart" element={<CartPage />} />
               <Route path="checkout" element={<CheckoutPage />} />
@@ -91,7 +99,7 @@ function App() {
               <Route path="wishlist" element={<WishlistPage />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="orders" element={<OrdersPage />} />
-              <Route path="order/:orderId" element={<OrderDetailsPage />} />
+              <Route path="orders/:orderId" element={<OrderDetailsPage />} />
               <Route
                 path="product/:productId"
                 element={<ProductDetailsPage />}
@@ -117,6 +125,15 @@ function App() {
                 <Route path="view/:orderId" element={<OrderDetailsPage />} />
                 <Route path="edit/:orderId" element={<OrderEditPage />} />
                 <Route path="confirm" element={<ConfirmOrdersPage />} />
+                <Route path="refund" element={<RefundOrdersPage />} />
+              </Route>
+              <Route
+                path="/admin-dashboard/messages"
+                element={<MessagesPage />}
+              >
+                <Route path="unread" element={<UnreadMessagesPage />} />
+                <Route path="viewed" element={<ViewedMessagesPage />} />
+                <Route path="answered" element={<AnsweredMessagesPage />} />
               </Route>
               <Route path="*" element={<Error404Page />} />
             </Route>

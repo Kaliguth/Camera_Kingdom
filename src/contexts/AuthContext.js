@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { auth, googleProvider } from "../firebase/auth";
 import {
   onAuthStateChanged,
@@ -7,10 +13,9 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   updateProfile,
-  updateEmail,
 } from "firebase/auth";
-import { usersRef } from "../firebase/firestore";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { usersRef, ordersRef } from "../firebase/firestore";
+import { doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { sendEmailVerification } from "firebase/auth";
 import { useValidationContext } from "./ValidationContext";
 
@@ -28,66 +33,93 @@ export const AuthProvider = ({ children }) => {
   });
   const [userDocRef, setUserDocRef] = useState(null);
 
+  // Callback to update the current user's orders (used each change in current user)
+  const updateCurrentUserOrders = useCallback(
+    (docRef) => {
+      // Do not attempt if no currentUser
+      if (!currentUser) {
+        return;
+      }
+
+      // Get all order docs from orders collection
+      getDocs(ordersRef)
+        .then((orders) => {
+          // Initiate an orders array
+          const userOrders = [];
+
+          // Go over all orders and add ones that belong to the current user
+          orders.forEach((doc) => {
+            const orderData = doc.data();
+            if (orderData.customer.userId === currentUser.uid) {
+              userOrders.push({ ...orderData });
+            }
+          });
+
+          // Update the user's document with the found orders in firestore
+          return updateDoc(docRef, { orders: userOrders }).then(() => {
+            // Update user data if the currentUser matches
+            updateUserData({ orders: userOrders });
+          });
+        })
+        .catch((error) => {
+          console.log("Error updating current user's orders: ", error);
+        });
+    },
+    [currentUser]
+  );
+
   useEffect(() => {
     // Use a listener to change the current user and user document
-    const removeAuthListener = onAuthStateChanged(auth, async (user) => {
+    const removeAuthListener = onAuthStateChanged(auth, (user) => {
       setUserLoading(true);
 
       if (user) {
         setCurrentUser(user);
-        // setUserLoading(false);
-        // console.log(user);
+
         const docRef = doc(usersRef, user.uid);
-        // console.log(`User UID: '${user.uid}'`);
-        // console.log(docRef);
-        // console.log("docRef:", docRef.path);
-        // setUserDocRef(docRef);
-        const userDoc = await getDoc(docRef);
-        // console.log(userDoc);
-        // console.log(userDoc.exists());
 
-        // if (userDoc.exists()) {
-        //   setUserDocRef(docRef);
-        //   const data = userDoc.data();
-        //   // console.log(userDoc.data());
-        //   setUserData(data);
-        //   localStorage.setItem("userData", JSON.stringify(data));
-        //   // console.log("data: ", data);
-        //   // console.log("user data: ", userData);
-        // } else {
-        //   await createUserDocument(user);
-        //   setUserData(null);
-        // }
-        if (!userDoc.exists()) {
-          await createUserDocument(user);
-        }
+        getDoc(docRef)
+          .then((userDoc) => {
+            // Create a document for the user (Will not create if the document already exists)
+            return createUserDocument(user)
+              .then(() => {
+                // Set the user doc ref state
+                setUserDocRef(docRef);
 
-        setUserDocRef(docRef);
-        const data = userDoc.data();
-        // console.log(userDoc.data());
+                // Update user data (Local state and local storage object)
+                const data = userDoc.data();
+                updateUserData({ ...data, uid: userDoc.id });
 
-        // setUserData(data);
-        // localStorage.setItem("userData", JSON.stringify(data));
-        updateUserData({ ...data, uid: userDoc.id });
-
-        // console.log("data: ", data);
-        // console.log("user data: ", userData);
+                // Update the user's orders array (in case orders were changed by admins)
+                return updateCurrentUserOrders(docRef);
+              })
+              .catch((error) => {
+                console.log("Error updating user data: ", error);
+              });
+          })
+          .catch((error) => {
+            console.log("Error fetching user data: ", error);
+          })
+          .finally(() => {
+            setUserLoading(false);
+          });
       } else {
         setCurrentUser(null);
         setUserData(null);
         setUserDocRef(null);
         localStorage.removeItem("userData");
+        setUserLoading(false);
       }
-      setUserLoading(false);
     });
 
     // Return the listener to remove it and avoid reuses
     return () => removeAuthListener();
-  }, []);
+  }, [updateCurrentUserOrders]);
 
   // Method to get a user's data by UID
   const getUserByUid = (uid) => {
-    return getDoc(doc(usersRef, uid))
+    const userDocRef = getUserDocRefByUid(uid);
+    return getDoc(userDocRef)
       .then((userDoc) => {
         if (userDoc.exists()) {
           return userDoc.data();
@@ -96,8 +128,15 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((error) => {
-        console.log("Error fetching user data: ", error);
+        console.log(`Error fetching user ID ${uid}: `, error);
       });
+  };
+
+  // Method to get a user's doc ref by uid
+  const getUserDocRefByUid = (uid) => {
+    const userRef = doc(usersRef, uid);
+
+    return userRef;
   };
 
   // Method to update the userData state and local storage object after making changes (cart, orders, wishlist, last sign-in time etc...)
@@ -108,34 +147,6 @@ export const AuthProvider = ({ children }) => {
 
       return updatedData;
     });
-  };
-
-  // Method to update the user's last sign-in time
-  const updateLastSignInTime = (user) => {
-    // Current date and time string
-    const now = new Date();
-    const currentDateTimeString = `${now.toDateString()} ${now
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now
-      .getSeconds()
-      .toString()
-      .padStart(2, "0")}`;
-
-    // Get the user's doc ref
-    const userDocRef = doc(usersRef, user.uid);
-
-    // Update the lastSignInTime field with the current date and time string
-    return updateDoc(userDocRef, {
-      lastSignInTime: currentDateTimeString,
-    })
-      .then(() => {
-        // Update the local userData with new sign-in time
-        updateUserData({ ...userData, lastSignInTime: currentDateTimeString });
-      })
-      .catch((error) => {
-        console.log("Failed to update user's last sign-in time: ", error);
-      });
   };
 
   // Method to create a new user document
@@ -171,6 +182,34 @@ export const AuthProvider = ({ children }) => {
       await setDoc(docRef, data);
       setUserDocRef(docRef);
     }
+  };
+
+  // Method to update the user's last sign-in time
+  const updateLastSignInTime = (user) => {
+    // Current date and time string
+    const now = new Date();
+    const currentDateTimeString = `${now.toDateString()} ${now
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
+
+    // Get the user's doc ref
+    const userDocRef = doc(usersRef, user.uid);
+
+    // Update the lastSignInTime field with the current date and time string
+    return updateDoc(userDocRef, {
+      lastSignInTime: currentDateTimeString,
+    })
+      .then(() => {
+        // Update the local userData with new sign-in time
+        updateUserData({ ...userData, lastSignInTime: currentDateTimeString });
+      })
+      .catch((error) => {
+        console.log("Failed to update user's last sign-in time: ", error);
+      });
   };
 
   // Login method
@@ -228,7 +267,6 @@ export const AuthProvider = ({ children }) => {
                 );
               }
             });
-          // }
         }
       })
       .catch((error) => {
@@ -358,32 +396,6 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  // Update method for update profile page
-  const update = async (user, { displayName, email, photoURL }) => {
-    const dataToUpdate = {};
-
-    if (displayName) {
-      dataToUpdate.displayName = displayName;
-    }
-
-    if (photoURL !== undefined) {
-      dataToUpdate.photoURL = photoURL;
-    }
-
-    // Update user profile only if there is data to update
-    if (Object.keys(dataToUpdate).length > 0) {
-      await updateProfile(user, dataToUpdate);
-    }
-
-    if (email) {
-      await updateEmail(user, email);
-      dataToUpdate.email = email;
-    }
-
-    const userDocRef = doc(usersRef, user.uid);
-    await setDoc(userDocRef, dataToUpdate, { merge: true });
-  };
-
   const globalVal = {
     userLoading,
     currentUser,
@@ -391,11 +403,11 @@ export const AuthProvider = ({ children }) => {
     userDocRef,
     updateUserData,
     getUserByUid,
+    getUserDocRefByUid,
     login,
     googleLogin,
     register,
     logout,
-    update,
   };
 
   return (

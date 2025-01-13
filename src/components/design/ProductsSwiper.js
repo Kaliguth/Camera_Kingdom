@@ -13,7 +13,6 @@ const ProductsSwiper = ({ products }) => {
         }}
         loop={false}
         spaceBetween={15}
-        // slidesPerView={7}
         slidesPerGroup={3}
         navigation={true}
         modules={[FreeMode, Navigation]}

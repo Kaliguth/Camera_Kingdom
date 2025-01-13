@@ -18,11 +18,11 @@ const EditProductsPage = () => {
       const input = searchInput.toLowerCase();
 
       return (
-        product.id.toLowerCase().includes(input) ||
+        product.id?.toLowerCase().includes(input) ||
         product.brand?.toLowerCase().includes(input) ||
         product.model?.toLowerCase().includes(input) ||
         product.type?.toLowerCase().includes(input) ||
-        product.price.toString().includes(input)
+        product.price?.toString().includes(input)
       );
     })
     .filter((product) => {

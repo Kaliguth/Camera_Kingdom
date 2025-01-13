@@ -8,6 +8,7 @@ import { CartProvider } from "./CartContext";
 import { PurchaseProvider } from "./PurchaseContext";
 import { UserManagementProvider } from "./UserManagementContext";
 import { OrderManagementProvider } from "./OrderManagementContext";
+import { MessagesManagementProvider } from "./MessagesManagementContext";
 
 const AllProviders = ({ children }) => {
   return (
@@ -16,11 +17,15 @@ const AllProviders = ({ children }) => {
         <ProductProvider>
           <WishlistProvider>
             <CartProvider>
-              <PurchaseProvider>
-                <UserManagementProvider>
-                  <OrderManagementProvider>{children}</OrderManagementProvider>
-                </UserManagementProvider>
-              </PurchaseProvider>
+              <OrderManagementProvider>
+                <PurchaseProvider>
+                  <UserManagementProvider>
+                    <MessagesManagementProvider>
+                      {children}
+                    </MessagesManagementProvider>
+                  </UserManagementProvider>
+                </PurchaseProvider>
+              </OrderManagementProvider>
             </CartProvider>
           </WishlistProvider>
         </ProductProvider>

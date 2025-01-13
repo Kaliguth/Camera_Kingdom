@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "./AuthContext";
 import { useValidationContext } from "./ValidationContext";
+import { useProductContext } from "./ProductContext";
 import { ordersRef } from "../firebase/firestore";
-import { deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
 const OrderManagementContext = createContext();
 
 export const OrderManagementProvider = ({ children }) => {
-  const { currentUser, updateUserData } = useAuthContext();
+  const { currentUser, updateUserData, getUserDocRefByUid } = useAuthContext();
   const { orderNumberTaken, validateEmail, validateName, validatePhoneNumber } =
     useValidationContext();
+  const { updateProductsStock } = useProductContext();
   const [allOrders, setAllOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
@@ -23,7 +25,7 @@ export const OrderManagementProvider = ({ children }) => {
           ordersCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
         );
       } catch (error) {
-        console.error("Error fetching orders: ", error);
+        console.log("Error fetching orders: ", error);
       }
       setOrdersLoading(false);
     };
@@ -31,11 +33,66 @@ export const OrderManagementProvider = ({ children }) => {
     fetchOrders();
   }, []);
 
-  // Method to get order by ID
+  // Method to get order by ID from orders collection
   const getOrder = (orderId) => {
-    const order = allOrders.find((order) => order.id === orderId) || null;
+    const orderDocRef = getOrderDocRef(orderId);
+    return getDoc(orderDocRef)
+      .then((orderDoc) => {
+        if (orderDoc.exists()) {
+          return { id: orderDoc.id, ...orderDoc.data() };
+        } else {
+          // If the document doesn't exist, return null
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.log(`Error fetching order ID ${orderId}: `, error);
+      });
+  };
 
-    return order;
+  // Method to get an order document reference by id (for document changes)
+  const getOrderDocRef = (id) => {
+    const orderRef = doc(ordersRef, id);
+
+    return orderRef;
+  };
+
+  // Method to add a new order to the allOrders array
+  const updateAllOrders = (newOrder) => {
+    setAllOrders((prevOrders) => [...prevOrders, newOrder]);
+  };
+
+  // Method to update a user's orders after order changes
+  const updateUserOrders = (userId) => {
+    // Get all order docs from orders collection
+    getDocs(ordersRef)
+      .then((orders) => {
+        // Initiate an orders array
+        const userOrders = [];
+
+        // Go over all orders and add ones that belong to the user
+        orders.forEach((doc) => {
+          const orderData = doc.data();
+          if (orderData.customer.userId === userId) {
+            userOrders.push({ ...orderData });
+          }
+        });
+
+        const userDocRef = getUserDocRefByUid(userId);
+        // Update the user's document with the found orders in firestore
+        updateDoc(userDocRef, { orders: userOrders })
+          .then(() => {
+            if (currentUser.uid === userId) {
+              updateUserData({ orders: userOrders });
+            }
+          })
+          .catch((error) => {
+            console.log("Error updating user's orders array: ", error);
+          });
+      })
+      .catch((error) => {
+        console.log("Error updating user orders: ", error);
+      });
   };
 
   // Method to update order's details
@@ -45,28 +102,29 @@ export const OrderManagementProvider = ({ children }) => {
     if (!order.orderNumber || order.orderNumber <= 0) {
       return Promise.reject(new Error("Invalid order number"));
     }
-    return orderNumberTaken(order.orderNumber, order.id).then(
-      (orderNumberTaken) => {
-        // Throws error if order number is taken
+    // Throws error if order number is taken
+    // Uses order.id to compare all order IDs with order ID that the user is requesting to change
+    return orderNumberTaken(order.orderNumber, order.id)
+      .then((orderNumberTaken) => {
         if (orderNumberTaken) {
           return Promise.reject(new Error("Order number is already taken"));
         }
         // Throws error if empty email or invalid email format
         if (!order.customer.email || order.customer.email.trim() === "") {
-          return Promise.reject(new Error("Please fill in the email"));
+          return Promise.reject(new Error("Email cannot be empty"));
         }
-        if (!validateEmail(order.customer.email)) {
+        if (!order.customer.email || !validateEmail(order.customer.email)) {
           return Promise.reject(new Error("Invalid email format"));
         }
         // Throws error if full name is empty
-        if (!validateName(order.customer.fullName)) {
+        if (!order.customer.fullName || !validateName(order.customer.fullName)) {
           return Promise.reject(new Error("Full name cannot be empty"));
         }
         // Throws error if phone number is empty or invalid
         if (!order.customer.phoneNumber || order.customer.phoneNumber <= 0) {
-          return Promise.reject(new Error("Please fill in the phone number"));
+          return Promise.reject(new Error("Phone number cannot be empty"));
         }
-        if (!validatePhoneNumber(order.customer.phoneNumber)) {
+        if (!order.customer.phoneNumber || !validatePhoneNumber(order.customer.phoneNumber)) {
           return Promise.reject(new Error("Invalid phone number"));
         }
         // Throws error if any address detail is empty
@@ -74,19 +132,46 @@ export const OrderManagementProvider = ({ children }) => {
           !order.shipping.streetName ||
           order.shipping.streetName.trim() === ""
         ) {
-          return Promise.reject(new Error("Please fill in the street name"));
+          return Promise.reject(new Error("Street name cannot be empty"));
         }
         if (
           !order.shipping.houseNumber ||
           order.shipping.houseNumber.trim() === ""
         ) {
-          return Promise.reject(new Error("Please fill in the house number"));
+          return Promise.reject(new Error("House number cannot be empty"));
         }
         if (!order.shipping.city || order.shipping.city.trim() === "") {
-          return Promise.reject(new Error("Please fill in the city"));
+          return Promise.reject(new Error("City cannot be empty"));
         }
-      }
-    );
+
+        const orderRef = getOrderDocRef(order.id);
+        return updateDoc(orderRef, order)
+          .then(() => {
+            // Update the allOrders array after updating the order
+            setAllOrders((prevOrders) =>
+              prevOrders.map((currentOrder) =>
+                currentOrder.id === order.id ? order : currentOrder
+              )
+            );
+
+            // Update the orders array in the user's doc
+            updateUserOrders(order.customer.userId);
+          })
+          .catch((error) => {
+            console.log("Error updating order: ", error);
+            throw new Error(
+              "Failed to update the order in firestore. Please try again."
+            );
+          });
+      })
+      .catch((error) => {
+        // if (error.message.includes("Order number")) {
+        //   throw new Error(error.message);
+        // } else {
+        console.log("Error updating order details: ", error);
+        throw new Error(error.message);
+        // }
+      });
   };
 
   // Method to delete an order with given ID
@@ -99,15 +184,18 @@ export const OrderManagementProvider = ({ children }) => {
     // Attemp deletion only if order is found
     if (orderToDelete) {
       // Get the order's doc reference
-      const orderDocRef = doc(ordersRef, orderIdToDelete);
+      const orderDocRef = getOrderDocRef(orderIdToDelete);
 
       // Delete the order's doc
       deleteDoc(orderDocRef)
         .then(() => {
-          // Update the orders array after deleting the order
+          // Update the allOrders array after deleting the order
           setAllOrders((prevOrders) =>
             prevOrders.filter((order) => order.id !== orderIdToDelete)
           );
+
+          // Update the orders array in the user's doc
+          updateUserOrders(orderToDelete.customer.userId);
         })
         .catch((error) => {
           console.log("Error deleting order: ", error);
@@ -129,12 +217,12 @@ export const OrderManagementProvider = ({ children }) => {
     // Attemp confirmation only if order is found and has pending status
     if (orderToConfirm && orderToConfirm.status === "Pending") {
       // Get the order's doc reference
-      const orderDocRef = doc(ordersRef, orderIdToConfirm);
+      const orderDocRef = getOrderDocRef(orderIdToConfirm);
 
-      // Change order status to confirmed the order's doc
+      // Change order status to confirmed in the order's doc
       updateDoc(orderDocRef, { status: "Confirmed" })
         .then(() => {
-          // Update the orders array after changing the status
+          // Update the allOrders array after changing the status
           setAllOrders((prevOrders) =>
             prevOrders.map((order) =>
               order.id === orderIdToConfirm
@@ -142,18 +230,146 @@ export const OrderManagementProvider = ({ children }) => {
                 : order
             )
           );
+
+          // Update the orders array in the user's doc
+          updateUserOrders(orderToConfirm.customer.userId);
         })
         .catch((error) => {
-          console.log("Error confirming order: ", error);
+          console.log(`Error confirming order ID ${orderIdToConfirm}: `, error);
           throw new Error("Failed to confirm the order");
         });
     } else {
       // If order was not found in the database
       console.log(
-        "Order to confirm not found or it has already been confirmed"
+        "Order to confirm was not found in the database or has already been confirmed"
       );
       throw new Error(
         "Failed to find the order in the database or the order has already been confirmed"
+      );
+    }
+  };
+
+  const refundOrder = (orderIdToRefund) => {
+    // Find the order to be confirmed
+    const orderToRefund = allOrders.find(
+      (order) => order.id === orderIdToRefund
+    );
+
+    // Attemp refund only if order is found and has completed status
+    if (orderToRefund && orderToRefund.status === "Completed") {
+      // Get the order's doc reference
+      const orderDocRef = getOrderDocRef(orderIdToRefund);
+
+      // Change order status to refunded in the order's doc
+      updateDoc(orderDocRef, { status: "Refunded" })
+        .then(() => {
+          // Update all order's products stock
+          const orderProducts = orderToRefund.purchase.products;
+          return updateProductsStock(orderProducts, "refund");
+        })
+        .then(() => {
+          // Update the allOrders array after changing the status
+          setAllOrders((prevOrders) =>
+            prevOrders.map((order) =>
+              order.id === orderIdToRefund
+                ? { ...order, status: "Refunded" }
+                : order
+            )
+          );
+
+          // Update the orders array in the user's doc
+          updateUserOrders(orderToRefund.customer.userId);
+        })
+        .catch((error) => {
+          console.log(
+            `Error refunding order ID ${orderIdToRefund}: `,
+            error,
+            "Attempting to rollback changes..."
+          );
+
+          // If any action fails - change order status back and throw an error (just in case)
+          return updateDoc(orderDocRef, { status: "Completed" })
+            .then(() => {
+              // Change order status back in allOrders array
+              setAllOrders((prevOrders) =>
+                prevOrders.map((order) =>
+                  order.id === orderIdToRefund
+                    ? { ...order, status: "Completed" }
+                    : order
+                )
+              );
+
+              // Update the orders array in the user's doc again
+              updateUserOrders(orderToRefund.customer.userId);
+
+              // Log successful rollback
+              console.log("Order status rollback successful");
+
+              // Finally throw an error
+              throw new Error("Failed to refund the order. Please try again.");
+            })
+            .catch((rollbackError) => {
+              console.log(
+                `Order status rollback failed for order ID ${orderIdToRefund}: `,
+                rollbackError
+              );
+
+              throw new Error(
+                "Refund and order status rollback failed. Please contact tech support."
+              );
+            });
+        });
+    } else {
+      // If order was not found in the database
+      console.log(
+        "Order to refund was not found in the database or has already been refunded"
+      );
+      throw new Error(
+        "Failed to find the order in the database or the order has already been refunded"
+      );
+    }
+  };
+
+  // Method to cancel orders (for customers)
+  const cancelOrder = (orderIdToCancel) => {
+    // Find the order to be canceled
+    const orderToCancel = allOrders.find(
+      (order) => order.id === orderIdToCancel
+    );
+
+    // Attemp cancelation only if order is found and has pending status
+    if (orderToCancel && orderToCancel.status === "Pending") {
+      // Get the order's doc reference
+      const orderDocRef = getOrderDocRef(orderIdToCancel);
+
+      // Change order status to canceled in the order's doc
+      updateDoc(orderDocRef, { status: "Canceled" })
+        .then(() => {
+          // Update the allOrders array after changing the status
+          setAllOrders((prevOrders) =>
+            prevOrders.map((order) =>
+              order.id === orderIdToCancel
+                ? { ...order, status: "Canceled" }
+                : order
+            )
+          );
+
+          // Update the orders array in the user's doc
+          updateUserOrders(orderToCancel.customer.userId);
+        })
+        .catch((error) => {
+          console.log(`Error canceling order ID ${orderIdToCancel}: `, error);
+          throw new Error(
+            "Failed to cancel your order. Please try again or contact support."
+          );
+        });
+    } else {
+      // If order was not found in the database
+      console.log(
+        "Order to cancel was not found in the database or has already been canceled"
+      );
+      throw new Error(
+        "Failed to cancel your order. Please try again or contact support."
       );
     }
   };
@@ -162,8 +378,12 @@ export const OrderManagementProvider = ({ children }) => {
     allOrders,
     ordersLoading,
     getOrder,
+    updateAllOrders,
+    updateOrderDetails,
     deleteOrder,
     confirmOrder,
+    refundOrder,
+    cancelOrder,
   };
 
   return (

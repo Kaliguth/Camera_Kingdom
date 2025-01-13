@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { useOrderManagementContext } from "../contexts/OrderManagementContext";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Form,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import OrdersTable from "../components/order/OrdersTable";
 
-const ConfirmOrdersPage = () => {
+const RefundOrdersPage = () => {
   const { allOrders } = useOrderManagementContext();
 
   // Search and sort states
@@ -20,7 +13,7 @@ const ConfirmOrdersPage = () => {
 
   // Method to filter out orders that are not pending, filter and sort depending on above states
   const filteredOrders = allOrders
-    .filter((order) => order.status === "Pending")
+    .filter((order) => order.status === "Completed")
     .filter((order) => {
       const input = searchInput.toLowerCase();
 
@@ -72,14 +65,14 @@ const ConfirmOrdersPage = () => {
       <Card className="custom-card">
         <Card.Header>
           <h3>
-            <u>Confirm Orders</u>
+            <u>Refund Orders</u>
           </h3>
         </Card.Header>
 
         <Card.Body>
           {filteredOrders.length === 0 ? (
             <>
-              <h5 className="m-3 mb-0">No pending orders found</h5>
+              <h5 className="m-3 mb-0">No orders eligible for refund found</h5>
             </>
           ) : (
             <>
@@ -134,7 +127,7 @@ const ConfirmOrdersPage = () => {
               </Row>
 
               <h6>(Scroll for more orders)</h6>
-              <OrdersTable orders={filteredOrders} action={"confirm"} />
+              <OrdersTable orders={filteredOrders} action={"refund"} />
             </>
           )}
         </Card.Body>
@@ -149,4 +142,4 @@ const ConfirmOrdersPage = () => {
   );
 };
 
-export default ConfirmOrdersPage;
+export default RefundOrdersPage;

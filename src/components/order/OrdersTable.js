@@ -5,9 +5,11 @@ import { Table, Button, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
 import DeleteOrderAlert from "../alerts/DeleteOrderAlert";
 import ConfirmOrderAlert from "../alerts/ConfirmOrderAlert";
+import RefundOrderAlert from "../alerts/RefundOrderAlert";
 
 const OrdersTable = ({ orders, action }) => {
-  const { deleteOrder, confirmOrder } = useOrderManagementContext();
+  const { deleteOrder, confirmOrder, refundOrder } =
+    useOrderManagementContext();
 
   // Delete order handle
   const handleDeleteOrder = (order) => {
@@ -57,6 +59,30 @@ const OrdersTable = ({ orders, action }) => {
       });
   };
 
+  // Refund order handle
+  const handleRefundOrder = (order) => {
+    RefundOrderAlert(order)
+      .then((isConfirmed) => {
+        if (isConfirmed) {
+          return refundOrder(order.id);
+        } else {
+          throw new Error("canceled");
+        }
+      })
+      .then(() => {
+        toast.success(
+          `Order number ${order.orderNumber} has been successfully refunded`
+        );
+      })
+      .catch((error) => {
+        if (error.message === "canceled") {
+          console.log("Order refund canceled by the user");
+        } else {
+          toast.error(error.message);
+        }
+      });
+  };
+
   return (
     <Container
       className="mt-4 p-0"
@@ -88,296 +114,52 @@ const OrdersTable = ({ orders, action }) => {
               <td>{order.purchase.discountedPrice}</td>
               <td>{order.status}</td>
               <td>
-                {
-                  <Container className="d-flex justify-content-center gap-2">
-                    {action === "view" ? (
-                      <>
-                        <Link to={`/admin-dashboard/orders/view/${order.id}`}>
-                          <Button variant="primary" size="sm">
-                            View
-                          </Button>
-                        </Link>
-                        <Link
-                          to={`/admin-dashboard/orders/edit/${order.id}`}
-                        >
-                          <Button variant="warning" size="sm">
-                            Edit
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => handleDeleteOrder(order)}
-                        >
-                          Delete
+                <Container className="d-flex justify-content-center gap-2">
+                  {action === "view" ? (
+                    <>
+                      <Link to={`/admin-dashboard/orders/view/${order.id}`}>
+                        <Button variant="primary" size="sm">
+                          View
                         </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          onClick={() => handleConfirmOrder(order)}
-                        >
-                          Confirm Order
+                      </Link>
+                      <Link to={`/admin-dashboard/orders/edit/${order.id}`}>
+                        <Button variant="warning" size="sm">
+                          Edit
                         </Button>
-                      </>
-                    )}
-                  </Container>
-                }
+                      </Link>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeleteOrder(order)}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  ) : action === "confirm" ? (
+                    <>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => handleConfirmOrder(order)}
+                      >
+                        Confirm Order
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="warning"
+                        size="sm"
+                        onClick={() => handleRefundOrder(order)}
+                      >
+                        Refund Order
+                      </Button>
+                    </>
+                  )}
+                </Container>
               </td>
             </tr>
           ))}
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>id</td>
-            <td>number</td>
-            <td>user</td>
-            <td>date</td>
-            <td>delivery</td>
-            <td>products</td>
-            <td>price</td>
-            <td>status</td>
-            <td>
-              {
-                <Container className="d-flex justify-content-center gap-2">
-                  <Button variant="primary" size="sm">
-                    View
-                  </Button>
-                  <Button variant="warning" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Delete
-                  </Button>
-                </Container>
-              }
-            </td>
-          </tr>
         </tbody>
       </Table>
     </Container>

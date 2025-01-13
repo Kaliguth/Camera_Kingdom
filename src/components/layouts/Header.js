@@ -47,8 +47,8 @@ const Header = () => {
           <Image src={logo} roundedCircle width={100} height={100} />
         </LinkContainer>
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" className="me-3" />
-      <Navbar.Collapse id="basic-navbar-nav" className="mt-2">
+      <Navbar.Toggle className="me-3" />
+      <Navbar.Collapse className="mt-2 mb-1">
         <Nav>
           <LinkContainer to="/">
             <Nav.Link className="me-3">
@@ -60,7 +60,7 @@ const Header = () => {
               <h5>Categories</h5>
             </Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/contact-us">
+          <LinkContainer to="/contact-us/none">
             <Nav.Link className="me-3">
               <h5>Contact Us</h5>
             </Nav.Link>
@@ -99,15 +99,15 @@ const Header = () => {
               </LinkContainer>
             </>
           )}
-          {!userLoading && currentUser ? (
+          {currentUser && !userLoading ? (
             <>
               <Dropdown align="end">
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                <Dropdown.Toggle variant="light">
                   <h6 className="d-inline">{userData.displayName} </h6>
                   {
-                    // userData.photoURL && (
                     <Image
                       src={userData.photoURL || userImage}
+                      alt={`${userData.displayName}`}
                       roundedCircle
                       width={30}
                       height={30}
@@ -115,15 +115,6 @@ const Header = () => {
                         e.target.src = userImage;
                       }}
                     />
-                    // )
-                    //  : (
-                    //   <Image
-                    //     src={userImage}
-                    //     roundedCircle
-                    //     width={35}
-                    //     height={35}
-                    //   />
-                    // )
                   }
                 </Dropdown.Toggle>
 
@@ -147,13 +138,6 @@ const Header = () => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              {/* {userData.role === "admin" && (
-                <LinkContainer to="/manager">
-                  <Nav.Link>
-                    <h5>Admin Dashboard</h5>
-                  </Nav.Link>
-                </LinkContainer>
-              )} */}
             </>
           ) : (
             <LinkContainer to="/login">
