@@ -6,6 +6,7 @@ import { Image } from "react-bootstrap";
 import { logoMap } from "../../assets/LogoMap";
 import noImage from "../../assets/no-image.png";
 
+// Brands swiper/carousel component to show brands sold in the store
 const BrandsSwiper = () => {
   const { smallSquareLogoStyle } = useValidationContext();
 
@@ -15,7 +16,6 @@ const BrandsSwiper = () => {
         loop={true}
         freeMode={true}
         spaceBetween={15}
-        // slidesPerView={7}
         slidesPerGroup={1}
         speed={3000}
         autoplay={{

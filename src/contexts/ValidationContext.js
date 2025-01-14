@@ -4,6 +4,8 @@ import { usersRef, couponsRef, ordersRef } from "../firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import { logoMap } from "../assets/LogoMap";
 
+
+// Validation context to store and provide validation methods
 const ValidationContext = createContext();
 
 export const ValidationProvider = ({ children }) => {

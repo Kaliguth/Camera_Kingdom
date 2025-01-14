@@ -1,7 +1,7 @@
-// Custom toastify confirm notification box
 import React from "react";
 import { toast } from "react-toastify";
 
+// Experimental custom toastify confirm notification box
 const ToastConfirm = ({ question }) => {
   let isConfirmed = false;
 

@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation } from "swiper/modules";
 import SmallProductCard from "../product/SmallProductCard";
 
+// Products swiper/carousel used for features products and related products
 const ProductsSwiper = ({ products }) => {
   return (
     <>

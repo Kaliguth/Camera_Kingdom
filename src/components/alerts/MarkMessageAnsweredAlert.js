@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for marking messages as answered
 const MarkMessageAnsweredAlert = (message) => {
   return Swal.fire({
     title: "Are you sure?",

@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import Loader from "../components/utility/Loader";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Login and Register page
 const LoginRegisterPage = () => {
   const { userLoading, currentUser, login, googleLogin, register, logout } =
     useAuthContext();
@@ -207,7 +208,9 @@ const LoginRegisterPage = () => {
                 <Form.Control
                   className="form-controls"
                   type={showPassword ? "text" : "password"}
-                  placeholder={isLogin ? "Enter your password" : "Enter a password"}
+                  placeholder={
+                    isLogin ? "Enter your password" : "Enter a password"
+                  }
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   isInvalid={!!passwordError}

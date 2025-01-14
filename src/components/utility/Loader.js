@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Spinner } from "react-bootstrap";
 
+// Loader component to show loading spinner when needed
 const Loader = () => {
   // Show state of error message
   const [showMessage, setShowMessage] = useState(false);

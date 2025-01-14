@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import MessagesTable from "../components/message/MessagesTable";
 
+// Viewed messages page to show messages that were already read in admin dashboard
 const ViewedMessagesPage = () => {
   const { allMessages } = useMessagesManagementContext();
 

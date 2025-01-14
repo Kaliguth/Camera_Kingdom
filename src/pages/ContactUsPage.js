@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Loader from "../components/utility/Loader";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Contact us page
 const ContactUsPage = () => {
   const { initialSubject } = useParams();
   const { userLoading, currentUser, userData } = useAuthContext();

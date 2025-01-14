@@ -1,3 +1,4 @@
+/* Main app and body stylings */
 .App {
   text-align: center;
   margin: 0;
@@ -13,6 +14,7 @@ body {
   background-blend-mode: multiply;
 }
 
+/* Hiding assets when printing */
 @media print {
   .hide-on-print {
     display: none !important;
@@ -24,16 +26,22 @@ body {
     align-items: flex-start;
     flex-wrap: nowrap;
   }
-
+  
   .col-print-flex {
     flex: 1;
     padding: 0 10px;
   }
 }
 
+/* Custom asset styles */
 .black-link-text {
   color: black;
   text-decoration: none;
+}
+
+.thick-hr {
+  height: 5px;
+  background-color: black;
 }
 
 .custom-container {
@@ -60,7 +68,6 @@ body {
   border-left: 2px solid #ccc;
 }
 
-/* Custom message details modal */
 .custom-message-modal {
   text-align: center;
 }
@@ -90,11 +97,6 @@ body {
 
 .custom-message-modal-footer .btn-secondary:hover {
   background-color: #0056b3;
-}
-
-.thick-hr {
-  height: 5px;
-  background-color: black;
 }
 
 /* Header */
@@ -239,7 +241,6 @@ body {
   padding: 15px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.3s;
-  /* text-align: center; */
 }
 
 .category-card:hover {
@@ -490,7 +491,7 @@ body {
   border: solid 1px black;
 }
 
-/* Profile */
+/* Profile page */
 .profile-picture {
   width: 100px;
   height: 100px;

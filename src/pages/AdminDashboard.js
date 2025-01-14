@@ -15,6 +15,7 @@ import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Admin dashboard page
 const AdminDashboard = () => {
   const { currentUser, userData, userLoading } = useAuthContext();
   const { unreadMessages } = useMessagesManagementContext();

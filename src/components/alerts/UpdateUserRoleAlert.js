@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for updating user role (admin/user)
 const UpdateUserRoleAlert = (user, currentUser) => {
   // Show a confirmation alert window customized based on logged in user
   // (Different texts and icon if logged in user and user to update are the same)

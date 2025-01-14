@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import WishlistProductCard from "../components/wishlist/WishlistProductCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Wishlist page
 const WishlistPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const { wishlist, wishlistLoading } = useWishlistContext();
@@ -37,13 +38,7 @@ const WishlistPage = () => {
             >
               Login
             </Button>
-            {/* <br />
-            <Button className="m-2" onClick={() => navigate(-1)}>
-              Go back
-            </Button>
-            <Button className="m-2" onClick={() => navigate("/")}>
-              Home
-            </Button> */}
+
             <HomeButtons size={"md"} />
           </Col>
         </Row>
@@ -67,13 +62,7 @@ const WishlistPage = () => {
           >
             Start shopping
           </Button>
-          {/* <br />
-          <Button className="m-2" onClick={() => navigate(-1)}>
-            Go back
-          </Button>
-          <Button className="m-2" onClick={() => navigate("/")}>
-            Home
-          </Button> */}
+
           <HomeButtons size={"md"} />
         </>
       ) : (

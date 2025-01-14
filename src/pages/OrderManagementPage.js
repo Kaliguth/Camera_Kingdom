@@ -1,19 +1,13 @@
 import React from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useOrderManagementContext } from "../contexts/OrderManagementContext";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Image,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Order management page in admin dashboard
 const OrderManagementPage = () => {
   const { currentUser, userData } = useAuthContext();
   const { ordersLoading } = useOrderManagementContext();

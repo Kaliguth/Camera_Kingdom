@@ -8,6 +8,7 @@ import LensesLogo from "../../assets/LensesLogo.png";
 import LightingLogo from "../../assets/LightingLogo.png";
 import TripodsLogo from "../../assets/TripodsLogo.png";
 
+// Category card to show category images and names
 const CategoryCard = ({ category, size }) => {
   const logo =
     category === "cameras"
@@ -22,6 +23,7 @@ const CategoryCard = ({ category, size }) => {
       ? LightingLogo
       : TripodsLogo;
 
+  // Converting category name to uppercase first letter to use in the card
   const categoryUpperCaseLetter =
     category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
 

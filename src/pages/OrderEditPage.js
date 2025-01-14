@@ -8,6 +8,7 @@ import Loader from "../components/utility/Loader";
 import EditOrderAlert from "../components/alerts/EditOrderAlert";
 import OrderProductCard from "../components/order/OrderProductCard";
 
+// Order edit page to edit an order in admin dashboard
 const OrderEditPage = () => {
   const { orderId } = useParams();
   const { getOrder, updateOrderDetails } = useOrderManagementContext();

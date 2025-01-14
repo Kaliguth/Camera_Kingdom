@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { useOrderManagementContext } from "../contexts/OrderManagementContext";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Form,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import OrdersTable from "../components/order/OrdersTable";
 
+// Confirm orders page to show orders to confirm in admin dashboard
 const ConfirmOrdersPage = () => {
   const { allOrders } = useOrderManagementContext();
 

@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for deleting orders
 const DeleteOrderAlert = (order) => {
   return Swal.fire({
     title: "Are you sure?",

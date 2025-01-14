@@ -1,5 +1,4 @@
 import React from "react";
-// import { useWishlistContext } from "../../contexts/WishlistContext";
 import { useValidationContext } from "../../contexts/ValidationContext";
 import { useCartContext } from "../../contexts/CartContext";
 import { useWishlistContext } from "../../contexts/WishlistContext";
@@ -18,6 +17,7 @@ import { toast } from "react-toastify";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
 import noImage from "../../assets/no-image.png";
 
+// Wishlist product card
 const WishlistProductCard = ({ product }) => {
   const { removeFromWishlist } = useWishlistContext();
   const { addToCart } = useCartContext();
@@ -28,6 +28,7 @@ const WishlistProductCard = ({ product }) => {
     <Tooltip {...props}>Remove from wishlist</Tooltip>
   );
 
+  // Add to cart handle
   const handleAddToCart = () => {
     addToCart(product)
       .then(() => {
@@ -38,6 +39,7 @@ const WishlistProductCard = ({ product }) => {
       });
   };
 
+  // Remove from wishlist handle
   const handleRemoveFromWishlist = () => {
     RemoveProductAlert(product.model)
       .then((isConfirmed) => {
@@ -131,10 +133,7 @@ const WishlistProductCard = ({ product }) => {
             delay={{ show: 250, hide: 200 }}
             overlay={removeProductTooltip}
           >
-            <Button
-              variant="link"
-              onClick={handleRemoveFromWishlist}
-            >
+            <Button variant="link" onClick={handleRemoveFromWishlist}>
               <FaTrash color="red" size={22} />
             </Button>
           </OverlayTrigger>

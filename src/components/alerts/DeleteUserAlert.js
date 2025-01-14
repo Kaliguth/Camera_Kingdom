@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for deleting users
 const DeleteUserAlert = (user, currentUser) => {
   // If the user to be deleted is the currently logged in user -
   // Show an alert window to notify the user this cannot be done

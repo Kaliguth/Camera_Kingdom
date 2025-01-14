@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for when a user attempts to like when not logged in
 const LoginToLikeAlert = () => {
   return Swal.fire({
     title: "Must be logged in!",

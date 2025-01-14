@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import DeleteMessageAlert from "../alerts/DeleteMessageAlert";
 import MarkMessageAnsweredAlert from "../alerts/MarkMessageAnsweredAlert";
 
+// Table component to show messages in admin dashboard
 const MessagesTable = ({ messages }) => {
   const { userData } = useAuthContext();
   const { markMessageSeen, markMessageAnswered, deleteMessage } =
@@ -92,6 +93,7 @@ const MessagesTable = ({ messages }) => {
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody className="text-center align-middle">
           {messages.map((message) => (
             <tr key={message.id}>

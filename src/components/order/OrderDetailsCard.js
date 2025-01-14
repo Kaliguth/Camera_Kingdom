@@ -3,6 +3,7 @@ import { useValidationContext } from "../../contexts/ValidationContext";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import OrderProductCard from "./OrderProductCard";
 
+// Order details card to show orders' details
 const OrderDetailsCard = ({ order }) => {
   const { formatPrice } = useValidationContext();
 
@@ -36,7 +37,7 @@ const OrderDetailsCard = ({ order }) => {
         </Row>
 
         <Row className="row-print-flex justify-content-center mb-3">
-          <Col md={3} className="col-print-flex mb-3">
+          <Col lg={3} md={4} sm={6} xs={6} className="col-print-flex mb-4">
             <h4>
               <u>Contact Information</u>
             </h4>
@@ -51,7 +52,7 @@ const OrderDetailsCard = ({ order }) => {
             </h6>
           </Col>
 
-          <Col md={3} className="col-print-flex mb-3">
+          <Col lg={3} md={4} sm={6} xs={6} className="col-print-flex mb-4">
             <h4>
               <u>Shipping Information</u>
             </h4>
@@ -73,7 +74,7 @@ const OrderDetailsCard = ({ order }) => {
             )}
           </Col>
 
-          <Col md={3} className="col-print-flex mb-3">
+          <Col lg={3} md={4} sm={6} xs={6} className="col-print-flex mb-4">
             <h4>
               <u>Payment Summary</u>
             </h4>

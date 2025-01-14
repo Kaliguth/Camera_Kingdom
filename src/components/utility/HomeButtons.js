@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
+// Component of home and back buttons displayed in various places around the app
 const HomeButtons = ({ size }) => {
   const navigate = useNavigate();
 

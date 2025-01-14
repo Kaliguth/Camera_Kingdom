@@ -3,6 +3,7 @@ import { Container, Row, Col, Image } from "react-bootstrap";
 import error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Error 404 page
 const Error404Page = () => {
   return (
     <Container className="custom-container mt-4">
@@ -26,19 +27,6 @@ const Error404Page = () => {
       </Row>
 
       <HomeButtons size={"lg"} />
-      {/* <Row className="mt-4">
-        <Col>
-          <Button className="custom-button btn-lg" onClick={() => navigate(-1)}>
-            Go back
-          </Button>
-          <Button
-            className="custom-button btn-lg"
-            onClick={() => navigate("/")}
-          >
-            Home
-          </Button>
-        </Col>
-      </Row> */}
     </Container>
   );
 };

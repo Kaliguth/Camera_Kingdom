@@ -6,6 +6,7 @@ import Loader from "../components/utility/Loader";
 import ProductCard from "../components/product/ProductCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Page to show products based on category in params
 const CategoryProductsPage = () => {
   const { category } = useParams();
   const { productsLoading, allProducts } = useProductContext();

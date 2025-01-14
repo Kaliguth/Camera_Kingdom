@@ -7,6 +7,7 @@ import { useOrderManagementContext } from "./OrderManagementContext";
 import { ordersRef } from "../firebase/firestore";
 import { getDocs, addDoc, updateDoc, setDoc } from "firebase/firestore";
 
+// Purchase context to store and provide methods
 const PurchaseContext = createContext();
 
 export const PurchaseProvider = ({ children }) => {

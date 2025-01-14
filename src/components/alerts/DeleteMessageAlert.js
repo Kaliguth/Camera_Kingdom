@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for deleting messages
 const DeleteMessageAlert = (message) => {
   // If the message is unread show an alert window to notify the user this cannot be done
   if (message.seenBy.length === 0 || !message.answered) {

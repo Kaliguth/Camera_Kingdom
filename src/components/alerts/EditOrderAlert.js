@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for editting orders
 const EditOrderAlert = (orderNumber) => {
   return Swal.fire({
     title: "Are you sure?",

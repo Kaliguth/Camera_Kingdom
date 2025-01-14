@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for removing reviews
 const RemoveReviewAlert = (review, userData) => {
   return Swal.fire({
     title: "Are you sure?",

@@ -4,6 +4,7 @@ import { ListGroup, Row, Col, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import noImage from "../../assets/no-image.png";
 
+// Product card to show products of an order
 const OrderProductCard = ({ product }) => {
   const { formatPrice } = useValidationContext();
 
@@ -12,8 +13,7 @@ const OrderProductCard = ({ product }) => {
       <Row className="w-100">
         {/* Product Image */}
         <Col
-          xs={3}
-          md={2}
+          lg={3} md={3} sm={3} xs={3}
           className="d-flex flex-column justify-content-center"
         >
           <Link to={`/product/${product.id}`}>
@@ -31,8 +31,7 @@ const OrderProductCard = ({ product }) => {
 
         {/* Product Name */}
         <Col
-          xs={4}
-          md={3}
+          lg={2} md={2} sm={4} xs={9}
           className="d-flex flex-column justify-content-center"
         >
           <small className="text-muted mb-2">Product Name</small>
@@ -45,8 +44,7 @@ const OrderProductCard = ({ product }) => {
 
         {/* Quantity number */}
         <Col
-          xs={3}
-          md={2}
+          lg={2} md={2} sm={4} xs={6}
           className="d-flex flex-column justify-content-center ms-2"
         >
           <small className="text-muted mb-2">Quantity</small>
@@ -55,8 +53,7 @@ const OrderProductCard = ({ product }) => {
 
         {/* Unit Price */}
         <Col
-          xs={3}
-          md={2}
+          lg={2} md={2} sm={4} xs={5}
           className="d-flex flex-column justify-content-center ms-2"
         >
           <small className="text-muted mb-2">Unit Price</small>
@@ -65,8 +62,7 @@ const OrderProductCard = ({ product }) => {
 
         {/* Total Price */}
         <Col
-          xs={3}
-          md={2}
+          lg={2} md={2} sm={4} xs={4}
           className="d-flex flex-column justify-content-center ms-1"
         >
           <small className="text-muted mb-2">Total</small>

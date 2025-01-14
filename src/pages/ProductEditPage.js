@@ -7,6 +7,7 @@ import Loader from "../components/utility/Loader";
 import noImage from "../assets/no-image.png";
 import EditProductAlert from "../components/alerts/EditProductAlert";
 
+// Product edit page to edit a product in admin dashboard
 const ProductEditPage = () => {
   const { productId } = useParams();
   const { getProduct, updateProductProperties } = useProductContext();
@@ -246,7 +247,7 @@ const ProductEditPage = () => {
 
         // Update the product state only after update is complete
         setProduct(updatedProduct);
-        
+
         // Scroll to top after a short delay
         setTimeout(() => {
           window.scrollTo(0, 0);

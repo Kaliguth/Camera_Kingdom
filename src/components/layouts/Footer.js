@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 
+// Footer component displayed in every page
+// Contains scroll to top button
 const Footer = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import noImage from "../assets/no-image.png";
 
+// New product page to create a new product in admin dashboard
 const NewProductPage = () => {
   const { addNewProduct } = useProductContext();
   const [brand, setBrand] = useState("");

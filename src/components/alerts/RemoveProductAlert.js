@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for removing products
 const RemoveProductAlert = (productName) => {
   return Swal.fire({
     title: "Are you sure?",

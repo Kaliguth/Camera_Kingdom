@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import noImage from "../../assets/no-image.png";
 
+// Products images swiper/carousel to show product's images in details page
 const ProductImagesSwiper = ({ product, size }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
@@ -40,7 +41,6 @@ const ProductImagesSwiper = ({ product, size }) => {
       {size === "large" && (
         <Swiper
           onSwiper={setThumbsSwiper}
-          // loop={true}
           spaceBetween={0}
           slidesPerView={5}
           freeMode={true}

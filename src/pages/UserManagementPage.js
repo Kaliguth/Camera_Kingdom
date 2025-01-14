@@ -16,6 +16,7 @@ import Error404 from "../assets/Error404.png";
 import UsersTable from "../components/user/UsersTable";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// User management page in admin dashboard
 const UserManagementPage = () => {
   const { currentUser, userData } = useAuthContext();
   const { allUsers, usersLoading } = useUserManagementContext();

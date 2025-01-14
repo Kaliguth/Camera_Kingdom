@@ -17,6 +17,7 @@ import { FaTrash } from "react-icons/fa";
 import RemoveReviewAlert from "../alerts/RemoveReviewAlert";
 import userImage from "../../assets/user-nobgnew.png";
 
+// Card where product reviews are displayed
 const ProductReviewsCard = ({ product }) => {
   const { addReview, removeReview } = useProductContext();
   const { currentUser, userData, getUserByUid } = useAuthContext();
@@ -26,6 +27,7 @@ const ProductReviewsCard = ({ product }) => {
   // Error texts
   const [reviewError, setReviewError] = useState("");
 
+  // Method to reset the error
   const resetError = () => {
     setReviewError("");
   };
@@ -79,6 +81,7 @@ const ProductReviewsCard = ({ product }) => {
     }
   }, [product.reviews, getUserByUid]);
 
+  // Remove review handle
   const handleRemoveReview = (review, reviewIndex) => {
     RemoveReviewAlert(review, userData)
       .then((isConfirmed) => {
@@ -100,6 +103,7 @@ const ProductReviewsCard = ({ product }) => {
       });
   };
 
+  // Review submittion handle
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     resetError();

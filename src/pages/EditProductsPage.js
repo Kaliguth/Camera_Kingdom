@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useProductContext } from "../contexts/ProductContext";
 import ProductsTable from "../components/product/ProductsTable";
 
+// Edit products page to show products to edit in admin dashboard
 const EditProductsPage = () => {
   const { allProducts } = useProductContext();
 

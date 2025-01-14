@@ -10,6 +10,7 @@ import {
   updatePassword,
 } from "firebase/auth";
 
+// User management context to store and provide methods
 const UserManagementContext = createContext();
 
 export const UserManagementProvider = ({ children }) => {
@@ -19,6 +20,7 @@ export const UserManagementProvider = ({ children }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
 
+  // Use effect t fetch all users from firestore
   useEffect(() => {
     // Fetch all users from Firestore
     const fetchUsers = async () => {
@@ -158,6 +160,7 @@ export const UserManagementProvider = ({ children }) => {
       });
   };
 
+  // Method to change a user's password
   const changeUserPassword = (userToUpdate, currentPassword, newPassword) => {
     // Validations:
     // Throws error if currentPassword is empty
@@ -182,30 +185,27 @@ export const UserManagementProvider = ({ children }) => {
     const credential = EmailAuthProvider.credential(email, currentPassword);
 
     // Validate if email and currentPassword are correct
-    return (
-      reauthenticateWithCredential(auth.currentUser, credential)
-        .then(() => {
-          // If validation is successful, update the password
-          return updatePassword(auth.currentUser, newPassword);
-        })
-        // .then(() => {
-        //   console.log("Password updated successfully");
-        // })
-        .catch((error) => {
-          console.log("Error changing password: ", error);
+    return reauthenticateWithCredential(auth.currentUser, credential)
+      .then(() => {
+        // If validation is successful, update the password
+        return updatePassword(auth.currentUser, newPassword);
+      })
+      .catch((error) => {
+        console.log("Error changing password: ", error);
 
-          // Handle different errors
-          if (error.code === "auth/wrong-password") {
-            throw new Error("The current password is incorrect");
-          } else if (error.code === "auth/weak-password") {
-            throw new Error("The new password is too weak. Please choose a stronger password");
-          } else {
-            throw new Error(
-              "Failed to change your password. Please try again or contact support"
-            );
-          }
-        })
-    );
+        // Handle different errors
+        if (error.code === "auth/wrong-password") {
+          throw new Error("The current password is incorrect");
+        } else if (error.code === "auth/weak-password") {
+          throw new Error(
+            "The new password is too weak. Please choose a stronger password"
+          );
+        } else {
+          throw new Error(
+            "Failed to change your password. Please try again or contact support"
+          );
+        }
+      });
   };
 
   const globalVal = {

@@ -7,6 +7,7 @@ import CategoryCard from "../components/product/CategoryCard";
 import ProductsSwiper from "../components/design/ProductsSwiper";
 import BrandsSwiper from "../components/design/BrandsSwiper";
 
+// Home page
 const HomePage = () => {
   const { getFeaturedProducts } = useProductContext();
   const featuredProducts = getFeaturedProducts();

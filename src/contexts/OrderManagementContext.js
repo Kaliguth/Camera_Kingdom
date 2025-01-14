@@ -5,6 +5,7 @@ import { useProductContext } from "./ProductContext";
 import { ordersRef } from "../firebase/firestore";
 import { deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
+// Order context to store and provide methods
 const OrderManagementContext = createContext();
 
 export const OrderManagementProvider = ({ children }) => {
@@ -15,6 +16,7 @@ export const OrderManagementProvider = ({ children }) => {
   const [allOrders, setAllOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
+  // Use effect to fetch all orders from firestore
   useEffect(() => {
     // Fetch all orders from Firestore
     const fetchOrders = async () => {
@@ -117,14 +119,20 @@ export const OrderManagementProvider = ({ children }) => {
           return Promise.reject(new Error("Invalid email format"));
         }
         // Throws error if full name is empty
-        if (!order.customer.fullName || !validateName(order.customer.fullName)) {
+        if (
+          !order.customer.fullName ||
+          !validateName(order.customer.fullName)
+        ) {
           return Promise.reject(new Error("Full name cannot be empty"));
         }
         // Throws error if phone number is empty or invalid
         if (!order.customer.phoneNumber || order.customer.phoneNumber <= 0) {
           return Promise.reject(new Error("Phone number cannot be empty"));
         }
-        if (!order.customer.phoneNumber || !validatePhoneNumber(order.customer.phoneNumber)) {
+        if (
+          !order.customer.phoneNumber ||
+          !validatePhoneNumber(order.customer.phoneNumber)
+        ) {
           return Promise.reject(new Error("Invalid phone number"));
         }
         // Throws error if any address detail is empty
@@ -165,9 +173,6 @@ export const OrderManagementProvider = ({ children }) => {
           });
       })
       .catch((error) => {
-        // if (error.message.includes("Order number")) {
-        //   throw new Error(error.message);
-        // } else {
         console.log("Error updating order details: ", error);
         throw new Error(error.message);
         // }
@@ -208,6 +213,7 @@ export const OrderManagementProvider = ({ children }) => {
     }
   };
 
+  // Method to confirm an order
   const confirmOrder = (orderIdToConfirm) => {
     // Find the order to be confirmed
     const orderToConfirm = allOrders.find(
@@ -249,6 +255,7 @@ export const OrderManagementProvider = ({ children }) => {
     }
   };
 
+  // Method to refund an order
   const refundOrder = (orderIdToRefund) => {
     // Find the order to be confirmed
     const orderToRefund = allOrders.find(

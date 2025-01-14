@@ -3,6 +3,7 @@ import { Container, Row } from "react-bootstrap";
 import CategoryCard from "../components/product/CategoryCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Categories page
 const CategoriesPage = () => {
   return (
     <Container className="custom-container mt-4">

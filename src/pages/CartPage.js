@@ -8,6 +8,7 @@ import Loader from "../components/utility/Loader";
 import CartProductCard from "../components/cart/CartProductCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Cart page
 const CartPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const {

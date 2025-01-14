@@ -15,6 +15,7 @@ import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Messages page in admin dashboard
 const MessagesPage = () => {
   const { currentUser, userData } = useAuthContext();
   const { messagesLoading, unreadMessages } = useMessagesManagementContext();

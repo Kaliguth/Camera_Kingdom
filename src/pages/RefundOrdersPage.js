@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import OrdersTable from "../components/order/OrdersTable";
 
+// Refund orders page to show orders to refund in admin dashboard
 const RefundOrdersPage = () => {
   const { allOrders } = useOrderManagementContext();
 

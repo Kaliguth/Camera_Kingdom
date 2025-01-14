@@ -4,6 +4,7 @@ import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberIn
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 
+// Quantity input component for cart
 const QuantityInput = React.forwardRef(function CustomNumberInput(props, ref) {
   return (
     <NumberInput

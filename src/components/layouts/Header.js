@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 import logo from "../../assets/logo_small.png";
 import userImage from "../../assets/user-nobgnew.png";
 
+// Header component displayed in every page
+// Contains navbar with navigation buttons and cart, wishlist and dropdown menu for logged in users
+// Login/Register button if not logged in
 const Header = () => {
   const { userLoading, currentUser, userData, logout } = useAuthContext();
   const [cartCount, setCartCount] = useState(userData?.cart?.length || 0);

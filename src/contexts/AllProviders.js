@@ -1,4 +1,3 @@
-// Component to group all context providers for App.js
 import React from "react";
 import { ValidationProvider } from "./ValidationContext";
 import { AuthProvider } from "./AuthContext";
@@ -10,6 +9,7 @@ import { UserManagementProvider } from "./UserManagementContext";
 import { OrderManagementProvider } from "./OrderManagementContext";
 import { MessagesManagementProvider } from "./MessagesManagementContext";
 
+// Component to group all context providers for App.js to save space and code lines
 const AllProviders = ({ children }) => {
   return (
     <ValidationProvider>

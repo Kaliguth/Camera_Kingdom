@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
+// Scroll to top button
 const ScrollToTop = () => {
   // Path const to check for route changes
   const { pathname } = useLocation();

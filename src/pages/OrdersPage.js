@@ -11,6 +11,7 @@ import CancelOrderAlert from "../components/alerts/CancelOrderAlert";
 import OrderProductCard from "../components/order/OrderProductCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Order page to display all places orders
 const OrdersPage = () => {
   const { currentUser, userData } = useAuthContext();
   const { ordersLoading, cancelOrder } = useOrderManagementContext();

@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo_small.png";
 
+// About us page
 const AboutUsPage = () => {
   const navigate = useNavigate();
 

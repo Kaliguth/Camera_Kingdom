@@ -7,6 +7,7 @@ import DeleteOrderAlert from "../alerts/DeleteOrderAlert";
 import ConfirmOrderAlert from "../alerts/ConfirmOrderAlert";
 import RefundOrderAlert from "../alerts/RefundOrderAlert";
 
+// Table to show orders in admin dashboard
 const OrdersTable = ({ orders, action }) => {
   const { deleteOrder, confirmOrder, refundOrder } =
     useOrderManagementContext();
@@ -102,6 +103,7 @@ const OrdersTable = ({ orders, action }) => {
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody className="text-center align-middle">
           {orders.map((order) => (
             <tr key={order.id}>
@@ -114,6 +116,7 @@ const OrdersTable = ({ orders, action }) => {
               <td>{order.purchase.discountedPrice}</td>
               <td>{order.status}</td>
               <td>
+                {/* Different buttons based on action */}
                 <Container className="d-flex justify-content-center gap-2">
                   {action === "view" ? (
                     <>

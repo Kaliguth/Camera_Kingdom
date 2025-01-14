@@ -19,6 +19,7 @@ import noImage from "../../assets/no-image.png";
 import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 import ProductImagesSwiper from "../design/ProductImagesSwiper";
 
+// Product card that shows images and brief details of a product and different buttons
 const ProductCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();
   const { addToCart } = useCartContext();
@@ -28,16 +29,19 @@ const ProductCard = ({ product }) => {
   const logo = logoMap[product.brand] || noImage;
   const navigate = useNavigate();
 
+  // Check if the product is in the logged in user's wishlist to detemine wishlist button style
   const isInWishlist = userData?.wishlist?.find(
     (currentProduct) => currentProduct.id === product.id
   );
 
+  // Tooltip to show text when hovring wishlist button
   const wishlistTooltip = (props) => (
     <Tooltip {...props}>
       {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
     </Tooltip>
   );
 
+  // Add to wishlist handle
   const handleAddToWishlist = () => {
     addToWishlist(product)
       .then(() => {
@@ -48,6 +52,7 @@ const ProductCard = ({ product }) => {
       });
   };
 
+  // Remove from wishlist handle
   const handleRemoveFromWishlist = () => {
     removeFromWishlist(product)
       .then(() => {
@@ -58,6 +63,7 @@ const ProductCard = ({ product }) => {
       });
   };
 
+  // Add to cart handle
   const handleAddToCart = () => {
     if (!currentUser) {
       LoginToPurchaseAlert()
@@ -83,6 +89,7 @@ const ProductCard = ({ product }) => {
       });
   };
 
+  // Buy now handle
   const handleBuyNow = () => {
     if (!currentUser) {
       LoginToPurchaseAlert()
@@ -115,6 +122,7 @@ const ProductCard = ({ product }) => {
     <Card className="product-card position-relative">
       {currentUser && (
         <>
+          {/* Wishlist tooltip and button logic */}
           {isInWishlist ? (
             <OverlayTrigger
               placement="right"
@@ -160,14 +168,10 @@ const ProductCard = ({ product }) => {
           )}
         </>
       )}
-      <Link to={`/product/${product.id}`} className="black-link-text mt-3">
-        {/* <Card.Img
-          variant="top"
-          src={product.images[0]}
-          className="product-image"
-        /> */}
-        <ProductImagesSwiper product={product} size={"small"} />
 
+      {/* Image with link to the product's details page */}
+      <Link to={`/product/${product.id}`} className="black-link-text mt-3">
+        <ProductImagesSwiper product={product} size={"small"} />
         <Card.Img
           className="product-brand-logo"
           src={logo}
@@ -190,6 +194,7 @@ const ProductCard = ({ product }) => {
         </div>
       </Card.Body>
 
+      {/* Stock info container */}
       <div className="mt-2">
         {!product.stock || product.stock <= 0 ? (
           <div className="out-of-stock-container">
@@ -200,6 +205,8 @@ const ProductCard = ({ product }) => {
             <span>ONLY {product.stock} LEFT IN STOCK!</span>
           </div>
         ) : null}
+
+        {/* Buttons */}
         <Row>
           <Col className="p-1">
             <Button
@@ -212,6 +219,7 @@ const ProductCard = ({ product }) => {
               Add to cart
             </Button>
           </Col>
+
           <Col className="p-1">
             <Link to={`/product/${product.id}`}>
               <Button variant="primary" size="md" className="product-buttons">
@@ -220,6 +228,7 @@ const ProductCard = ({ product }) => {
             </Link>
           </Col>
         </Row>
+
         <Row>
           <Col className="p-1">
             <Button

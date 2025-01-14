@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for when a user attempts to purchase when not logged in
 const LoginToPurchaseAlert = () => {
   return Swal.fire({
     title: "Must be logged in!",

@@ -8,6 +8,7 @@ import logo from "../assets/logo_small.png";
 import HomeButtons from "../components/utility/HomeButtons";
 import OrderDetailsCard from "../components/order/OrderDetailsCard";
 
+// Page to show summary of an order after making a purchase
 const OrderSummaryPage = () => {
   const { orderId } = useParams();
   const { currentUser, userLoading } = useAuthContext();

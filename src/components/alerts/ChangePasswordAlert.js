@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 
+// Alert component for changing password
 const ChangePasswordAlert = () => {
   return Swal.fire({
     title: "Are you sure?",

@@ -9,6 +9,7 @@ import ProductInfoCard from "../components/product/ProductInfoCard";
 import ProductsSwiper from "../components/design/ProductsSwiper";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Product details page
 const ProductDetails = () => {
   const { productId } = useParams();
   const { getProduct, getRelatedProducts } = useProductContext();

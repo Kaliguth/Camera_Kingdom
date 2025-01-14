@@ -19,6 +19,7 @@ import { doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { sendEmailVerification } from "firebase/auth";
 import { useValidationContext } from "./ValidationContext";
 
+// Authentication context to store and provide methods
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     [currentUser]
   );
 
+  // Use effect to update the user when one is found/logged in
   useEffect(() => {
     // Use a listener to change the current user and user document
     const removeAuthListener = onAuthStateChanged(auth, (user) => {

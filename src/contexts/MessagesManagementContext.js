@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
+// Messages management context to store and provide methods
 const MessagesManagementContext = createContext();
 
 export const MessagesManagementProvider = ({ children }) => {
@@ -18,6 +19,7 @@ export const MessagesManagementProvider = ({ children }) => {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
+  // Use effect to fetch all messages from firestore
   useEffect(() => {
     // Fetch all messages from Firestore
     const fetchMessages = async () => {
@@ -58,6 +60,7 @@ export const MessagesManagementProvider = ({ children }) => {
     return messageRef;
   };
 
+  // Method to add/send a message
   const addMessage = (newMessage) => {
     // Validations:
     // Throws error if name is empty
@@ -101,6 +104,7 @@ export const MessagesManagementProvider = ({ children }) => {
       });
   };
 
+  // Method to mark a message as answered
   const markMessageAnswered = (messageIdToMark) => {
     // Find the message to be marked
     const messageToMark = allMessages.find(
@@ -142,6 +146,7 @@ export const MessagesManagementProvider = ({ children }) => {
     }
   };
 
+  // Method to mark message as seen
   const markMessageSeen = (messageIdToMark, userName) => {
     // Find the message to be marked
     const messageToMark = allMessages.find(
@@ -186,6 +191,7 @@ export const MessagesManagementProvider = ({ children }) => {
     }
   };
 
+  // Method to delete a message
   const deleteMessage = (messageIdToDelete) => {
     // Find the message to be deleted
     const messageToDelete = allMessages.find(

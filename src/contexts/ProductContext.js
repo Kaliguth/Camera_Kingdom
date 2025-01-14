@@ -2,12 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { productsRef } from "../firebase/firestore";
 import { addDoc, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 
+// Product context to store and provide methods
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [productsLoading, setProductsLoading] = useState(true);
   const [allProducts, setAllProducts] = useState([]);
 
+  // Use effect to fetch all products from firestore
   useEffect(() => {
     const getAllProducts = async () => {
       setProductsLoading(true);
@@ -50,6 +52,7 @@ export const ProductProvider = ({ children }) => {
     return product;
   };
 
+  // Method to add a review to a product
   const addReview = (productId, newReview) => {
     // Validate the review input and return an error if empty
     if (!newReview || newReview.message.trim() === "") {
@@ -89,6 +92,7 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  // Method to remove a review from a product
   const removeReview = (productId, reviewIndex) => {
     const productRef = getProductDocRef(productId);
 
@@ -127,6 +131,7 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  // Method to get featured products
   const getFeaturedProducts = () => {
     const featuredProducts = [];
     const usedIndexes = [];
@@ -160,6 +165,7 @@ export const ProductProvider = ({ children }) => {
     return featuredProducts;
   };
 
+  // Method to get related products of a product
   const getRelatedProducts = (product) => {
     const relatedProducts = [];
     let usedIndexes = [];
@@ -258,7 +264,7 @@ export const ProductProvider = ({ children }) => {
         console.log(
           `Product with ID ${item.id} was not found. Skipping it's stock update.`
         );
-        
+
         return null;
       }
     });
@@ -292,6 +298,7 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  // Method to delete a product
   const deleteProduct = (product) => {
     const productRef = getProductDocRef(product.id);
 
@@ -309,6 +316,7 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  // Method to add a new product
   const addNewProduct = (product) => {
     // Validations:
     // Throws error if brand is empty
@@ -372,6 +380,7 @@ export const ProductProvider = ({ children }) => {
       });
   };
 
+  // Method to update a product's properties/details
   const updateProductProperties = (product) => {
     // Validations:
     // Throws error if brand is empty

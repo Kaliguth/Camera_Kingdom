@@ -48,7 +48,7 @@ import "swiper/css/thumbs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-// Layout Component to contain all layour components
+// Layout Component to contain all layout, utility and alert components
 const Layout = () => (
   <>
     <Header />
@@ -71,6 +71,7 @@ const Layout = () => (
   </>
 );
 
+// Main app function with all providers and routes
 function App() {
   return (
     <div className="App">

@@ -24,6 +24,7 @@ import LoginToPurchaseAlert from "../alerts/LoginToPurchaseAlert";
 import ProductImagesSwiper from "../design/ProductImagesSwiper";
 import noImage from "../../assets/no-image.png";
 
+// Product details card that shows basic information about the product
 const ProductDetailsCard = ({ product }) => {
   const { currentUser, userData } = useAuthContext();
   const { addToCart } = useCartContext();
@@ -34,16 +35,19 @@ const ProductDetailsCard = ({ product }) => {
   const logo = logoMap[product.brand] || noImage;
   const navigate = useNavigate();
 
+  // Check if the product is in the logged in user's wishlist to detemine wishlist button style
   const isInWishlist = userData?.wishlist?.find(
     (currentProduct) => currentProduct.id === product.id
   );
 
+  // Tooltip to show text when hovring wishlist button
   const wishlistTooltip = (props) => (
     <Tooltip {...props}>
       {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
     </Tooltip>
   );
 
+  // Add to wishlist handle
   const handleAddToWishlist = () => {
     addToWishlist(product)
       .then(() => {
@@ -54,6 +58,7 @@ const ProductDetailsCard = ({ product }) => {
       });
   };
 
+  // Remove from wishlist handle
   const handleRemoveFromWishlist = () => {
     removeFromWishlist(product)
       .then(() => {
@@ -64,6 +69,7 @@ const ProductDetailsCard = ({ product }) => {
       });
   };
 
+  // Like/Dislike handle
   const handleLike = () => {
     if (!currentUser) {
       LoginToLikeAlert()
@@ -85,6 +91,7 @@ const ProductDetailsCard = ({ product }) => {
     });
   };
 
+  // Add to cart handle
   const handleAddToCart = () => {
     if (!currentUser) {
       LoginToPurchaseAlert()
@@ -110,6 +117,7 @@ const ProductDetailsCard = ({ product }) => {
       });
   };
 
+  // Buy now handle
   const handleBuyNow = () => {
     if (!currentUser) {
       LoginToPurchaseAlert()
@@ -142,6 +150,7 @@ const ProductDetailsCard = ({ product }) => {
     <Card className="product-details-card">
       {currentUser && (
         <>
+          {/* Wishlist tooltip and button logic */}
           {isInWishlist ? (
             <OverlayTrigger
               placement="right"
@@ -187,6 +196,8 @@ const ProductDetailsCard = ({ product }) => {
           )}
         </>
       )}
+
+      {/* Area where products images are shows and brand logo */}
       <Row>
         <Col md={6} className="product-images-container">
           <Card.Img
@@ -199,39 +210,46 @@ const ProductDetailsCard = ({ product }) => {
             }}
           />
           <ProductImagesSwiper product={product} size={"large"} />
-          {/* <Image
-            className="mt-5"
-            src={product.images[0]}
-            fluid
-            style={{ maxHeight: "300px", width: "auto" }}
-          /> */}
         </Col>
+
+        {/* Area where details are displayed as well as buttons */}
         <Col md={6} className="mt-4 pt-2 pe-4">
           <h2>
             <b>
               {product.brand} {product.model}
             </b>
           </h2>
-          <Button variant="outline-primary" size="sm" onClick={handleLike}>
-            {!product.likes?.includes(currentUser.uid) ? (
+          {currentUser ? (
+            <Button variant="outline-primary" size="sm" onClick={handleLike}>
+              {!product.likes?.includes(currentUser.uid) ? (
+                <AiOutlineLike
+                  size={20}
+                  className="me-2"
+                  style={{ marginTop: "-5px" }}
+                />
+              ) : (
+                <AiFillLike
+                  size={20}
+                  className="me-2"
+                  style={{ marginTop: "-5px" }}
+                />
+              )}
+              {!product.likes?.includes(currentUser.uid) ? (
+                <>Like</>
+              ) : (
+                <>Unlike</>
+              )}
+            </Button>
+          ) : (
+            <Button variant="outline-primary" size="sm" onClick={handleLike}>
               <AiOutlineLike
                 size={20}
                 className="me-2"
                 style={{ marginTop: "-5px" }}
               />
-            ) : (
-              <AiFillLike
-                size={20}
-                className="me-2"
-                style={{ marginTop: "-5px" }}
-              />
-            )}
-            {!product.likes?.includes(currentUser.uid) ? (
-              <>Like</>
-            ) : (
-              <>Unlike</>
-            )}
-          </Button>
+              Like
+            </Button>
+          )}
           <h6 className="d-inline ms-3">{product.likes?.length} likes</h6>
 
           <hr />
@@ -254,6 +272,7 @@ const ProductDetailsCard = ({ product }) => {
           <small>{product.description}</small>
           <hr />
 
+          {/* Stock info container */}
           <Container className="mt-2">
             {!product.stock || product.stock <= 0 ? (
               <div className="out-of-stock-container">
@@ -265,6 +284,8 @@ const ProductDetailsCard = ({ product }) => {
               </div>
             ) : null}
           </Container>
+
+          {/* Buttons */}
           <Container className="mb-3">
             <h3 className="d-inline me-4">{formatPrice(product.price)}</h3>
             <Button
@@ -276,6 +297,7 @@ const ProductDetailsCard = ({ product }) => {
             >
               Buy now
             </Button>
+
             <Button
               variant="primary"
               size="lg"
@@ -285,6 +307,7 @@ const ProductDetailsCard = ({ product }) => {
             >
               Add to cart
             </Button>
+
             <Button
               variant="secondary"
               size="lg"

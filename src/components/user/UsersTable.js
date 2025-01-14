@@ -8,6 +8,7 @@ import UpdateUserRoleAlert from "../alerts/UpdateUserRoleAlert";
 import DeleteUserAlert from "../alerts/DeleteUserAlert";
 import userImage from "../../assets/user-nobgnew.png";
 
+// Users table to display users in admin dashboard
 const UsersTable = ({ users }) => {
   const { currentUser } = useAuthContext();
   const { updateUserRole, deleteUser } = useUserManagementContext();
@@ -127,56 +128,6 @@ const UsersTable = ({ users }) => {
               </td>
             </tr>
           ))}
-          <tr className="text-center align-middle">
-            <td>
-              <Image
-                src={userImage}
-                alt={`Profile picture`}
-                className="mb-3"
-                roundedCircle
-                width={60}
-                height={60}
-                onError={(e) => {
-                  e.target.src = userImage;
-                }}
-              />
-            </td>
-            <td>Fake user</td>
-            <td>email</td>
-            <td>not admin</td>
-            <td>100</td>
-            <td>Unavailable</td>
-            <td>
-              <span>
-                <b>This user cannot be modified</b>
-              </span>
-            </td>
-          </tr>
-          <tr className="text-center align-middle">
-            <td>
-              <Image
-                src={userImage}
-                alt={`Profile picture`}
-                className="mb-3"
-                roundedCircle
-                width={60}
-                height={60}
-                onError={(e) => {
-                  e.target.src = userImage;
-                }}
-              />
-            </td>
-            <td>Fake user</td>
-            <td>email</td>
-            <td>not admin</td>
-            <td>100</td>
-            <td>Unavailable</td>
-            <td>
-              <span>
-                <b>This user cannot be modified</b>
-              </span>
-            </td>
-          </tr>
         </tbody>
       </Table>
     </Container>

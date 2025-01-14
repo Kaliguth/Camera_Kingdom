@@ -13,10 +13,11 @@ import {
 import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import noImage from "../../assets/no-image.png";
 import QuantityInput from "../utility/QuantityInput";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
-import noImage from "../../assets/no-image.png";
 
+// Card to review a product in the cart with all details and updates
 const CartProductCard = ({ product }) => {
   const { removeFromCart, changeQuantity } = useCartContext();
   const { formatPrice } = useValidationContext();
@@ -26,6 +27,7 @@ const CartProductCard = ({ product }) => {
     <Tooltip {...props}>Remove from cart</Tooltip>
   );
 
+  // Quantity change handle
   const handleQuantityChange = (newQuantity) => {
     changeQuantity(product.id, newQuantity).catch((error) => {
       // Show warning if invalid quantity or error if quantity change failed
@@ -37,6 +39,7 @@ const CartProductCard = ({ product }) => {
     });
   };
 
+  // Remove from cart handle
   const handleRemoveFromCart = () => {
     RemoveProductAlert(product.model)
       .then((isConfirmed) => {
@@ -61,12 +64,14 @@ const CartProductCard = ({ product }) => {
   return (
     <ListGroup.Item className="d-flex align-items-center">
       <Row className="w-100">
-        {/* Product Image */}
         <Col
-          xs={3}
+          lg={2}
           md={2}
+          sm={3}
+          xs={3}
           className="d-flex flex-column justify-content-center"
         >
+          {/* Product Image with link to product details page */}
           <Link to={`/product/${product.id}`}>
             <Image
               src={product.images[0]}
@@ -82,8 +87,10 @@ const CartProductCard = ({ product }) => {
 
         {/* Product Name */}
         <Col
-          xs={4}
+          lg={3}
           md={3}
+          sm={4}
+          xs={4}
           className="d-flex flex-column justify-content-center"
         >
           <small className="text-muted mb-3">Product</small>
@@ -97,8 +104,10 @@ const CartProductCard = ({ product }) => {
 
         {/* Quantity Input */}
         <Col
-          xs={3}
+          lg={2}
           md={2}
+          sm={3}
+          xs={3}
           className="d-flex flex-column justify-content-center"
         >
           <small className="text-muted mb-2">Quantity</small>
@@ -113,8 +122,10 @@ const CartProductCard = ({ product }) => {
 
         {/* Unit Price */}
         <Col
-          xs={3}
+          lg={2}
           md={2}
+          sm={3}
+          xs={3}
           className="d-flex flex-column justify-content-center"
         >
           <small className="text-muted mb-3">Unit Price</small>
@@ -124,8 +135,10 @@ const CartProductCard = ({ product }) => {
 
         {/* Total Price */}
         <Col
-          xs={3}
+          lg={2}
           md={2}
+          sm={3}
+          xs={3}
           className="d-flex flex-column justify-content-center"
         >
           <small className="text-muted mb-3">Total</small>
@@ -135,6 +148,9 @@ const CartProductCard = ({ product }) => {
 
         {/* Remove Button */}
         <Col
+          lg={1}
+          md={1}
+          sm={1}
           xs={1}
           className="d-flex align-items-center justify-content-center"
         >
@@ -148,6 +164,8 @@ const CartProductCard = ({ product }) => {
             </Button>
           </OverlayTrigger>
         </Col>
+
+        {/* Divider between products */}
         <hr className="ms-2" />
       </Row>
     </ListGroup.Item>

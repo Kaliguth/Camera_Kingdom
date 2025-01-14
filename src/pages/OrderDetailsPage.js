@@ -7,6 +7,7 @@ import logo from "../assets/logo_small.png";
 import OrderDetailsCard from "../components/order/OrderDetailsCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Page to show an order's details
 const OrderDetailsPage = () => {
   const { orderId } = useParams();
   const { getOrder } = useOrderManagementContext();

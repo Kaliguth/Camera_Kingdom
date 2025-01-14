@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Row, Col } from "react-bootstrap";
 
+// Card where advanced infortmation about the product is displayed
 const ProductInfoCard = ({ product }) => {
   const productSpecs = product.specs || [];
 

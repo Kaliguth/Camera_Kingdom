@@ -7,6 +7,7 @@ import Loader from "../components/utility/Loader";
 import Error404 from "../assets/Error404.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Product management page in admin dashboard
 const ProductManagementPage = () => {
   const { currentUser, userData, userLoading } = useAuthContext();
   const { productsLoading } = useProductContext();

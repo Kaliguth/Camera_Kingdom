@@ -1,6 +1,7 @@
 import firebaseApp from "./config";
 import { getFirestore, collection } from "firebase/firestore";
 
+// Firebase firestore provider
 
 // Initialize Firestore
 const db = getFirestore(firebaseApp);

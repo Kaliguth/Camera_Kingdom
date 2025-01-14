@@ -7,10 +7,12 @@ import { toast } from "react-toastify";
 import RemoveProductAlert from "../alerts/RemoveProductAlert";
 import noImage from "../../assets/no-image.png";
 
+// Table to show products in admin dashboard
 const ProductsTable = ({ products }) => {
   const { formatPrice } = useValidationContext();
   const { deleteProduct } = useProductContext();
 
+  // Delete product handle
   const handleDeleteProduct = (product) => {
     RemoveProductAlert(product.model)
       .then((isConfirmed) => {
@@ -49,6 +51,7 @@ const ProductsTable = ({ products }) => {
             <th>Actions</th>
           </tr>
         </thead>
+        
         <tbody className="text-center align-middle">
           {products.map((product) => (
             <tr key={product.id}>

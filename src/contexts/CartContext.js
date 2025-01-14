@@ -4,6 +4,7 @@ import { useProductContext } from "./ProductContext";
 import { updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
+// Cart context to store and provide methods
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -13,6 +14,7 @@ export const CartProvider = ({ children }) => {
   const [cartLoading, setCartLoading] = useState(true);
   const [cart, setCart] = useState([]);
 
+  // Use effect to fetch card items of a user
   useEffect(() => {
     const fetchCartItems = async () => {
       setCartLoading(true);
@@ -91,6 +93,7 @@ export const CartProvider = ({ children }) => {
     return totalPrice;
   };
 
+  // Method to add a product to cart
   const addToCart = async (productToAdd) => {
     // Update the cart array with the newly added product
     try {
@@ -127,11 +130,6 @@ export const CartProvider = ({ children }) => {
 
       // Update cart state, userData state and userData local storage object
       const updatedUserData = { ...userData, cart: updatedCart };
-      // setUserData((prevUserData) => ({
-      //   ...prevUserData,
-      //   cart: updatedCart,
-      // }));
-      // localStorage.setItem("userData", JSON.stringify(updatedUserData));
       updateUserData(updatedUserData);
       setCart(updatedCart);
 
@@ -147,6 +145,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Method to remove a product from the cart
   const removeFromCart = async (productToRemove) => {
     try {
       // Check if the added product is found inside the cart
@@ -168,11 +167,6 @@ export const CartProvider = ({ children }) => {
 
       // Update cart state, userData state and userData local storage object
       const updatedUserData = { ...userData, cart: updatedCart };
-      // setUserData((prevUserData) => ({
-      //   ...prevUserData,
-      //   cart: updatedCart,
-      // }));
-      // localStorage.setItem("userData", JSON.stringify(updatedUserData));
       updateUserData(updatedUserData);
       setCart(updatedCart);
 
@@ -188,6 +182,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Method to change quantity of a product inside the cart
   const changeQuantity = (productId, newQuantity) => {
     // Throw errors if received below minimal or above maximal quantity
     if (newQuantity < 1) {

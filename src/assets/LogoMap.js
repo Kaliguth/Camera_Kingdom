@@ -15,6 +15,7 @@ import DjiLogo from "./DJI.png";
 import Insta360Logo from "./Insta360.png";
 import RicohLogo from "./Ricoh.png";
 
+// JSON map to save and allow exporting all brand logos
 export const logoMap = {
   Canon: CanonLogo,
   Nikon: NikonLogo,

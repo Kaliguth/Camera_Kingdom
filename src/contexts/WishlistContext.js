@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { updateDoc } from "firebase/firestore";
 
+// Wishlist context to store and provide methods
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
@@ -10,6 +11,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlistLoading, setWishlistLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
 
+  // Use effect to fetch the user's wishlist items
   useEffect(() => {
     const fetchWishlistItems = async () => {
       setWishlistLoading(true);
@@ -23,6 +25,7 @@ export const WishlistProvider = ({ children }) => {
     fetchWishlistItems();
   }, [currentUser, userData]);
 
+  // Method to add a product to the wishlist
   const addToWishlist = async (productToAdd) => {
     // Update the wishlist array with the newly added product
     try {
@@ -46,7 +49,8 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-  const removeFromWishlist = async (productToRemove) => {
+   // Method to remove a product from the wishlist
+   const removeFromWishlist = async (productToRemove) => {
     try {
       // Check if the added product is found inside the wishlist
       const existingProduct = wishlist.find(

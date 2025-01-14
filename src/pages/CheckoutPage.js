@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import CartProductCard from "../components/cart/CartProductCard";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Checkout page
 const CheckoutPage = () => {
   const { currentUser, userLoading } = useAuthContext();
   const { cart, cartLoading } = useCartContext();

@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import MessagesTable from "../components/message/MessagesTable";
 
+// Page to show unread messages in admin dashboard
 const UnreadMessagesPage = () => {
   const { allMessages } = useMessagesManagementContext();
 

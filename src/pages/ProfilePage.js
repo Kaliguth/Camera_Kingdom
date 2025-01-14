@@ -19,6 +19,7 @@ import Error404 from "../assets/Error404.png";
 import userImage from "../assets/user-nobgnew.png";
 import HomeButtons from "../components/utility/HomeButtons";
 
+// Profile page to show user details and update it
 const ProfilePage = () => {
   const { userLoading, currentUser, userData } = useAuthContext();
   const { updateUserProfile, changeUserPassword } = useUserManagementContext();
