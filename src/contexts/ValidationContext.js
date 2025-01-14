@@ -159,6 +159,7 @@ export const ValidationProvider = ({ children }) => {
       brand === "Zeiss" ||
       brand === "DJI" ||
       brand === "Insta360" ||
+      brand === "Skytex" ||
       logoMap[brand] === undefined
         ? { width: "40px", height: "35px" }
         : {};
@@ -174,6 +175,7 @@ export const ValidationProvider = ({ children }) => {
       brand === "Zeiss" ||
       brand === "DJI" ||
       brand === "Insta360" ||
+      brand === "Skytex" ||
       logoMap[brand] === undefined
         ? { width: "70px", height: "70px" }
         : {};

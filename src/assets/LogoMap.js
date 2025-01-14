@@ -14,6 +14,9 @@ import GoProLogo from "./GoPro.png";
 import DjiLogo from "./DJI.png";
 import Insta360Logo from "./Insta360.png";
 import RicohLogo from "./Ricoh.png";
+import SkytexLogo from "./Skytex.png";
+import GodoxLogo from "./Godox.png";
+import LimoStudioLogo from "./LimoStudio.png";
 
 // JSON map to save and allow exporting all brand logos
 export const logoMap = {
@@ -33,4 +36,7 @@ export const logoMap = {
   DJI: DjiLogo,
   Insta360: Insta360Logo,
   Ricoh: RicohLogo,
+  Skytex: SkytexLogo,
+  Godos: GodoxLogo,
+  LimoStudio: LimoStudioLogo,
 };
