@@ -80,7 +80,7 @@ const ContactUsPage = () => {
       setName(userData.displayName);
       setEmail(userData.email);
     }
-  }, [initialSubject, currentUser, userData.displayName, userData.email]);
+  }, [initialSubject, currentUser, userData?.displayName, userData?.email]);
 
   // Send message handle
   const handleSendMessage = (e) => {
